@@ -1,0 +1,55 @@
+// Copyright © 2015 Hansoft AB 
+// Distributed under the MIT license, see license text in LICENSE.Malterlib
+
+Import "../Core/Lib_Malterlib.MTarget"
+
+%Group "{Malterlib}/{Lib_Malterlib_Intrusive}"
+{
+	%Group Intrusive
+	{
+		%Group Include
+		{
+			Compile.Type "C++"
+			{
+				!!DocumentationEnabled true
+			}
+			%File "Include/Mib/Intrusive/^*"
+		}
+		%File "Source/^*"
+		%Group Documentation
+		{
+			%File "Documentation/*"
+		}
+	}
+}
+
+
+Property
+{
+	MalterlibLibrary_Intrusive true
+	{
+		&
+		{
+			MalterlibLibrary_Intrusive ""
+			MalterlibLibrary_All true
+		}
+	}
+	MalterlibSubLibraries "Intrusive;@(MalterlibSubLibraries)"
+	{
+		!!MalterlibLibrary_Intrusive true
+	}
+//	MalterlibSubLibrarySeparate_Lib_Malterlib_Intrusive true
+	MalterlibIncludeRoots "@('Include'->MakeAbsolute());@(MalterlibIncludeRoots)"
+	{
+		!!MalterlibLibrary_Intrusive true
+	}
+}
+
+Property
+{
+	!!MalterlibEnableInternalTests true
+	
+	MalterlibTests "Malterlib_Intrusive;@(MalterlibTests)"
+	MalterlibTestFiles_Malterlib_Intrusive "@('Test/*'->MakeAbsolute())"
+}
+
