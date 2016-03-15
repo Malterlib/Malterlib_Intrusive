@@ -6,6 +6,7 @@
 #include <Mib/Core/Core>
 
 #include "Malterlib_Intrusive_Shared.h"
+#define DMibIncluded_IntusiveAVLTree
 
 namespace NMib
 {
@@ -743,6 +744,10 @@ namespace NMib
 #include "Private/Malterlib_Intrusive_AVLTree_Implementation_Iterator.h"
 #include "Private/Malterlib_Intrusive_AVLTree_Implementation_Links.h"
 
+#ifdef DMibIncluded_Stream
 #include "Malterlib_Intrusive_AVLTree_Stream.h"
+#endif
+
 #include "Malterlib_Intrusive_AVLTree_CompareDefaults.h"
+
 
