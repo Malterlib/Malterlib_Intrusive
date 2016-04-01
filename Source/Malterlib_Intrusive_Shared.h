@@ -25,7 +25,7 @@ namespace NMib
 				};\
 			};
 
-#		define DMibIntrusiveLink(_ParentClass, _LinkType, _Member) \
+#		define DMibIntrusiveLink_Define(_ParentClass, _LinkType, _Member) \
 			struct CLinkTraits_##_Member \
 			{\
 				typedef _ParentClass CNode;\
@@ -38,9 +38,9 @@ namespace NMib
 						mc_Offset = (aint)DMibPOffsetOf(t_CParentClass, _Member)\
 					};\
 				};\
-			};\
-			CLinkTraits_##_Member::CLinkContainer _Member;
-#		define DMibIntrusiveLinkT(_ParentClass, _LinkType, _Member) \
+			};
+
+#		define DMibIntrusiveLinkT_Define(_ParentClass, _LinkType, _Member) \
 			struct CLinkTraits_##_Member \
 			{\
 				typedef _ParentClass CNode;\
@@ -54,10 +54,27 @@ namespace NMib
 					};\
 				};\
 			};\
+		
+#		define DMibIntrusiveLink_Member(_Member) \
+			CLinkTraits_##_Member::CLinkContainer _Member;
+
+#		define DMibIntrusiveLinkT_Member(_Member) \
 			typename CLinkTraits_##_Member::CLinkContainer _Member;
+		
+#		define DMibIntrusiveLink(_ParentClass, _LinkType, _Member) \
+			DMibIntrusiveLink_Define(_ParentClass, _LinkType, _Member) \
+			DMibIntrusiveLink_Member(_Member)
+			
+#		define DMibIntrusiveLinkT(_ParentClass, _LinkType, _Member) \
+			DMibIntrusiveLinkT_Define(_ParentClass, _LinkType, _Member) \
+			DMibIntrusiveLinkT_Member(_Member)
 
 #		ifndef DMibPNoShortCuts
+#			define DIntrusiveLink_Member DMibIntrusiveLink_Member
+#			define DIntrusiveLink_Define DMibIntrusiveLink_Define
 #			define DIntrusiveLink DMibIntrusiveLink
+#			define DIntrusiveLinkT_Member DMibIntrusiveLinkT_Member
+#			define DIntrusiveLinkT_Define DMibIntrusiveLinkT_Define
 #			define DIntrusiveLinkT DMibIntrusiveLinkT
 #		endif
 	}
