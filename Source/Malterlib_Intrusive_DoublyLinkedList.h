@@ -2072,7 +2072,7 @@ namespace NMib
 				}
 				
 
-				aint MergeSize = 1 << (_InsertionBits);
+				aint MergeSize = aint(1) << (_InsertionBits);
 
 				if (_InsertionBits > 0)
 				{
