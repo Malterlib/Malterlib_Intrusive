@@ -457,6 +457,8 @@ namespace NMib
 			{
 				friend class TCAVLTreeAggregate;
 			public:
+				using CNode = TCAVLTreeAggregate::CNode;
+				
 			protected:
 				aint m_iStack;
 				const CLink *m_pStack[_RecursionDepth];

@@ -515,7 +515,7 @@ namespace NMib
 
 		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
 		template <aint _RecursionDepth>
-		inline_small TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::TIterator<_RecursionDepth>::operator typename TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::CNode *() const
+		inline_small TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::TIterator<_RecursionDepth>::operator CNode *() const
 		{
 			return f_GetCurrent();
 		}
