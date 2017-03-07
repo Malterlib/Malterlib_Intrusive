@@ -457,7 +457,7 @@ namespace NMib
 			{
 				friend class TCAVLTreeAggregate;
 			public:
-				using CNode = TCAVLTreeAggregate::CNode;
+				using CNode = typename TCAVLTreeAggregate::CNode;
 				
 			protected:
 				aint m_iStack;
