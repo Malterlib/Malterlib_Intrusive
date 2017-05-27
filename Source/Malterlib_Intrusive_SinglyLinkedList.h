@@ -20,6 +20,7 @@ namespace NMib
 		template <typename t_CAllocator>
 		class TCSLinkAggr
 		{
+			using CThis = TCSLinkAggr;
 		public:
 #ifndef DMibNoAggregateConstexpr
 			constexpr TCSLinkAggr(EAggregateInitialization _Init)

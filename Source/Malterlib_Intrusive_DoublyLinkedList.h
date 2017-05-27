@@ -16,7 +16,7 @@ namespace NMib
 		template <typename t_CAllocator>
 		class TCDLinkAggregateListNoPrevPtrList
 		{
-			typedef TCDLinkAggregateListNoPrevPtrList CThis;
+			using CThis = TCDLinkAggregateListNoPrevPtrList;
 		public:
 			TCDynamicPtr<typename t_CAllocator::CPtrHolder, TCDLinkAggregateListNoPrevPtrList> m_pNextPtr;
 			
@@ -197,7 +197,7 @@ namespace NMib
 		template <typename t_CPtrData>
 		class TCDLinkAggregateListNoPrevPtr
 		{
-			typedef TCDLinkAggregateListNoPrevPtr CThis;
+			using CThis = TCDLinkAggregateListNoPrevPtr;
 		public:
 			// Special link to not need a double link in the list header
 			// List header has only next pointer pointing to first item (or itself)
