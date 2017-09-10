@@ -170,7 +170,7 @@ namespace
 	};
 
 
-	TCAVLTreeAggregate<CAVLTree_Tests::CTestClass::CLinkTraits_m_Link, CAVLTree_Tests::CTestClass::CCompare> g_Tree = { DAggregateInit };
+	[[maybe_unused]] TCAVLTreeAggregate<CAVLTree_Tests::CTestClass::CLinkTraits_m_Link, CAVLTree_Tests::CTestClass::CCompare> g_Tree = { DAggregateInit };
 
 	
 	DMibTestRegister(CAVLTree_Tests, Malterlib::Intrusive);
