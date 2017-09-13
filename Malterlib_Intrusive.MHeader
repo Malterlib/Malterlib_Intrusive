@@ -3,6 +3,11 @@
 
 Import "../Core/Lib_Malterlib.MTarget"
 
+Property.MalterlibBoostModules "intrusive;static_assert;assert;move;@(MalterlibBoostModules)"
+{
+	!!MalterlibEnableInternalTests true
+}
+
 %Group "{Malterlib}/{Lib_Malterlib_Intrusive}"
 {
 	%Group Intrusive
