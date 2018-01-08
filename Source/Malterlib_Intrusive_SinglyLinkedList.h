@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Core/Core>
@@ -279,10 +279,23 @@ namespace NMib
 			void f_DeleteAll()
 			{
 				while (m_Data.fp_GetFirst().fp_GetNext())
-				{			
+				{
 					t_CData *pToDelete = fp_MemberFromLink(m_Data.fp_GetFirst().fp_GetNext());
 					m_Data.fp_GetFirst().fp_GetNext()->fp_Unlink(&m_Data.fp_GetFirst());
 					fg_DeleteObject(t_CAllocator(), pToDelete);
+				}
+
+				if (m_Data.fp_HasLast())
+					m_Data.fp_SetLast(&m_Data.fp_GetFirst());
+			}
+
+			void f_DeleteAllDefiniteType()
+			{
+				while (m_Data.fp_GetFirst().fp_GetNext())
+				{
+					t_CData *pToDelete = fp_MemberFromLink(m_Data.fp_GetFirst().fp_GetNext());
+					m_Data.fp_GetFirst().fp_GetNext()->fp_Unlink(&m_Data.fp_GetFirst());
+					fg_DeleteObjectDefiniteType(t_CAllocator(), pToDelete);
 				}
 
 				if (m_Data.fp_HasLast())
@@ -1476,48 +1489,6 @@ namespace NMib
 #		endif
 
 	};	
-/*
-	template <typename t_CStream, typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
-	class NStream::TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator> >
-	{
-	public:
-		static void f_Feed(t_CStream &_Stream, NIntrusive::TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator> const &_Data)
-		{
-			NIntrusive::TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIteratorConst Iter(_Data);
-
-			mint nItems = 0;
-
-			while (Iter)
-			{
-				++nItems;
-				++Iter;
-			};
-
-			_Stream.f_Feed(nItems);
-
-			Iter = _Data;
-
-			while (Iter)
-			{
-				_Stream.f_Feed(*Iter);
-				++Iter;
-			};
-		}
-
-		static void f_Consume(t_CStream &_Stream, NIntrusive::TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator> &_Data)
-		{
-			mint nItems;
-			_Stream.f_Consume(nItems);
-
-			while(nItems)
-			{
-				t_CData *pNewItem = new(t_CAllocator::f_Alloc(sizeof(t_CData))) t_CData;
-				_Data.f_Insert(pNewItem);
-				_Data.f_Consume(*pNewItem);
-				--nItems;
-			}
-		}
-	};*/
 };
 
 

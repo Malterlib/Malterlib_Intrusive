@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -477,6 +477,34 @@ namespace NMib
 		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::TIterator<_RecursionDepth>::f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator)
 		{
 			f_DeleteAllocator(_Tree, t_CCompare(), _Allocator);
+		}
+
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		template <aint _RecursionDepth>
+		template <typename tf_CCompare, typename tf_CAllocator>
+		void
+		TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>
+		::TIterator<_RecursionDepth>
+		::f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare, tf_CAllocator &_Allocator)
+		{
+			CNode *pToDelete = f_GetCurrent();
+			f_Next();
+			CNode *pToFind = f_GetCurrent();
+			_Tree.f_Remove(pToDelete, fg_Forward<tf_CCompare>(_Compare));
+			fg_DeleteObjectDefiniteType(_Allocator, pToDelete);
+			if (pToFind)
+			{
+				f_InitForSearch(&_Tree);
+				f_FindEqualForward(*pToFind);
+			}
+		}
+
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		template <aint _RecursionDepth>
+		template <typename tf_CAllocator>
+		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::TIterator<_RecursionDepth>::f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator)
+		{
+			f_DeleteAllocatorDefiniteType(_Tree, t_CCompare(), _Allocator);
 		}
 
 		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>

@@ -2,6 +2,7 @@
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Core/Core>
+#include <Mib/Core/OnScopeExit>
 
 namespace NMib
 {
@@ -1435,6 +1436,32 @@ namespace NMib
 				while (t_CData *pCurrent = f_GetLast())
 				{
 					fg_DeleteObject(_Allocator, pCurrent);
+				}
+			}
+
+			void f_DeleteAllDefiniteType()
+			{
+				while (t_CData *pCurrent = f_GetLast())
+				{
+					fg_DeleteObjectDefiniteType(t_CAllocator(), pCurrent);
+				}
+			}
+
+			template <typename t_CAllocator2>
+			void f_DeleteAllAllocatorDefiniteType()
+			{
+				while (t_CData *pCurrent = f_GetLast())
+				{
+					fg_DeleteObjectDefiniteType(t_CAllocator2(), pCurrent);
+				}
+			}
+
+			template <typename t_CAllocator2>
+			void f_DeleteAllAllocatorDefiniteType(t_CAllocator2 &_Allocator)
+			{
+				while (t_CData *pCurrent = f_GetLast())
+				{
+					fg_DeleteObjectDefiniteType(_Allocator, pCurrent);
 				}
 			}
 
@@ -3064,9 +3091,18 @@ namespace NMib
 					if (!pValue)
 						continue;
 
-					t_CData *pNewItem = new(t_CAllocator::f_Alloc(sizeof(t_CData))) t_CData();
-					f_Insert(pNewItem);
+					auto Memory = t_CAllocator::f_AllocSafe(sizeof(t_CData), NTraits::TCAlignmentOf<t_CData>::mc_Value);
+					t_CData *pNewItem = new(Memory.m_pMemory) t_CData();
+					Memory.f_Claim();
+					auto Cleanup = g_OnScopeExit > [&]
+						{
+							pNewItem->~t_CData();
+							t_CAllocator::f_Free(pNewItem, sizeof(t_CData));
+						}
+					;
 					*pValue >> NStream::fg_Named("Value", *pNewItem);
+					Cleanup.f_Clear();
+					f_Insert(pNewItem);
 
 					++Iter;
 				}

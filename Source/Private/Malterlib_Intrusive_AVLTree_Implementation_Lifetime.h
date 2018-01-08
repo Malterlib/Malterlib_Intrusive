@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -89,6 +89,61 @@ namespace NMib
 			f_DeleteAllAllocatorCompare<tf_CAllocator>(t_CCompare(), _Allocator);
 		}
 
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		template <typename tf_CCompare>
+		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::f_DeleteAllDefiniteType(tf_CCompare &&_Compare)
+		{
+			while (f_GetRoot())
+			{
+				CNode *pData = f_GetRoot();
+				f_Remove(pData, fg_Forward<tf_CCompare>(_Compare));
+				fg_DeleteObjectDefiniteType(CAllocator(), pData);
+			}
+		}
+
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::f_DeleteAllDefiniteType()
+		{
+			f_DeleteAllDefiniteType(t_CCompare());
+		}
+
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		template <typename tf_CAllocator, typename tf_CCompare>
+		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_Compare)
+		{
+			while (f_GetRoot())
+			{
+				CNode *pData = f_GetRoot();
+				f_Remove(pData, fg_Forward<tf_CCompare>(_Compare));
+				fg_DeleteObjectDefiniteType(tf_CAllocator(), pData);
+			}
+		}
+
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		template <typename tf_CAllocator>
+		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::f_DeleteAllAllocatorDefiniteType()
+		{
+			f_DeleteAllAllocatorCompareDefiniteType<tf_CAllocator>(t_CCompare());
+		}
+
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		template <typename tf_CAllocator, typename tf_CCompare>
+		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_Compare, tf_CAllocator &_Allocator)
+		{
+			while (f_GetRoot())
+			{
+				CNode *pData = f_GetRoot();
+				f_Remove(pData, fg_Forward<tf_CCompare>(_Compare));
+				fg_DeleteObjectDefiniteType(_Allocator, pData);
+			}
+		}
+
+		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
+		template <typename tf_CAllocator>
+		void TCAVLTreeAggregate<t_CLinkTraits, t_CCompare, t_CAllocator>::f_DeleteAllAllocatorDefiniteType(tf_CAllocator &_Allocator)
+		{
+			f_DeleteAllAllocatorCompareDefiniteType<tf_CAllocator>(t_CCompare(), _Allocator);
+		}
 
 		template <typename t_CLinkTraits, typename t_CCompare, typename t_CAllocator>
 		template <typename tf_CDeleter, typename tf_CCompare>

@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -307,7 +307,9 @@ namespace NMib
 			if (pData)
 				return pData;
 
-			pData = new(CAllocator::f_Alloc(sizeof(CNode))) CNode(_ToMap);
+			auto Memory = CAllocator::f_AllocSafe(sizeof(CNode), NTraits::TCAlignmentOf<CNode>::mc_Value);
+			pData = new(Memory.m_pMemory) CNode(_ToMap);
+			Memory.f_Claim();
 			f_Insert(pData, fg_Forward<tf_CCompare>(_Compare));
 			return pData;
 		}

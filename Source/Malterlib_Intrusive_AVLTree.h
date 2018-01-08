@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -306,6 +306,22 @@ namespace NMib
 			template <typename tf_CAllocator>
 			void f_DeleteAllAllocator(tf_CAllocator &_Allocator);
 
+
+			template <typename tf_CCompare>
+			void f_DeleteAllDefiniteType(tf_CCompare &&_Compare);
+			void f_DeleteAllDefiniteType();
+
+			template <typename tf_CAllocator, typename tf_CCompare>
+			void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_Compare);
+			template <typename tf_CAllocator, typename tf_CCompare>
+			void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_Compare, tf_CAllocator &_Allocator);
+
+			template <typename tf_CAllocator>
+			void f_DeleteAllAllocatorDefiniteType();
+			template <typename tf_CAllocator>
+			void f_DeleteAllAllocatorDefiniteType(tf_CAllocator &_Allocator);
+
+
 			template <typename tf_CDeleter, typename tf_CCompare>
 			void f_DeleteAllDeleter(tf_CCompare &&_Compare);
 			template <typename tf_CDeleter>
@@ -520,6 +536,11 @@ namespace NMib
 				void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare, tf_CAllocator &_Allocator);
 				template <typename tf_CAllocator>
 				void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
+
+				template <typename tf_CCompare, typename tf_CAllocator>
+				void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare, tf_CAllocator &_Allocator);
+				template <typename tf_CAllocator>
+				void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
 
 				template <typename tf_CCompare>
 				void f_Remove(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare);

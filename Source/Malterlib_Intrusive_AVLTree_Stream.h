@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -68,11 +68,13 @@ namespace NMib
 	
 				while(nItems)
 				{
-					CNode *pNewItem = new(t_CAllocator::f_Alloc(sizeof(CNode))) CNode();
+					auto Memory = t_CAllocator::f_AllocSafe(sizeof(CNode), NTraits::TCAlignmentOf<CNode>::mc_Value);
+					CNode *pNewItem = new(Memory.m_pMemory) CNode();
+					Memory.f_Claim();
 					auto Cleanup = g_OnScopeExit > [&]
 						{
 							pNewItem->~CNode();
-							t_CAllocator::f_Free(pNewItem);
+							t_CAllocator::f_Free(pNewItem, sizeof(CNode));
 						}
 					;
 
