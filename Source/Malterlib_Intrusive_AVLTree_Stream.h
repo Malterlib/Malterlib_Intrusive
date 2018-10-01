@@ -63,6 +63,7 @@ namespace NMib
 			{
 				uint64 nItems;
 				fg_ConsumeLenFromStream(_Stream, nItems);
+				fg_CheckLengthLimit(_Stream, nItems);
 
 				typedef typename t_CLinkTraits::CNode CNode;
 	
