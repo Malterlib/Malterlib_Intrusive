@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Core/Core>
@@ -128,7 +128,7 @@ public:
 		~CTestClass()
 		{
 		}
-		DMibIntrusiveLink(CTestClass, TCAVLLink<EAVLLinkType_Unaligned>, m_Link);
+		TCAVLLink<EAVLLinkType_Unaligned> m_Link;
 		aint m_Data;
 	};
 
@@ -142,7 +142,7 @@ public:
 		~CTestClass2()
 		{
 		}
-		DMibIntrusiveLink(CTestClass2, TCAVLLink<EAVLLinkType_Unaligned>, m_Link);
+		TCAVLLink<EAVLLinkType_Unaligned> m_Link;
 		aint m_Data;
 	};
 
@@ -163,8 +163,8 @@ public:
 		}
 	};
 	
-	TCAVLTree<CTestClass::CLinkTraits_m_Link, CCompare> m_TestTree;
-	TCAVLTree<CTestClass2::CLinkTraits_m_Link, CCompare2> m_TestTree2;
+	TCAVLTree<&CTestClass::m_Link, CCompare> m_TestTree;
+	TCAVLTree<&CTestClass2::m_Link, CCompare2> m_TestTree2;
 
 	void RandomizeList()
 	{
@@ -809,7 +809,7 @@ public:
 		~CTestClass()
 		{
 		}
-		DMibIntrusiveLink(CTestClass, NMib::NIntrusive::TCAVLLink<>, m_Link);
+		NMib::NIntrusive::TCAVLLink<> m_Link;
 		aint m_Data;
 	};
 
@@ -844,7 +844,7 @@ public:
 		}
 #endif
 	}
-	NMib::NIntrusive::TCAVLTree<CTestClass::CLinkTraits_m_Link, CCompare> m_TestTree;
+	NMib::NIntrusive::TCAVLTree<&CTestClass::m_Link, CCompare> m_TestTree;
 
 	void TreeGetMaxDepth(CTestClass *_pObj, aint &_MaxDepth, aint &_CurrentDepth)
 	{

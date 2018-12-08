@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #if 0
@@ -659,7 +659,7 @@ avlinsert(struct avlnode **n, AVLDATUM d)
 	if (!(*n)) 
 	{
 		mint Size = sizeof(struct avlnode);
-		((*n) = (struct avlnode *)NMib::NMem::fg_Alloc(Size));
+		((*n) = (struct avlnode *)NMib::NMemory::fg_Alloc(Size));
 		if (!(*n)) {
 			return ERROR;
 		}
@@ -848,7 +848,7 @@ avlfindhighest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
 	target->d  = (*n)->d;
 	tmp = *n;
 	*n = (*n)->left;
-	NMib::NMem::fg_Free(tmp);
+	NMib::NMemory::fg_Free(tmp);
 	return 1;
 }
 
@@ -878,7 +878,7 @@ avlfindlowest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
 	target->d = (*n)->d;
 	tmp = *n;
 	*n = (*n)->right;
-	NMib::NMem::fg_Free(tmp);
+	NMib::NMemory::fg_Free(tmp);
 	return 1;
 }
 
@@ -945,7 +945,7 @@ avlremove(struct avlnode **n, aint key)
 			return tmp;
 		}
 	}
-	NMib::NMem::fg_Free(*n);
+	NMib::NMemory::fg_Free(*n);
  	*n = nullptr;
 	return BALANCE;
 }

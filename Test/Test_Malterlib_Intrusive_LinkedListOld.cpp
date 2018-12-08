@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 /*************************************************************************************************\
@@ -261,7 +261,7 @@ public:
 			Testing.f_Remove(0, 256);
 		}
 
-		NMib::NPtr::TCAutoClearPtr<CTestAutoPtr> pTest;
+		NMib::NStorage::TCAutoClearPtr<CTestAutoPtr> pTest;
 
 		{
 			CTestAutoPtr Test;

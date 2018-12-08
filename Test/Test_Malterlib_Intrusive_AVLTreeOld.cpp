@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Core/Core>
@@ -28,7 +28,7 @@ namespace NMib
 					return _Node.m_Data;
 				}
 			};
-			DMibIntrusiveLink(CMalterlibNode, NIntrusive::TCAVLLink<NIntrusive::EAVLLinkType_AlignedRight>, m_Link);
+			NIntrusive::TCAVLLink<NIntrusive::EAVLLinkType_AlignedRight> m_Link;
 			int m_Data;
 			CMalterlibNode() : m_Data(-1) 
 			{
@@ -82,13 +82,13 @@ namespace NMib
 		};
 
 		typedef boost::intrusive::avl_set<CBoostNode, boost::intrusive::constant_time_size<0>> CBoostTree;
-		typedef NIntrusive::TCAVLTree<CMalterlibNode::CLinkTraits_m_Link, CMalterlibNode::CCompare> CMalterlibTree;
+		typedef NIntrusive::TCAVLTree<&CMalterlibNode::m_Link, CMalterlibNode::CCompare> CMalterlibTree;
 
 		template <bint t_bMemoryTests>
 		class TCAVLTreeTester
 		{
-			TCVector<CMalterlibNode, NMem::CAllocator_Virtual> m_DataMalterlib;
-			TCVector<CBoostNode, NMem::CAllocator_Virtual> m_DataBoost;
+			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> m_DataMalterlib;
+			TCVector<CBoostNode, NMemory::CAllocator_Virtual> m_DataBoost;
 			mint m_nItems;
 			mint m_nTests;
 			fp64 m_AllowedDelta;

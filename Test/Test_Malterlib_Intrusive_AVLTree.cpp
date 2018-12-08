@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB 
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Test/Test>
@@ -92,9 +92,9 @@ namespace
 				}
 			};
 
-			DMibIntrusiveLink(CTestClass, TCAVLLinkAutoRemove<CCompare>, m_Link);
+			TCAVLLinkAutoRemove<> m_Link;
 
-			TCAVLTree<CLinkTraits_m_Link, CCompare> m_Tree;
+			TCAVLTree<&CTestClass::m_Link, CCompare> m_Tree;
 		};
 
 
@@ -152,7 +152,7 @@ namespace
 				DMibTest(DMibExpr(Test3.m_Data.m_Valid));
 				DMibTest(DMibExpr(Test4.m_Data.m_Valid));
 
-				typedef TCAVLTree<CNode::CLinkTraits_m_Link, CNode::CCompare>::CIterator CIter;
+				typedef TCAVLTree<&CNode::m_Link, CNode::CCompare>::CIterator CIter;
 				for(CIter It = Test.m_Tree;It;++It)
 				{
 					DMibTest(DMibExpr(It->m_Data.m_Valid)) (ETestFlag_Aggregated);
@@ -170,7 +170,7 @@ namespace
 	};
 
 
-	[[maybe_unused]] TCAVLTreeAggregate<CAVLTree_Tests::CTestClass::CLinkTraits_m_Link, CAVLTree_Tests::CTestClass::CCompare> g_Tree = { DAggregateInit };
+	[[maybe_unused]] TCAVLTreeAggregate<&CAVLTree_Tests::CTestClass::m_Link, CAVLTree_Tests::CTestClass::CCompare> g_Tree = { DAggregateInit };
 
 	
 	DMibTestRegister(CAVLTree_Tests, Malterlib::Intrusive);
