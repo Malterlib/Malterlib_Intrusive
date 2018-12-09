@@ -56,7 +56,7 @@ namespace NMib::NIntrusive
 	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LinkFromMemberConst(const CNode *_pMember)
 	{
-		return _pMember->*t_pLinkMember;
+		return &((_pMember->*t_pLinkMember).m_Link);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
