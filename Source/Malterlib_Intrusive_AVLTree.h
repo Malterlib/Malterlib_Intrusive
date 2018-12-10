@@ -40,7 +40,7 @@ namespace NMib::NIntrusive
 		auto t_pLinkMember
 		, typename t_CCompare = CSort_Default
 		, typename t_CAllocator = NMib::NMemory::CDefaultAllocator
-		, typename t_COverrideNodeType = void
+		, typename t_COverrideNodeType = typename NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>::CType
 	>
 	class TCAVLTreeAggregate
 	{
@@ -48,14 +48,7 @@ namespace NMib::NIntrusive
 		typedef t_CCompare CCompare;
 		typedef t_CAllocator CAllocator;
 		using CMemberPointer = decltype(t_pLinkMember);
-
-		using CNode = typename TCChooseType
-			<
-				NTraits::TCIsVoid<t_COverrideNodeType>::mc_Value
-				, typename NTraits::TCMemberObjectPointerClass<CMemberPointer>::CType
-				, t_COverrideNodeType
-			>::CType
-		;
+		using CNode = t_COverrideNodeType;
 		using CLinkContainer = typename NTraits::TCRemoveMemberObjectPointer<CMemberPointer>::CType;
 
 		typedef typename CLinkContainer::CLink CLink; // The inner link type containing the storage for links, has to be the first member of CLinkContainer
@@ -580,7 +573,7 @@ namespace NMib::NIntrusive
 		auto t_pLinkMember
 		, typename t_CCompare = CSort_Default
 		, typename t_CAllocator = NMib::NMemory::CDefaultAllocator
-		, typename t_COverrideNodeType = void
+		, typename t_COverrideNodeType = typename NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>::CType
 	>
 	class TCAVLTree : public TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>
 	{
