@@ -59,8 +59,7 @@ namespace NMib::NIntrusive
 	protected:
 
 #ifdef DMibDebuggerHelpers
-		static mint ms_OffsetTCAVLTreeAggregate;
-		static CNode* ms_pNode;
+		static CNode *fs_Debug_GetNode();
 #endif
 
 		class CStackObj
@@ -81,12 +80,14 @@ namespace NMib::NIntrusive
 		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init)
 			: m_Root{_Init}
 		{
+#ifdef DMibDebuggerHelpers
+			static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);
+#endif
 		}
 		TCAVLTreeAggregate()
 		{
 #ifdef DMibDebuggerHelpers
-			(void)&ms_OffsetTCAVLTreeAggregate;
-			(void)&ms_pNode;
+			static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);
 #endif
 		}
 #endif
@@ -476,7 +477,7 @@ namespace NMib::NIntrusive
 			const CLink *m_pStack[_RecursionDepth];
 
 #ifdef DMibDebuggerHelpers
-			static TCAVLTreeAggregate* ms_pTree;
+			static TCAVLTreeAggregate *fs_Debug_GetTree();
 #endif
 		public:
 

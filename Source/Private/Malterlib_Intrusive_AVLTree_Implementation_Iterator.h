@@ -18,7 +18,7 @@ namespace NMib::NIntrusive
 		// Reset iterator
 		m_iStack = -1;
 #ifdef DMibDebuggerHelpers
-		(void)&ms_pTree;
+		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
 #endif
 	}
 
@@ -28,7 +28,7 @@ namespace NMib::NIntrusive
 	{
 		m_iStack = _Tree.m_iStack;
 #ifdef DMibDebuggerHelpers
-		(void)&ms_pTree;
+		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
 #endif
 
 		for (aint i = 0; i <= m_iStack; ++i)
@@ -41,7 +41,7 @@ namespace NMib::NIntrusive
 	{
 		f_StartForward(&_Tree);
 #ifdef DMibDebuggerHelpers
-		(void)&ms_pTree;
+		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
 #endif
 	}
 
@@ -51,7 +51,7 @@ namespace NMib::NIntrusive
 	{
 		f_StartForward(_pTree);
 #ifdef DMibDebuggerHelpers
-		(void)&ms_pTree;
+		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
 #endif
 	}
 

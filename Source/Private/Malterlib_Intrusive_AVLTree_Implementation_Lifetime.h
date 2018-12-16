@@ -16,12 +16,18 @@ namespace NMib::NIntrusive
 	{
 		CLink::f_Assign(m_Root, CLink::fs_GetPtr(_Other.m_Root));
 		CLink::f_Assign(_Other.m_Root, (CLink *)nullptr);
+#ifdef DMibDebuggerHelpers
+		static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);
+#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Construct()
 	{
 		CLink::f_Assign(m_Root, (CLink *)nullptr);
+#ifdef DMibDebuggerHelpers
+		static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);
+#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

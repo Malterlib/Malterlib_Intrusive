@@ -1160,7 +1160,7 @@ namespace NMib::NIntrusive
 		typedef t_CTranslator CTranslator;
 		typedef typename CTranslator::template TCOffset<t_CData> COffset;
 #ifdef DMibDebuggerHelpers
-		static mint ms_OffsetTCDLinkListAggregate;
+		assure_used static COffset fs_Debug_GetOffset();
 #endif
 //			typedef typename t_CAllocator::CPtrHolder CPtrHolder;
 
@@ -1194,11 +1194,14 @@ namespace NMib::NIntrusive
 		constexpr TCDLinkListAggregate(EAggregateInitialization _Init)
 			: m_Link{_Init}
 		{
+#ifdef DMibDebuggerHelpers
+			static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
+#endif
 		}
 		TCDLinkListAggregate()
 		{
 #ifdef DMibDebuggerHelpers
-			 (void)&ms_OffsetTCDLinkListAggregate;
+			static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 		}
 #endif
@@ -1210,6 +1213,9 @@ namespace NMib::NIntrusive
 
 		inline_small void f_Construct()
 		{
+#ifdef DMibDebuggerHelpers
+			static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
+#endif
 #ifdef DMibDebug
 			if ((mint)this & 1)
 				DMibPDebugBreak; // We must be aligned
@@ -2526,14 +2532,16 @@ namespace NMib::NIntrusive
 			typedef t_CData CData;
 			t_CLink *m_pCurrent;
 #ifdef DMibDebuggerHelpers
-			static TCDLinkListAggregate* ms_pList;
+			assure_used static TCDLinkListAggregate *fs_Debug_List();
+			assure_used static COffset fs_Debug_GetOffset();
 #endif
 
 			CIterator()
 			{
 				m_pCurrent = nullptr;
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2544,7 +2552,8 @@ namespace NMib::NIntrusive
 				if (m_pCurrent == pLink)
 					m_pCurrent = nullptr;
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2552,7 +2561,8 @@ namespace NMib::NIntrusive
 			{
 				m_pCurrent = _Copy.m_pCurrent;
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2560,7 +2570,8 @@ namespace NMib::NIntrusive
 			{
 				m_pCurrent = TCDLinkListAggregate::fp_LinkFromMember(_pStart);
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2568,7 +2579,8 @@ namespace NMib::NIntrusive
 			{
 				m_pCurrent = TCDLinkListAggregate::fp_LinkFromMember(&_Start);
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2822,14 +2834,16 @@ namespace NMib::NIntrusive
 			const t_CLink *m_pCurrent;
 
 #ifdef DMibDebuggerHelpers
-			static TCDLinkListAggregate* ms_pList;
+			assure_used static TCDLinkListAggregate *fs_Debug_List();
+			assure_used static COffset fs_Debug_GetOffset();
 #endif
 
 			CIteratorConst()
 			{
 				m_pCurrent = nullptr;
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2837,7 +2851,8 @@ namespace NMib::NIntrusive
 			{
 				m_pCurrent = _Copy.m_pCurrent;
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2848,7 +2863,8 @@ namespace NMib::NIntrusive
 				if (m_pCurrent == pLink)
 					m_pCurrent = nullptr;
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2856,7 +2872,8 @@ namespace NMib::NIntrusive
 			{
 				m_pCurrent = TCDLinkListAggregate::fp_LinkFromMember(_pStart);
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -2864,7 +2881,8 @@ namespace NMib::NIntrusive
 			{
 				m_pCurrent = TCDLinkListAggregate::fp_LinkFromMember(&_Start);
 #ifdef DMibDebuggerHelpers
-				(void)&ms_pList;
+				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
+				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 			}
 
@@ -3112,15 +3130,36 @@ namespace NMib::NIntrusive
 	};
 #ifdef DMibDebuggerHelpers
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
-	assure_used mint TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::ms_OffsetTCDLinkListAggregate = COffset::mc_Offset;
+	assure_used auto TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::fs_Debug_GetOffset() -> COffset
+	{
+		return {};
+	}
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
 	assure_used TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>*
-	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIterator::ms_pList = nullptr;
+	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIterator::fs_Debug_List()
+	{
+		return nullptr;
+	}
+
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	assure_used auto TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIterator::fs_Debug_GetOffset() -> COffset
+	{
+		return {};
+	}
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
 	assure_used TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>*
-	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIteratorConst::ms_pList = nullptr;
+	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIteratorConst::fs_Debug_List()
+	{
+		return nullptr;
+	}
+
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	assure_used auto TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIteratorConst::fs_Debug_GetOffset() -> COffset
+	{
+		return {};
+	}
 #endif
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
@@ -3168,7 +3207,7 @@ namespace NMib::NIntrusive
 		class CDLinkTranslator##_Member \
 		{\
 		public:\
-			template <typename t_CClass> \
+			template <typename t_CClass, auto t_pMember = &_Class::_Member> \
 			struct TCOffset \
 			{ \
 				enum\
@@ -3195,12 +3234,12 @@ namespace NMib::NIntrusive
 #	define DMibListLinkAllocatorDA_Member(_Member, _Allocator) DMibListLinkAllocatorDA_LinkType(_Allocator) _Member;
 
 #	define DMibListLinkAllocatorD_Link(_Class, _Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkAllocatorD_Member(_Member, _Allocator)
+			DMibListLinkAllocatorD_Member(_Member, _Allocator) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkAllocatorDA_Link(_Class, _Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkAllocatorDA_Member(_Member, _Allocator)
+			DMibListLinkAllocatorDA_Member(_Member, _Allocator) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkAllocatorD_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::TCDLinkAggregate<_Allocator>, NMib::NIntrusive::TCDLinkAggregate<_Allocator>, false, _Allocator>
 #	define DMibListLinkAllocatorD_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::TCDLinkAggregate<_Allocator>, NMib::NIntrusive::TCDLinkAggregate<_Allocator>, true, _Allocator>
@@ -3241,12 +3280,12 @@ namespace NMib::NIntrusive
 #	define DMibListLinkAllocatorDSA_Member(_Member, _Allocator) DMibListLinkAllocatorDSA_LinkType(_Allocator) _Member;
 
 #	define DMibListLinkAllocatorDS_Link(_Class, _Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkAllocatorDS_Member(_Member, _Allocator)
+			DMibListLinkAllocatorDS_Member(_Member, _Allocator) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkAllocatorDSA_Link(_Class, _Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkAllocatorDSA_Member(_Member, _Allocator)
+			DMibListLinkAllocatorDSA_Member(_Member, _Allocator) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkAllocatorDS_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr<NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr_Data<typename _Allocator::CPtrHolder>>, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtrList<_Allocator>, false, _Allocator>
 #	define DMibListLinkAllocatorDS_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr<NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr_Data<typename _Allocator::CPtrHolder>>, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtrList<_Allocator>, true, _Allocator>
@@ -3288,12 +3327,12 @@ namespace NMib::NIntrusive
 #	define DMibListLinkDA_Member(_Member) DMibListLinkDA_LinkType _Member;
 
 #	define DMibListLinkD_Link(_Class, _Member) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkD_Member(_Member)
+			DMibListLinkD_Member(_Member) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkDA_Link(_Class, _Member) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkDA_Member(_Member)
+			DMibListLinkDA_Member(_Member) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkD_List(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::TCDLinkAggregate<NMib::NMemory::CDefaultAllocator>, NMib::NIntrusive::TCDLinkAggregate<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
 #	define DMibListLinkD_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::TCDLinkAggregate<NMib::NMemory::CDefaultAllocator>, NMib::NIntrusive::TCDLinkAggregate<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
@@ -3336,12 +3375,12 @@ namespace NMib::NIntrusive
 #	define DMibListLinkDSA_Member(_Member) DMibListLinkDSA_LinkType _Member;
 
 #	define DMibListLinkDS_Link(_Class, _Member) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkDS_Member(_Member)
+			DMibListLinkDS_Member(_Member) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkDSA_Link(_Class, _Member) \
-			DMibListLinkD_Trans(_Class, _Member) \
-			DMibListLinkDSA_Member(_Member)
+			DMibListLinkDSA_Member(_Member) \
+			DMibListLinkD_Trans(_Class, _Member)
 
 #	define DMibListLinkDS_List(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr<NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr_Data<NMib::CDefaultPointerHolder>>, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtrList<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
 #	define DMibListLinkDS_ListMT(_Class, _MemberType) NMib::NIntrusive::TCDLinkList<_Class, _MemberType, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr<NMib::NIntrusive::TCDLinkAggregateListNoPrevPtr_Data<NMib::CDefaultPointerHolder>>, NMib::NIntrusive::TCDLinkAggregateListNoPrevPtrList<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
