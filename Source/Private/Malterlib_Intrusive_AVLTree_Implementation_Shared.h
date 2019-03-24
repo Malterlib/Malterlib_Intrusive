@@ -14,21 +14,21 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_medium void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RotateRight(CLinkPointer &_pObject)
 	{
-		CLink *tmp = CLink::fs_GetPtr(_pObject);
-		CLink *pObj = tmp->f_GetLeftP();
-		CLink::f_Assign(_pObject, pObj);
-		tmp->f_SetLeft(pObj->f_GetRight());
-		pObj->f_SetRight(tmp);
+		CLink *pTemp = CLink::fs_GetPtr(_pObject);
+		CLink *pObj = pTemp->f_GetLeftP();
+		CLink::f_Assign(&_pObject, pObj);
+		pTemp->f_SetLeft(pObj->f_GetRight());
+		pObj->f_SetRight(pTemp);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_medium void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RotateLeft(CLinkPointer &_pObject)
 	{
-		CLink *tmp = CLink::fs_GetPtr(_pObject);
-		CLink *pObj = tmp->f_GetRightP();
-		CLink::f_Assign(_pObject, pObj);
-		tmp->f_SetRight(pObj->f_GetLeft());
-		pObj->f_SetLeft(tmp);
+		CLink *pTemp = CLink::fs_GetPtr(_pObject);
+		CLink *pObj = pTemp->f_GetRightP();
+		CLink::f_Assign(&_pObject, pObj);
+		pTemp->f_SetRight(pObj->f_GetLeft());
+		pObj->f_SetLeft(pTemp);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -70,7 +70,7 @@ namespace NMib::NIntrusive
 					}
 					pLeft->f_GetRightP()->f_SetSkew(CLink::EAVLTreeSkew_None);
 
-					fsp_RotateLeft(pObj->f_GetLeft());
+					fsp_RotateLeft(*pObj->f_GetLeft());
 					fsp_RotateRight(_pObject);
 					return true;
 				default:
@@ -126,7 +126,7 @@ namespace NMib::NIntrusive
 
 					pRight->f_GetLeftP()->f_SetSkew(CLink::EAVLTreeSkew_None);
 
-					fsp_RotateRight(pObj->f_GetRight());
+					fsp_RotateRight(*pObj->f_GetRight());
 					fsp_RotateLeft(_pObject);
 					return true;
 				default:
@@ -188,7 +188,7 @@ namespace NMib::NIntrusive
 						pRight->f_SetSkew(CLink::EAVLTreeSkew_None);
 					}
 
-					fsp_RotateRight(pObj->f_GetRight());
+					fsp_RotateRight(*pObj->f_GetRight());
 					fsp_RotateLeft(_pObject);
 				}
 				return false;
@@ -245,7 +245,7 @@ namespace NMib::NIntrusive
 						pLeft->f_SetSkew(CLink::EAVLTreeSkew_None);
 					}
 
-					fsp_RotateLeft(pObj->f_GetLeft());
+					fsp_RotateLeft(*pObj->f_GetLeft());
 					fsp_RotateRight(_pObject);
 				}
 				return false;

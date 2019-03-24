@@ -18,7 +18,7 @@ namespace NMib::NIntrusive
 
 		if (pObject->f_GetLeftP())
 		{
-			if (fsp_BalanceLowest(_pLowestObject, pObject->f_GetLeft()))
+			if (fsp_BalanceLowest(_pLowestObject, *pObject->f_GetLeft()))
 			{
 				return fsp_LeftShrunk(_pObject);
 			}
@@ -30,7 +30,7 @@ namespace NMib::NIntrusive
 		_pLowestObject = pObject;
 
 		// Remove pObject from the tree
-		CLink::f_Assign(_pObject, pObject->f_GetRight());
+		CLink::f_Assign(&_pObject, pObject->f_GetRight());
 
 		return true;
 	}
@@ -42,7 +42,7 @@ namespace NMib::NIntrusive
 
 		if (pObject->f_GetRightP())
 		{
-			if (fsp_BalanceHighest(_pHighestObject, pObject->f_GetRight()))
+			if (fsp_BalanceHighest(_pHighestObject, *pObject->f_GetRight()))
 			{
 				return fsp_RightShrunk(_pObject);
 			}
@@ -54,7 +54,7 @@ namespace NMib::NIntrusive
 		_pHighestObject = pObject;
 
 		// Remove pObject from the tree
-		CLink::f_Assign(_pObject, pObject->f_GetLeft());
+		CLink::f_Assign(&_pObject, pObject->f_GetLeft());
 
 		return true;
 	}
@@ -93,7 +93,7 @@ namespace NMib::NIntrusive
 			{
 				DMibFastCheck(_pObjectToInsert); // You cannot insert a null object
 				_pObjectToInsert->f_Clear();
-				CLink::f_Assign(_pObject, _pObjectToInsert);
+				CLink::f_Assign(&_pObject, _pObjectToInsert);
 
 				return true;
 			}
@@ -107,7 +107,7 @@ namespace NMib::NIntrusive
 
 				_pObjectToInsert->f_SetAll(nullptr, nullptr, CLink::EAVLTreeSkew_None);
 
-				CLink::f_Assign(_pObject, _pObjectToInsert);
+				CLink::f_Assign(&_pObject, _pObjectToInsert);
 
 				return true;
 			}
@@ -167,7 +167,7 @@ namespace NMib::NIntrusive
 		if (pObj->f_GetLeftP())
 		{
 			CLink* pHighestObject;
-			bint bLeftShrunk = fsp_BalanceHighest(pHighestObject, pObj->f_GetLeft());
+			bint bLeftShrunk = fsp_BalanceHighest(pHighestObject, *pObj->f_GetLeft());
 
 			// Remove target from tree
 			pHighestObject->f_SetSkew(pObj->f_GetSkew());
@@ -176,7 +176,7 @@ namespace NMib::NIntrusive
 			// Link in on targets place
 			pHighestObject->f_SetLeft(pObj->f_GetLeft());
 			pHighestObject->f_SetRight(pObj->f_GetRight());
-			CLink::f_Assign(_pObject, pHighestObject);
+			CLink::f_Assign(&_pObject, pHighestObject);
 
 			if (bLeftShrunk)
 			{
@@ -190,7 +190,7 @@ namespace NMib::NIntrusive
 		{
 			CLink* pLowestObject;
 
-			bint bRightShrunk = fsp_BalanceLowest(pLowestObject, pObj->f_GetRight());
+			bint bRightShrunk = fsp_BalanceLowest(pLowestObject, *pObj->f_GetRight());
 
 			// Remove target from tree
 			pLowestObject->f_SetSkew(pObj->f_GetSkew());
@@ -198,7 +198,7 @@ namespace NMib::NIntrusive
 			// Link in on targets place
 			pLowestObject->f_SetLeft(pObj->f_GetLeft());
 			pLowestObject->f_SetRight(pObj->f_GetRight());
-			CLink::f_Assign(_pObject, pLowestObject);
+			CLink::f_Assign(&_pObject, pLowestObject);
 
 			if (bRightShrunk)
 			{
@@ -210,7 +210,7 @@ namespace NMib::NIntrusive
 
 		pObj->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
 
-		CLink::f_Assign(_pObject, (CLink *)nullptr);
+		CLink::f_Assign(&_pObject, (CLink *)nullptr);
 
 		return true;
 	}

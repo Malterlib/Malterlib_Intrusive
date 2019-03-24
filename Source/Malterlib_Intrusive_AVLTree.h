@@ -53,7 +53,7 @@ namespace NMib::NIntrusive
 
 		typedef typename CLinkContainer::CLink CLink; // The inner link type containing the storage for links, has to be the first member of CLinkContainer
 	protected:
-		typedef typename CLink::CLinkPointer CLinkPointer; // The pointer type of the inner link type for each left/right link
+		using CLinkPointer = CLink *; // The pointer type of the inner link type for each left/right link
 
 	public:
 	protected:
@@ -78,7 +78,7 @@ namespace NMib::NIntrusive
 
 #ifndef DMibNoAggregateConstexpr
 		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init)
-			: m_Root{_Init}
+			: m_Root{nullptr}
 		{
 #ifdef DMibDebuggerHelpers
 			static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);

@@ -85,10 +85,10 @@ namespace NMib::NIntrusive
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fpr_Unlink(CLinkPointer &_pUnlink)
 	{
 		if (CLink::fs_GetPtr(_pUnlink)->f_GetLeftP())
-			fpr_Unlink(CLink::fs_GetPtr(_pUnlink)->f_GetLeft());
+			fpr_Unlink(*CLink::fs_GetPtr(_pUnlink)->f_GetLeft());
 
 		if (CLink::fs_GetPtr(_pUnlink)->f_GetRightP())
-			fpr_Unlink(CLink::fs_GetPtr(_pUnlink)->f_GetRight());
+			fpr_Unlink(*CLink::fs_GetPtr(_pUnlink)->f_GetRight());
 
 		CLink::fs_GetPtr(_pUnlink)->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
 	}

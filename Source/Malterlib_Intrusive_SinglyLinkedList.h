@@ -14,21 +14,20 @@ namespace NMib::NIntrusive
 	// Had to make this one a template so the functions won't get compiled at header time
 //		template <aint t_Dummy = 0>
 
-	template <typename t_CAllocator>
-	class TCSLinkAggr
+	class CSLinkAggr
 	{
-		using CThis = TCSLinkAggr;
+		using CThis = CSLinkAggr;
 	public:
 #ifndef DMibNoAggregateConstexpr
-		constexpr TCSLinkAggr(EAggregateInitialization _Init)
-			: m_pNext(_Init)
+		constexpr CSLinkAggr(EAggregateInitialization _Init)
+			: m_pNext(nullptr)
 		{
 		}
-		inline_always TCSLinkAggr()
+		inline_always CSLinkAggr()
 		{
 		}
 #endif
-		TCDynamicPtr<typename t_CAllocator::CPtrHolder, TCSLinkAggr> m_pNext;
+		CSLinkAggr *m_pNext;
 
 		inline_small void f_Construct()
 		{
@@ -42,27 +41,27 @@ namespace NMib::NIntrusive
 			DMibSafeCheck(!m_pNext, "You have to take care of it. No auto delete");
 		}
 
-		inline_small void fp_Link(TCSLinkAggr *_pLinkAfter)
+		inline_small void fp_Link(CSLinkAggr *_pLinkAfter)
 		{
 			DMibSafeCheck(!m_pNext, "Singly linked list cannot be automatically unlinked, you have to remove it from the list manually");
 			m_pNext = _pLinkAfter->m_pNext;
-			_pLinkAfter->m_pNext = (TCSLinkAggr *)this;
+			_pLinkAfter->m_pNext = this;
 		}
 
-		inline_small void fp_Unlink(TCSLinkAggr *_pPrev)
+		inline_small void fp_Unlink(CSLinkAggr *_pPrev)
 		{
 			DMibSafeCheck(_pPrev, "You better know what you are doing");
 			_pPrev->m_pNext = m_pNext;
 			m_pNext = nullptr;
 		}
 
-		inline_small void fp_UnsafeLink(TCSLinkAggr *_pLinkAfter)
+		inline_small void fp_UnsafeLink(CSLinkAggr *_pLinkAfter)
 		{
 			m_pNext = _pLinkAfter->m_pNext;
-			_pLinkAfter->m_pNext = (TCSLinkAggr *)this;
+			_pLinkAfter->m_pNext = this;
 		}
 
-		inline_small void fp_UnsafeUnlink(TCSLinkAggr *_pPrev)
+		inline_small void fp_UnsafeUnlink(CSLinkAggr *_pPrev)
 		{
 			_pPrev->m_pNext = m_pNext;
 #			ifdef DMibEnableSafeCheck
@@ -70,12 +69,12 @@ namespace NMib::NIntrusive
 #			endif
 		}
 
-		inline_small TCSLinkAggr *fp_GetNext() const
+		inline_small CSLinkAggr *fp_GetNext() const
 		{
 			return m_pNext;
 		}
 
-		inline_small void fp_SetNext(TCSLinkAggr * _pNext)
+		inline_small void fp_SetNext(CSLinkAggr * _pNext)
 		{
 			m_pNext = _pNext;
 		}
@@ -87,57 +86,56 @@ namespace NMib::NIntrusive
 	};
 
 
-	template <typename t_CAllocator>
-	class TCSLink : public TCSLinkAggr<t_CAllocator>
+	class CSLink : public CSLinkAggr
 	{
 	private:
-		TCSLink(TCSLink const &) = delete;
-		TCSLink &operator = (TCSLink const &) = delete;
+		CSLink(CSLink const &) = delete;
+		CSLink &operator = (CSLink const &) = delete;
 
 	public:
-		inline_small TCSLink()
+		inline_small CSLink()
 		{
-			TCSLinkAggr<t_CAllocator>::f_Construct();
+			CSLinkAggr::f_Construct();
 		}
 
-		inline_small ~TCSLink()
+		inline_small ~CSLink()
 		{
-			TCSLinkAggr<t_CAllocator>::f_Destruct();
+			CSLinkAggr::f_Destruct();
 		}
 	};
 
-	template <typename t_CAllocator>
-	class TCSLinkListData_Last
+	class CSLinkListData_Last
 	{
 	public:
 #ifndef DMibNoAggregateConstexpr
-		constexpr TCSLinkListData_Last(EAggregateInitialization _Init)
+		constexpr CSLinkListData_Last(EAggregateInitialization _Init)
 			: m_First(_Init)
+			, m_pLast(nullptr)
 		{
 		}
-		inline_always TCSLinkListData_Last()
+		inline_always CSLinkListData_Last()
 		{
 		}
 #endif
-		TCSLinkAggr<t_CAllocator> m_First;
-		TCDynamicPtr<typename t_CAllocator::CPtrHolder, TCSLinkAggr<t_CAllocator> > m_pLast;
-		inline_small TCSLinkAggr<t_CAllocator> &fp_GetFirst()
+		CSLinkAggr m_First;
+		CSLinkAggr *m_pLast;
+		inline_small CSLinkAggr &fp_GetFirst()
 		{
 			return m_First;
 		}
-		inline_small const TCSLinkAggr<t_CAllocator> &fp_GetFirst() const
+		inline_small const CSLinkAggr &fp_GetFirst() const
 		{
 			return m_First;
 		}
-		inline_small TCSLinkAggr<t_CAllocator> *fp_GetLast()
+		inline_small CSLinkAggr *fp_GetLast()
 		{
 			return m_pLast;
 		}
-		inline_small const TCSLinkAggr<t_CAllocator> *fp_GetLast() const
+		inline_small const CSLinkAggr *fp_GetLast() const
 		{
 			return m_pLast;
 		}
-		inline_small void fp_SetLast(TCSLinkAggr<t_CAllocator> *_pLast)
+		inline_small void fp_SetLast(CSLinkAggr *_pLast)
 		{
 			m_pLast = _pLast;
 		}
@@ -147,37 +145,36 @@ namespace NMib::NIntrusive
 		}
 	};
 
-	template <typename t_CAllocator>
-	class TCSLinkListData
+	class CSLinkListData
 	{
 	public:
 #ifndef DMibNoAggregateConstexpr
-		constexpr TCSLinkListData(EAggregateInitialization _Init)
+		constexpr CSLinkListData(EAggregateInitialization _Init)
 			: m_First(_Init)
 		{
 		}
-		inline_always TCSLinkListData()
+		inline_always CSLinkListData()
 		{
 		}
 #endif
-		TCSLinkAggr<t_CAllocator> m_First;
-		inline_small TCSLinkAggr<t_CAllocator> &fp_GetFirst()
+		CSLinkAggr m_First;
+		inline_small CSLinkAggr &fp_GetFirst()
 		{
 			return m_First;
 		}
-		inline_small TCSLinkAggr<t_CAllocator> *fp_GetLast()
+		inline_small CSLinkAggr *fp_GetLast()
 		{
 			return nullptr;
 		}
-		inline_small const TCSLinkAggr<t_CAllocator> &fp_GetFirst() const
+		inline_small const CSLinkAggr &fp_GetFirst() const
 		{
 			return m_First;
 		}
-		inline_small const TCSLinkAggr<t_CAllocator> *fp_GetLast() const
+		inline_small const CSLinkAggr *fp_GetLast() const
 		{
 			return nullptr;
 		}
-		inline_small void fp_SetLast(TCSLinkAggr<t_CAllocator> *_pLast)
+		inline_small void fp_SetLast(CSLinkAggr *_pLast)
 		{
 		}
 		static inline_small bint fp_HasLast()
@@ -213,22 +210,22 @@ namespace NMib::NIntrusive
 		static COffset fs_Debug_GetOffset();
 #endif
 
-		static inline_small TCSLinkAggr<t_CAllocator> *fp_LinkFromMember(t_CData *_pMember)
+		static inline_small CSLinkAggr *fp_LinkFromMember(t_CData *_pMember)
 		{
-			return ((TCSLinkAggr<t_CAllocator> *)(((uint8 *)_pMember) + COffset::mc_Offset));
+			return ((CSLinkAggr *)(((uint8 *)_pMember) + COffset::mc_Offset));
 		}
 
-		static inline_small t_CData *fp_MemberFromLink(TCSLinkAggr<t_CAllocator> *_pLink)
+		static inline_small t_CData *fp_MemberFromLink(CSLinkAggr *_pLink)
 		{
 			return ((t_CData *)(((uint8 *)_pLink) - COffset::mc_Offset));
 		}
 
-		static inline_small const TCSLinkAggr<t_CAllocator> *fp_LinkFromMember(const t_CData *_pMember)
+		static inline_small const CSLinkAggr *fp_LinkFromMember(const t_CData *_pMember)
 		{
-			return ((const TCSLinkAggr<t_CAllocator> *)(((uint8 *)_pMember) + COffset::mc_Offset));
+			return ((const CSLinkAggr *)(((uint8 *)_pMember) + COffset::mc_Offset));
 		}
 
-		static inline_small const t_CData *fp_MemberFromLink(const TCSLinkAggr<t_CAllocator> *_pLink)
+		static inline_small const t_CData *fp_MemberFromLink(const CSLinkAggr *_pLink)
 		{
 			return ((const t_CData *)(((uint8 *)_pLink) - COffset::mc_Offset));
 		}
@@ -309,11 +306,11 @@ namespace NMib::NIntrusive
 
 		void f_Remove(t_CData *_pToRemove)
 		{
-			TCSLinkAggr<t_CAllocator> * pToRemove = fp_LinkFromMember(_pToRemove);
-			TCSLinkAggr<t_CAllocator> *pCurrent = &m_Data.fp_GetFirst();
+			CSLinkAggr * pToRemove = fp_LinkFromMember(_pToRemove);
+			CSLinkAggr *pCurrent = &m_Data.fp_GetFirst();
 			while (pCurrent)
 			{
-				TCSLinkAggr<t_CAllocator> *pNext = pCurrent->fp_GetNext();
+				CSLinkAggr *pNext = pCurrent->fp_GetNext();
 				if (pNext == pToRemove)
 				{
 					if (m_Data.fp_HasLast())
@@ -330,15 +327,15 @@ namespace NMib::NIntrusive
 
 		static void fs_UnsafeUnlink(t_CData *_pToRemove, t_CData *_pPrev)
 		{
-			TCSLinkAggr<t_CAllocator> * pToRemove = fp_LinkFromMember(_pToRemove);
-			TCSLinkAggr<t_CAllocator> * pPrev = fp_LinkFromMember(_pPrev);
+			CSLinkAggr * pToRemove = fp_LinkFromMember(_pToRemove);
+			CSLinkAggr * pPrev = fp_LinkFromMember(_pPrev);
 
 			pToRemove->fp_UnsafeUnlink(pPrev);
 		}
 
 		static t_CData * fs_GetNext(t_CData *_pData)
 		{
-			TCSLinkAggr<t_CAllocator> * pData = fp_LinkFromMember(_pData);
+			CSLinkAggr * pData = fp_LinkFromMember(_pData);
 			auto pNext = pData->fp_GetNext();
 			if (pNext)
 				return fp_MemberFromLink(pNext);
@@ -347,8 +344,8 @@ namespace NMib::NIntrusive
 
 		static void fs_Unlink(t_CData *_pToRemove, t_CData *_pPrev)
 		{
-			TCSLinkAggr<t_CAllocator> * pToRemove = fp_LinkFromMember(_pToRemove);
-			TCSLinkAggr<t_CAllocator> * pPrev = fp_LinkFromMember(pPrev);
+			CSLinkAggr * pToRemove = fp_LinkFromMember(_pToRemove);
+			CSLinkAggr * pPrev = fp_LinkFromMember(pPrev);
 
 			pToRemove->fp_Unlink(pPrev);
 		}
@@ -418,7 +415,7 @@ namespace NMib::NIntrusive
 			}
 			else
 			{
-				TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 				if (pCurrent)
 				{
 					while (pCurrent->fp_GetNext())
@@ -452,7 +449,7 @@ namespace NMib::NIntrusive
 			}
 			else
 			{
-				TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 				if (pCurrent)
 				{
 					while (pCurrent->fp_GetNext())
@@ -480,7 +477,7 @@ namespace NMib::NIntrusive
 		{
 			if (m_Data.fp_HasLast())
 			{
-				TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 				pToLink->fp_Link(m_Data.fp_GetLast());
 				m_Data.fp_SetLast(pToLink);
 			}
@@ -504,7 +501,7 @@ namespace NMib::NIntrusive
 		template <class t_CSortClass>
 		void f_InsertSorted(t_CData *_pToInsert)
 		{
-			TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+			CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 			if (pCurrent)
 			{
 				while (t_CSortClass::fs_Compare(fp_MemberFromLink(pCurrent), _pToInsert) > 0)
@@ -512,18 +509,18 @@ namespace NMib::NIntrusive
 					pCurrent = pCurrent->fp_GetNext();
 				}
 
-				TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 				pToLink->fp_Link(pCurrent);
 			}
 
 			if (pCurrent)
 			{
-				TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 				pToLink->fp_Link(pCurrent);
 			}
 			else
 			{
-				TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 				pToLink->fp_Link(&m_Data.fp_GetFirst());
 			}
 		}
@@ -533,13 +530,13 @@ namespace NMib::NIntrusive
 		{
 			if (m_Data.fp_HasLast())
 			{
-				TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 				pToLink->fp_Link(m_Data.fp_GetLast());
 				m_Data.fp_SetLast(pToLink);
 			}
 			else
 			{
-				TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 				if (pCurrent)
 				{
 					while (pCurrent->fp_GetNext())
@@ -547,12 +544,12 @@ namespace NMib::NIntrusive
 						pCurrent = pCurrent->fp_GetNext();
 					}
 
-					TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 					pToLink->fp_Link(pCurrent);
 				}
 				else
 				{
-					TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 					pToLink->fp_Link(&m_Data.fp_GetFirst());
 				}
 
@@ -566,7 +563,7 @@ namespace NMib::NIntrusive
 		// InsertHead
 		inline_small void f_InsertFirst(t_CData *_pToInsert)
 		{
-			TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 
 			pToLink->fp_Link(&m_Data.fp_GetFirst());
 
@@ -584,10 +581,10 @@ namespace NMib::NIntrusive
 		// f_InsertAfter
 		inline_small void f_InsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter)
 		{
-			TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
-			TCSLinkAggr<t_CAllocator> *pToLinkAfter = fp_LinkFromMember(_pToInsertAfter);
+			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLinkAfter = fp_LinkFromMember(_pToInsertAfter);
 
-			pToLink->fp_Link(&pToLinkAfter);
+			pToLink->fp_Link(pToLinkAfter);
 
 			if (m_Data.fp_HasLast())
 			{
@@ -618,7 +615,7 @@ namespace NMib::NIntrusive
 		{
 			if (m_Data.fp_HasLast())
 			{
-				TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 				pToLink->fp_UnsafeLink(m_Data.fp_GetLast());
 				m_Data.fp_SetLast(pToLink);
 			}
@@ -638,13 +635,13 @@ namespace NMib::NIntrusive
 		{
 			if (m_Data.fp_HasLast())
 			{
-				TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 				pToLink->fp_UnsafeLink(m_Data.fp_GetLast());
 				m_Data.fp_SetLast(pToLink);
 			}
 			else
 			{
-				TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 				if (pCurrent)
 				{
 					while (pCurrent->fp_GetNext())
@@ -652,12 +649,12 @@ namespace NMib::NIntrusive
 						pCurrent = pCurrent->fp_GetNext();
 					}
 
-					TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 					pToLink->fp_UnsafeLink(pCurrent);
 				}
 				else
 				{
-					TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 					pToLink->fp_UnsafeLink(&m_Data.fp_GetFirst());
 				}
 			}
@@ -670,7 +667,7 @@ namespace NMib::NIntrusive
 		// InsertHead
 		inline_small void f_UnsafeInsertFirst(t_CData *_pToInsert)
 		{
-			TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
 
 			pToLink->fp_UnsafeLink(&m_Data.fp_GetFirst());
 
@@ -688,10 +685,10 @@ namespace NMib::NIntrusive
 		// InsertHead
 		inline_small void f_UnsafeInsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter)
 		{
-			TCSLinkAggr<t_CAllocator> *pToLink = fp_LinkFromMember(_pToInsert);
-			TCSLinkAggr<t_CAllocator> *pToLinkAfter = fp_LinkFromMember(_pToInsertAfter);
+			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLinkAfter = fp_LinkFromMember(_pToInsertAfter);
 
-			pToLink->fp_UnsafeLink(&pToLinkAfter);
+			pToLink->fp_UnsafeLink(pToLinkAfter);
 
 			if (m_Data.fp_HasLast())
 			{
@@ -719,7 +716,7 @@ namespace NMib::NIntrusive
 
 		void f_Reverse()
 		{
-			TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+			CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 			m_Data.fp_GetFirst().fp_SetNext(nullptr);
 			if (pCurrent)
 			{
@@ -730,7 +727,7 @@ namespace NMib::NIntrusive
 
 				while (pCurrent)
 				{
-					TCSLinkAggr<t_CAllocator> *pTemp = pCurrent;
+					CSLinkAggr *pTemp = pCurrent;
 					pCurrent = pCurrent->fp_GetNext();
 					pTemp->fp_UnsafeLink(&m_Data.fp_GetFirst());
 				}
@@ -814,9 +811,9 @@ namespace NMib::NIntrusive
 			{
 				const aint SortSize = 1 << _InsertionBits;
 
-				TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
-				TCSLinkAggr<t_CAllocator> *pLinkAfter = &m_Data.fp_GetFirst();
-				TCSLinkAggr<t_CAllocator> *pLast = &m_Data.fp_GetFirst();
+				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pLinkAfter = &m_Data.fp_GetFirst();
+				CSLinkAggr *pLast = &m_Data.fp_GetFirst();
 				m_Data.fp_GetFirst().fp_SetNext(nullptr);
 				aint NumSorted = 0;
 
@@ -825,7 +822,7 @@ namespace NMib::NIntrusive
 					// Add first member
 
 					++NumSorted;
-					TCSLinkAggr<t_CAllocator> *pTemp = pCurrent->fp_GetNext();
+					CSLinkAggr *pTemp = pCurrent->fp_GetNext();
 					pCurrent->fp_UnsafeLink(pLinkAfter);
 					pLast = pCurrent;
 					pCurrent = pTemp;
@@ -838,8 +835,8 @@ namespace NMib::NIntrusive
 						aint NumChecked = i;
 						++NumSorted;
 
-						TCSLinkAggr<t_CAllocator> *pTemp = pLinkAfter->fp_GetNext();
-						TCSLinkAggr<t_CAllocator> *pTempAfter = pLinkAfter;
+						CSLinkAggr *pTemp = pLinkAfter->fp_GetNext();
+						CSLinkAggr *pTempAfter = pLinkAfter;
 
 						while (NumChecked)
 						{
@@ -850,7 +847,7 @@ namespace NMib::NIntrusive
 							pTemp = pTemp->fp_GetNext();
 						}
 
-						TCSLinkAggr<t_CAllocator> *pTempNext = pCurrent->fp_GetNext();
+						CSLinkAggr *pTempNext = pCurrent->fp_GetNext();
 						pCurrent->fp_UnsafeLink(pTempAfter);
 						if (!pCurrent->fp_GetNext())
 							pLast = pCurrent;
@@ -880,8 +877,8 @@ namespace NMib::NIntrusive
 
 			while (1)
 			{
-				TCSLinkAggr<t_CAllocator> *pFirst = m_Data.fp_GetFirst().fp_GetNext();
-				TCSLinkAggr<t_CAllocator> *pLast = &m_Data.fp_GetFirst();
+				CSLinkAggr *pFirst = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pLast = &m_Data.fp_GetFirst();
 
 				aint MergesDone = 0;  // count number of merges we do in this pass
 
@@ -889,8 +886,8 @@ namespace NMib::NIntrusive
 				{
 					MergesDone++;  // there exists a merge to be done
 					// step `MergeSize' places along from pFirst
-					TCSLinkAggr<t_CAllocator> *pSecond = pFirst;
-					TCSLinkAggr<t_CAllocator> *pLastFirst = pFirst;
+					CSLinkAggr *pSecond = pFirst;
+					CSLinkAggr *pLastFirst = pFirst;
 					aint MergeSizeFirst = 0;
 					aint MergeSizeSecond = MergeSize;
 					while (MergeSizeFirst < MergeSize)
@@ -1063,7 +1060,7 @@ namespace NMib::NIntrusive
 			if (f_IsEmpty())
 				return;
 
-			TCSLinkAggr<t_CAllocator> *Bucket[t_BucketSize];
+			CSLinkAggr *Bucket[t_BucketSize];
 
 			// Reset buckets
 			for (aint i = 0; i < t_BucketSize; ++i)
@@ -1076,14 +1073,14 @@ namespace NMib::NIntrusive
 			for(aint Place = 0; Place < _NumPlaces; ++Place)
 			{
 				// Remove last link
-				TCSLinkAggr<t_CAllocator> *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 
 				while (pCurrent)
 				{
 					aint Index = t_CSortClass::fs_GetIndex(_pContext, Place, fp_MemberFromLink(pCurrent));
-					TCSLinkAggr<t_CAllocator> **pBucket = &Bucket[Index];
+					CSLinkAggr **pBucket = &Bucket[Index];
 
-					TCSLinkAggr<t_CAllocator> *pNext = pCurrent->fp_GetNext();
+					CSLinkAggr *pNext = pCurrent->fp_GetNext();
 
 					pCurrent->fp_SetNext((*pBucket));
 					(*pBucket) = pCurrent;
@@ -1095,20 +1092,20 @@ namespace NMib::NIntrusive
 				// Rebuild list
 
 				m_Data.fp_GetFirst().fp_SetNext(nullptr);
-				TCSLinkAggr<t_CAllocator> *pLast = &m_Data.fp_GetFirst();
+				CSLinkAggr *pLast = &m_Data.fp_GetFirst();
 
 				for (aint i = 0; i < t_BucketSize; ++i)
 				{
 					if (Bucket[i])
 					{
-						TCSLinkAggr<t_CAllocator> *pTemp = Bucket[i];
+						CSLinkAggr *pTemp = Bucket[i];
 						Bucket[i] = nullptr;
-						TCSLinkAggr<t_CAllocator> *pLinkAfter = pLast;
+						CSLinkAggr *pLinkAfter = pLast;
 						pLast = pTemp;
 
 						while (pTemp)
 						{
-							TCSLinkAggr<t_CAllocator> *pTempNext = pTemp->fp_GetNext();
+							CSLinkAggr *pTempNext = pTemp->fp_GetNext();
 							pTemp->fp_UnsafeLink(pLinkAfter);
 							pTemp = pTempNext;
 						}
@@ -1154,7 +1151,7 @@ namespace NMib::NIntrusive
 		{
 			typedef COffset COffset;
 		public:
-			TCSLinkAggr<t_CAllocator> *m_pCurrent;
+			CSLinkAggr *m_pCurrent;
 
 #ifdef DMibDebuggerHelpers
 			static TCSLinkListAggregate *fs_Debug_List();
@@ -1221,7 +1218,7 @@ namespace NMib::NIntrusive
 		{
 			typedef COffset COffset;
 		public:
-			const TCSLinkAggr<t_CAllocator> *m_pCurrent;
+			const CSLinkAggr *m_pCurrent;
 
 #ifdef DMibDebuggerHelpers
 			static TCSLinkListAggregate *fs_Debug_List();
@@ -1374,55 +1371,55 @@ namespace NMib::NIntrusive
 
 
 #	define DMibListLinkS_Link(_Class, _Member) \
-			NMib::NIntrusive::TCSLink<NMib::NMemory::CDefaultAllocator> _Member; \
+			NMib::NIntrusive::CSLink _Member; \
 			DMibListLinkS_Trans(_Class, _Member)
 
 #	define DMibListLinkSA_Link(_Class, _Member) \
-			NMib::NIntrusive::TCSLinkAggr<NMib::NMemory::CDefaultAllocator> _Member; \
+			NMib::NIntrusive::CSLinkAggr _Member; \
 			DMibListLinkS_Trans(_Class, _Member)
 
 
 #	define DMibListLinkS_Member(_Class, _Member) \
-			NMib::NIntrusive::TCSLink<NMib::NMemory::CDefaultAllocator> _Member;
+			NMib::NIntrusive::CSLink _Member;
 #	define DMibListLinkSA_Member(_Class, _Member) \
-			NMib::NIntrusive::TCSLinkAggr<NMib::NMemory::CDefaultAllocator> _Member;
+			NMib::NIntrusive::CSLinkAggr _Member;
 
 #	define DMibListLinkS_LinkType() \
-			NMib::NIntrusive::TCSLink<NMib::NMemory::CDefaultAllocator>
+			NMib::NIntrusive::CSLink
 #	define DMibListLinkSA_LinkType() \
-			NMib::NIntrusive::TCSLinkAggr<NMib::NMemory::CDefaultAllocator>
+			NMib::NIntrusive::CSLinkAggr
 
 	// Link with pLast
 
 #	define DMibListLinkS_Iter(_Class, _Member) DMibListLinkS_List(_Class, _Member)::CIterator
-#	define DMibListLinkS_List(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkS_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_List(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, NMib::NMemory::CDefaultAllocator>
 
-#	define DMibListLinkSA_List(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkSA_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_List(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, NMib::NMemory::CDefaultAllocator>
 
 #	define DMibListLinkS_Iter_FromTemplate(_Class, _Member) DMibListLinkS_List_Fromtemplate(_Class, _Member)::CIterator
-#	define DMibListLinkS_List_Fromtemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkS_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_List_Fromtemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, NMib::NMemory::CDefaultAllocator>
 
-#	define DMibListLinkSA_List_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkSA_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_List_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, NMib::NMemory::CDefaultAllocator>
 
 	// Link Without pLast
 
 #	define DMibListLinkS_IterNoLastPtr(_Class, _Member) DMibListLinkS_ListNoLastPtr(_Class, _Member)::CIterator
-#	define DMibListLinkS_ListNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkS_ListAutoDeleteNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_ListNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_ListAutoDeleteNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, NMib::NMemory::CDefaultAllocator>
 
-#	define DMibListLinkSA_ListNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkSA_ListAutoDeleteNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_ListNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_ListAutoDeleteNoLastPtr(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, NMib::NMemory::CDefaultAllocator>
 
 #	define DMibListLinkS_IterNoLastPtr_FromTemplate(_Class, _Member) DMibListLinkS_ListNoLastPtr_FromTemplate(_Class, _Member)::CIterator
-#	define DMibListLinkS_ListNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkS_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_ListNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkS_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, NMib::NMemory::CDefaultAllocator>
 
-#	define DMibListLinkSA_ListNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkSA_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<NMib::NMemory::CDefaultAllocator>, true, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_ListNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, NMib::NMemory::CDefaultAllocator>
+#	define DMibListLinkSA_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, NMib::NMemory::CDefaultAllocator>
 
 #	ifndef DMibPNoShortCuts
 #		define DLinkS_Link(_Class, _Member) DMibListLinkS_Link(_Class, _Member)
@@ -1452,9 +1449,9 @@ namespace NMib::NIntrusive
 
 
 #	define DMibListLinkAllocatorS_Member(_Member, _Allocator) \
-			NMib::NIntrusive::TCSLink<_Allocator> _Member;
+			NMib::NIntrusive::CSLink _Member;
 #	define DMibListLinkAllocatorSA_Member(_Member, _Allocator) \
-			NMib::NIntrusive::TCSLinkAggr<_Allocator> _Member;
+			NMib::NIntrusive::CSLinkAggr _Member;
 
 #	define DMibListLinkAllocatorS_Link(_Class, _Member, _Allocator) \
 			DMibListLinkAllocatorS_Member(_Member, _Allocator) \
@@ -1467,41 +1464,41 @@ namespace NMib::NIntrusive
 
 
 #	define DMibListLinkAllocatorS_LinkType(_Allocator) \
-			NMib::NIntrusive::TCSLink<_Allocator>
+			NMib::NIntrusive::CSLink
 #	define DMibListLinkAllocatorSA_LinkType(_Allocator) \
-			NMib::NIntrusive::TCSLinkAggr<_Allocator>
+			NMib::NIntrusive::CSLinkAggr
 
 	// Link with pLast
 
 #	define DMibListLinkAllocatorS_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorS_List(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorS_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorS_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorS_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, _Allocator>
+#	define DMibListLinkAllocatorS_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, _Allocator>
 
-#	define DMibListLinkAllocatorSA_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorSA_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorSA_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, _Allocator>
+#	define DMibListLinkAllocatorSA_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, _Allocator>
 
 #	define DMibListLinkAllocatorS_Iter_FromTemplate(_Class, _Member, _Allocator) DMibListLinkAllocatorS_List_Fromtemplate(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorS_List_Fromtemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorS_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorS_List_Fromtemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, _Allocator>
+#	define DMibListLinkAllocatorS_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, _Allocator>
 
-#	define DMibListLinkAllocatorSA_List_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorSA_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData_Last<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorSA_List_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, false, _Allocator>
+#	define DMibListLinkAllocatorSA_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData_Last, true, _Allocator>
 
 	// Link Without pLast
 
 #	define DMibListLinkAllocatorS_IterNoLastPtr(_Class, _Member, _Allocator) DMibListLinkAllocatorS_ListNoLastPtr(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorS_ListNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorS_ListAutoDeleteNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorS_ListNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, _Allocator>
+#	define DMibListLinkAllocatorS_ListAutoDeleteNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, _Allocator>
 
-#	define DMibListLinkAllocatorSA_ListNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorSA_ListAutoDeleteNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorSA_ListNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, _Allocator>
+#	define DMibListLinkAllocatorSA_ListAutoDeleteNoLastPtr(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, _Allocator>
 
 #	define DMibListLinkAllocatorS_IterNoLastPtr_FromTemplate(_Class, _Member, _Allocator) DMibListLinkAllocatorS_ListNoLastPtr_FromTemplate(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorS_ListNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorS_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorS_ListNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, _Allocator>
+#	define DMibListLinkAllocatorS_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkList<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, _Allocator>
 
-#	define DMibListLinkAllocatorSA_ListNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, false, _Allocator>
-#	define DMibListLinkAllocatorSA_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::TCSLinkListData<_Allocator>, true, _Allocator>
+#	define DMibListLinkAllocatorSA_ListNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, false, _Allocator>
+#	define DMibListLinkAllocatorSA_ListAutoDeleteNoLastPtr_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCSLinkListAggregate<_Class, typename _Class::CSLinkTranslator##_Member, NMib::NIntrusive::CSLinkListData, true, _Allocator>
 
 #	ifndef DMibPNoShortCuts
 #		define DLinkAllocatorS_Link(_Class, _Member) DMibListLinkAllocatorS_Link(_Class, _Member)

@@ -17,14 +17,14 @@ namespace NMib::NIntrusive
 		{
 			pStack->f_SetAll(pObject, 0);
 			++pStack;
-			pObject = &(pObj->f_GetLeft());
+			pObject = pObj->f_GetLeft();
 			pObj = CLink::fs_GetPtr(*pObject);
 		}
 
 		// Save the object that we want at targets place
 		_pLowestObject = pObj;
 		// Remove pObject from the tree
-		CLink::f_Assign(*pObject, pObj->f_GetRight());
+		CLink::f_Assign(pObject, pObj->f_GetRight());
 		//_pStack = pStack;
 
 		while (pStack - _pStack)
@@ -49,14 +49,14 @@ namespace NMib::NIntrusive
 		{
 			pStack->f_SetAll(pObject, 1);
 			++pStack;
-			pObject = &(pObj->f_GetRight());
+			pObject = pObj->f_GetRight();
 			pObj = CLink::fs_GetPtr(*pObject);
 		}
 
 		// Save the object that we want at targets place
 		_pHighestObject = pObj;
 		// Remove pObject from the tree
-		CLink::f_Assign(*pObject, pObj->f_GetLeft());
+		CLink::f_Assign(pObject, pObj->f_GetLeft());
 	//	_pStack = pStack;
 
 		while (pStack - _pStack)
@@ -89,13 +89,13 @@ namespace NMib::NIntrusive
 			{
 				pStack->f_SetAll(pObject, true);
 				++pStack;
-				pObject = &pObj->f_GetRight();
+				pObject = pObj->f_GetRight();
 			}
 			else
 			{
 				pStack->f_SetAll(pObject, false);
 				++pStack;
-				pObject = &pObj->f_GetLeft();
+				pObject = pObj->f_GetLeft();
 			}
 			pObj = CLink::fs_GetPtr(*pObject);
 		}
@@ -104,7 +104,7 @@ namespace NMib::NIntrusive
 			if (pObj->f_GetLeftP())
 			{
 				CLink* pHighestObject;
-				bint bLeftShrunk = fp_BalanceHighest(pHighestObject, pObj->f_GetLeft(), pStack);
+				bint bLeftShrunk = fp_BalanceHighest(pHighestObject, *pObj->f_GetLeft(), pStack);
 
 				// Remove target from tree
 				pHighestObject->f_SetSkew(pObj->f_GetSkew());
@@ -113,7 +113,7 @@ namespace NMib::NIntrusive
 				// Link in on targets place
 				pHighestObject->f_SetLeft(pObj->f_GetLeft());
 				pHighestObject->f_SetRight(pObj->f_GetRight());
-				CLink::f_Assign(*pObject, pHighestObject);
+				CLink::f_Assign(pObject, pHighestObject);
 
 				if (!bLeftShrunk)
 					return;
@@ -124,7 +124,7 @@ namespace NMib::NIntrusive
 			{
 				CLink* pLowestObject;
 
-				bint bRightShrunk = fp_BalanceLowest(pLowestObject, pObj->f_GetRight(), pStack);
+				bint bRightShrunk = fp_BalanceLowest(pLowestObject, *pObj->f_GetRight(), pStack);
 
 				// Remove target from tree
 				pLowestObject->f_SetSkew(pObj->f_GetSkew());
@@ -132,7 +132,7 @@ namespace NMib::NIntrusive
 				// Link in on targets place
 				pLowestObject->f_SetLeft(pObj->f_GetLeft());
 				pLowestObject->f_SetRight(pObj->f_GetRight());
-				CLink::f_Assign(*pObject, pLowestObject);
+				CLink::f_Assign(pObject, pLowestObject);
 
 				if (!bRightShrunk)
 					return;
@@ -143,7 +143,7 @@ namespace NMib::NIntrusive
 			{
 				pObj->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
 
-				CLink::f_Assign(*pObject, (CLink *)nullptr);
+				CLink::f_Assign(pObject, (CLink *)nullptr);
 			}
 		}
 
@@ -179,7 +179,7 @@ namespace NMib::NIntrusive
 		pC = pD->f_GetNextP(1-tf_Direction);
 		pE = pD->f_GetNextP(tf_Direction);
 
-		CLink::f_Assign(*_pObject, pD);
+		CLink::f_Assign(_pObject, pD);
 
 		pD->fp_SetNext(1-tf_Direction, pB);
 		pD->fp_SetNext(tf_Direction, pF);
@@ -209,7 +209,7 @@ namespace NMib::NIntrusive
 		pB = pD->f_GetNextP(1-tf_Direction);
 		pC = pB->f_GetNextP(tf_Direction);
 
-		CLink::f_Assign(*_pObject, pB);
+		CLink::f_Assign(_pObject, pB);
 		pB->fp_SetNext(tf_Direction, pD);
 		pD->fp_SetNext(1-tf_Direction, pC);
 
@@ -243,13 +243,13 @@ namespace NMib::NIntrusive
 			{
 				pStack->f_SetAll(pObject, true);
 				++pStack;
-				pObject = &pObj->f_GetRight();
+				pObject = pObj->f_GetRight();
 			}
 			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj)))
 			{
 				pStack->f_SetAll(pObject, false);
 				++pStack;
-				pObject = &pObj->f_GetLeft();
+				pObject = pObj->f_GetLeft();
 			}
 			else
 			{
@@ -260,7 +260,7 @@ namespace NMib::NIntrusive
 		}
 
 		_pObjectToInsert->f_Clear();
-		CLink::f_Assign(*pObject, _pObjectToInsert);
+		CLink::f_Assign(pObject, _pObjectToInsert);
 		while (pStack - Stack)
 		{
 			--pStack;

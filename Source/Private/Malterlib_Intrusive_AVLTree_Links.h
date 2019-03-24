@@ -7,13 +7,10 @@
 
 namespace NMib::NIntrusive::NPrivate
 {
-	template <typename t_CPointerHolder = CDefaultPointerHolder>
-	class TCAVLLinkData
+	class CAVLLinkData
 	{
-		typedef TCAVLLinkData CThis;
+		typedef CAVLLinkData CThis;
 	public:
-		typedef TCDynamicPtr<t_CPointerHolder, TCAVLLinkData> CLinkPointer;
-
 		enum EAVLTreeSkew
 		{
 			 EAVLTreeSkew_None		= 2
@@ -21,7 +18,7 @@ namespace NMib::NIntrusive::NPrivate
 			,EAVLTreeSkew_Right		= 1
 			,EAVLTreeSkew_NotInTree	= 3
 		};
-		CLinkPointer m_pNext[2];
+		CAVLLinkData *m_pNext[2];
 		aint m_Skew;
 
 		static inline_small bint fs_GetPtrIsFast()
@@ -34,30 +31,30 @@ namespace NMib::NIntrusive::NPrivate
 			m_Skew = EAVLTreeSkew_NotInTree;
 		}
 
-		inline_small CLinkPointer &f_GetRight()
+		inline_small CAVLLinkData **f_GetRight()
+		{
+			return &m_pNext[1];
+		}
+		inline_small CAVLLinkData **f_GetLeft()
+		{
+			return &m_pNext[0];
+		}
+
+		inline_small CAVLLinkData **f_GetNext(aint _iIndex)
+		{
+			return &m_pNext[_iIndex];
+		}
+
+		inline_small CAVLLinkData *f_GetRightP() const
 		{
 			return m_pNext[1];
 		}
-		inline_small CLinkPointer &f_GetLeft()
+		inline_small CAVLLinkData *f_GetLeftP() const
 		{
 			return m_pNext[0];
 		}
 
-		inline_small CLinkPointer &f_GetNext(aint _iIndex)
-		{
-			return m_pNext[_iIndex];
-		}
-
-		inline_small TCAVLLinkData *f_GetRightP() const
-		{
-			return m_pNext[1];
-		}
-		inline_small TCAVLLinkData *f_GetLeftP() const
-		{
-			return m_pNext[0];
-		}
-
-		inline_small TCAVLLinkData *f_GetNextP(aint _iIndex) const
+		inline_small CAVLLinkData *f_GetNextP(aint _iIndex) const
 		{
 			return m_pNext[_iIndex];
 		}
@@ -73,29 +70,39 @@ namespace NMib::NIntrusive::NPrivate
 		}
 
 
-		inline_small void f_SetRight(TCAVLLinkData *_pRight)
+		inline_small void f_SetRight(CAVLLinkData *_pRight)
 		{
 			m_pNext[1] = _pRight;
 		}
 
-		inline_small void f_SetLeft(TCAVLLinkData *_pLeft)
+		inline_small void f_SetLeft(CAVLLinkData *_pLeft)
 		{
 			m_pNext[0] = _pLeft;
 		}
 
-		inline_small void fp_SetNext(int _iIndex, TCAVLLinkData *_pPtr)
+		inline_small void f_SetRight(CAVLLinkData **_pRight)
+		{
+			m_pNext[1] = *_pRight;
+		}
+
+		inline_small void f_SetLeft(CAVLLinkData **_pLeft)
+		{
+			m_pNext[0] = *_pLeft;
+		}
+
+		inline_small void fp_SetNext(int _iIndex, CAVLLinkData *_pPtr)
 		{
 			m_pNext[_iIndex] = _pPtr;
 		}
 
-		static inline_small void f_Assign(CLinkPointer &_pDest, TCAVLLinkData *_pSrc)
+		static inline_small void f_Assign(CAVLLinkData **_pDest, CAVLLinkData *_pSrc)
 		{
-			_pDest = _pSrc;
+			*_pDest = _pSrc;
 		}
 
-		static inline_small void f_Assign(CLinkPointer &_pDest, CLinkPointer &_pSrc)
+		static inline_small void f_Assign(CAVLLinkData **_pDest, CAVLLinkData **_pSrc)
 		{
-			_pDest = _pSrc;
+			*_pDest = *_pSrc;
 		}
 
 		inline_small void f_SetSkew(mint _Skew)
@@ -103,12 +110,12 @@ namespace NMib::NIntrusive::NPrivate
 			m_Skew = _Skew;
 		}
 
-		static inline_small TCAVLLinkData *fs_GetPtr(const CLinkPointer &_Src)
+		static inline_small CAVLLinkData *fs_GetPtr(CAVLLinkData *_Src)
 		{
-			return (TCAVLLinkData *)_Src;
+			return _Src;
 		}
 
-		inline_small void f_SetAll(TCAVLLinkData *_pLeft, TCAVLLinkData *_pRight, mint _Skew)
+		inline_small void f_SetAll(CAVLLinkData *_pLeft, CAVLLinkData *_pRight, mint _Skew)
 		{
 			m_pNext[0] = _pLeft;
 			m_pNext[1] = _pRight;
@@ -131,12 +138,10 @@ namespace NMib::NIntrusive::NPrivate
 	|	Parameters:																	|
 	|		t_Dummy:		description												|
 	\*_____________________________________________________________________________*/
-	template <typename t_CPointerHolder = CDefaultPointerHolder>
-	class TCAVLLinkAlignedData
+	class CAVLLinkAlignedData
 	{
 	public:
-		typedef TCAVLLinkAlignedData CThis;
-		typedef TCDynamicPtr<t_CPointerHolder, TCAVLLinkAlignedData> CLinkPointer;
+		typedef CAVLLinkAlignedData CThis;
 
 		enum EAVLTreeSkew
 		{
@@ -147,13 +152,13 @@ namespace NMib::NIntrusive::NPrivate
 		};
 
 #ifndef DCompiler_MSVC
-		constexpr TCAVLLinkAlignedData()
-			: m_pNext{EAggregateInitialization_Force, EAggregateInitialization_Force}
+		constexpr CAVLLinkAlignedData()
+			: m_pNext{nullptr, nullptr}
 		{
 		}
 #endif
 
-		CLinkPointer m_pNext[2];
+		CAVLLinkAlignedData * m_pNext[2];
 
 		static inline_small bint fs_GetPtrIsFast()
 		{
@@ -165,37 +170,37 @@ namespace NMib::NIntrusive::NPrivate
 			f_SetAll(0, 0, EAVLTreeSkew_NotInTree);
 		}
 
-		inline_small CLinkPointer &f_GetRight()
+		inline_small CAVLLinkAlignedData **f_GetRight()
 		{
-			return m_pNext[1];
+			return &m_pNext[1];
 		}
-		inline_small CLinkPointer &f_GetLeft()
+		inline_small CAVLLinkAlignedData **f_GetLeft()
 		{
-			return m_pNext[0];
-		}
-
-		inline_small CLinkPointer &f_GetNext(aint _iIndex)
-		{
-			return m_pNext[_iIndex];
+			return &m_pNext[0];
 		}
 
-		inline_small TCAVLLinkAlignedData *f_GetRightP() const
+		inline_small CAVLLinkAlignedData **f_GetNext(aint _iIndex)
 		{
-			return (TCAVLLinkAlignedData *)((mint)(TCAVLLinkAlignedData *)m_pNext[1] & (~mint(0x1)));
-		}
-		inline_small TCAVLLinkAlignedData *f_GetLeftP() const
-		{
-			return (TCAVLLinkAlignedData *)((mint)(TCAVLLinkAlignedData *)m_pNext[0] & (~mint(0x1)));
+			return &m_pNext[_iIndex];
 		}
 
-		inline_small TCAVLLinkAlignedData *f_GetNextP(aint _iIndex) const
+		inline_small CAVLLinkAlignedData *f_GetRightP() const
 		{
-			return (TCAVLLinkAlignedData *)((mint)(TCAVLLinkAlignedData *)m_pNext[_iIndex] & (~mint(0x1)));
+			return (CAVLLinkAlignedData *)((mint)m_pNext[1] & (~mint(0x1)));
+		}
+		inline_small CAVLLinkAlignedData *f_GetLeftP() const
+		{
+			return (CAVLLinkAlignedData *)((mint)m_pNext[0] & (~mint(0x1)));
+		}
+
+		inline_small CAVLLinkAlignedData *f_GetNextP(aint _iIndex) const
+		{
+			return (CAVLLinkAlignedData *)((mint)m_pNext[_iIndex] & (~mint(0x1)));
 		}
 
 		inline_small mint f_GetSkew() const
 		{
-			return (((mint)(TCAVLLinkAlignedData *)m_pNext[0] & 1) | ((mint)(TCAVLLinkAlignedData *)m_pNext[1] & 1) << 1);
+			return (((mint)m_pNext[0] & 1) | ((mint)m_pNext[1] & 1) << 1);
 		}
 
 		inline_small bint f_IsBalanced() const
@@ -204,89 +209,85 @@ namespace NMib::NIntrusive::NPrivate
 		}
 
 
-		static inline_small TCAVLLinkAlignedData *fs_GetPtr(const CLinkPointer &_Src)
+		static inline_small CAVLLinkAlignedData *fs_GetPtr(CAVLLinkAlignedData const *_Src)
 		{
-			return (TCAVLLinkAlignedData *)((mint)(TCAVLLinkAlignedData *)_Src & (~mint(0x1)));
+			return (CAVLLinkAlignedData *)((mint)_Src & (~mint(0x1)));
 		}
 
-		inline_small void f_SetRight(TCAVLLinkAlignedData *_pRight)
+		inline_small void f_SetRight(CAVLLinkAlignedData *_pRight)
 		{
 			DMibFastCheck((!((mint)_pRight & 1))); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[1] = (TCAVLLinkAlignedData *)(((mint)(TCAVLLinkAlignedData *)m_pNext[1] & 1) | (mint)_pRight);
+			m_pNext[1] = (CAVLLinkAlignedData *)(((mint)m_pNext[1] & 1) | (mint)_pRight);
 		}
 
-		inline_small void f_SetLeft(TCAVLLinkAlignedData *_pLeft)
+		inline_small void f_SetLeft(CAVLLinkAlignedData *_pLeft)
 		{
 			DMibFastCheck(!((mint)_pLeft & 1)); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[0] = (TCAVLLinkAlignedData *)(((mint)(TCAVLLinkAlignedData *)m_pNext[0] & 1) | (mint)_pLeft);
+			m_pNext[0] = (CAVLLinkAlignedData *)(((mint)m_pNext[0] & 1) | (mint)_pLeft);
 		}
 
-		inline_small void fp_SetNext(int _iIndex, TCAVLLinkAlignedData *_pPtr)
+		inline_small void fp_SetNext(int _iIndex, CAVLLinkAlignedData *_pPtr)
 		{
 			DMibFastCheck(!((mint)_pPtr & 1)); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[_iIndex] = (TCAVLLinkAlignedData *)(((mint)(TCAVLLinkAlignedData *)m_pNext[_iIndex] & 1) | (mint)_pPtr);
+			m_pNext[_iIndex] = (CAVLLinkAlignedData *)(((mint)m_pNext[_iIndex] & 1) | (mint)_pPtr);
 		}
 
-		inline_small void f_SetRight(CLinkPointer &_pRight)
+		inline_small void f_SetRight(CAVLLinkAlignedData **_pRight)
 		{
-			m_pNext[1] = (TCAVLLinkAlignedData *)(((mint)(TCAVLLinkAlignedData *)m_pNext[1] & mint(1)) | ((mint)(TCAVLLinkAlignedData *)_pRight & (~mint(0x1))));
+			m_pNext[1] = (CAVLLinkAlignedData *)(((mint)m_pNext[1] & mint(1)) | ((mint)*_pRight & (~mint(0x1))));
 		}
 
-		inline_small void f_SetLeft(CLinkPointer &_pLeft)
+		inline_small void f_SetLeft(CAVLLinkAlignedData **_pLeft)
 		{
-			m_pNext[0] = (TCAVLLinkAlignedData *)(((mint)(TCAVLLinkAlignedData *)m_pNext[0] & mint(1)) | ((mint)(TCAVLLinkAlignedData *)_pLeft & (~mint(0x1))));
+			m_pNext[0] = (CAVLLinkAlignedData *)(((mint)m_pNext[0] & mint(1)) | ((mint)*_pLeft & (~mint(0x1))));
 		}
 
-		static inline_small void f_Assign(CLinkPointer &_Dest, TCAVLLinkAlignedData *_pSrc)
+		static inline_small void f_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
 		{
 			DMibFastCheck(!((mint)_pSrc & mint(1))); // We can only save ptrs that are aligned on 2 bytes
-			_Dest = (TCAVLLinkAlignedData *)((((mint)(TCAVLLinkAlignedData *)_Dest) & mint(1)) | (mint)_pSrc);
+			*_Dest = (CAVLLinkAlignedData *)((((mint)*_Dest) & mint(1)) | (mint)_pSrc);
 		}
 
-		static inline_small void f_Assign(CLinkPointer &_Dest, CLinkPointer &_Src)
+		static inline_small void f_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData **_pSrc)
 		{
-			_Dest = (TCAVLLinkAlignedData *)((((mint)(TCAVLLinkAlignedData *)_Dest) & mint(1)) | (((mint)(TCAVLLinkAlignedData *)_Src) & (~mint(0x1))));
+			*_Dest = (CAVLLinkAlignedData *)((((mint)*_Dest) & mint(1)) | (((mint)*_pSrc) & (~mint(0x1))));
 		}
 
 		inline_small void f_SetSkew(mint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[0] = (TCAVLLinkAlignedData *)(((mint)(TCAVLLinkAlignedData *)m_pNext[0]&(~1)) | (_Skew & 1));
-			m_pNext[1] = (TCAVLLinkAlignedData *)(((mint)(TCAVLLinkAlignedData *)m_pNext[1]&(~1)) | (_Skew >> 1));
+			m_pNext[0] = (CAVLLinkAlignedData *)(((mint)m_pNext[0]&(~1)) | (_Skew & 1));
+			m_pNext[1] = (CAVLLinkAlignedData *)(((mint)m_pNext[1]&(~1)) | (_Skew >> 1));
 		}
 
-		inline_small void f_SetAll(TCAVLLinkAlignedData *_pLeft, TCAVLLinkAlignedData *_pRight, mint _Skew)
+		inline_small void f_SetAll(CAVLLinkAlignedData *_pLeft, CAVLLinkAlignedData *_pRight, mint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[0] = (TCAVLLinkAlignedData *)((mint)_pLeft | (_Skew & 1));
-			m_pNext[1] = (TCAVLLinkAlignedData *)((mint)_pRight | (_Skew >> 1));
+			m_pNext[0] = (CAVLLinkAlignedData *)((mint)_pLeft | (_Skew & 1));
+			m_pNext[1] = (CAVLLinkAlignedData *)((mint)_pRight | (_Skew >> 1));
 		}
 		inline_small void f_Clear()
 		{
-			m_pNext[0] = (TCAVLLinkAlignedData *)(EAVLTreeSkew_None & 1);
-			m_pNext[1] = (TCAVLLinkAlignedData *)(EAVLTreeSkew_None >> 1);
+			m_pNext[0] = (CAVLLinkAlignedData *)(EAVLTreeSkew_None & 1);
+			m_pNext[1] = (CAVLLinkAlignedData *)(EAVLTreeSkew_None >> 1);
 		}
 	};
 
-
-	template <typename t_CPointerHolder = CDefaultPointerHolder>
-	class TCAVLLinkAlignedRightData
+	class CAVLLinkAlignedRightData
 	{
-		typedef TCAVLLinkAlignedRightData CThis;
+		typedef CAVLLinkAlignedRightData CThis;
 	public:
 #ifdef DMibDebug
-		inline_never TCAVLLinkAlignedRightData *fp_Debug_GetLeft() const
+		inline_never CAVLLinkAlignedRightData *fp_Debug_GetLeft() const
 		{
 			return f_GetLeftP();
 		}
-		inline_never TCAVLLinkAlignedRightData *fp_Debug_GetRight() const
+		inline_never CAVLLinkAlignedRightData *fp_Debug_GetRight() const
 		{
 			return f_GetRightP();
 		}
 #endif
 	public:
-
-		typedef TCDynamicPtr<t_CPointerHolder, TCAVLLinkAlignedRightData> CLinkPointer;
 
 		enum EAVLTreeSkew
 		{
@@ -296,7 +297,7 @@ namespace NMib::NIntrusive::NPrivate
 			,EAVLTreeSkew_NotInTree	= 3
 		};
 
-		CLinkPointer m_pNext[2];
+		CAVLLinkAlignedRightData * m_pNext[2];
 
 		static inline_small bint fs_GetPtrIsFast()
 		{
@@ -308,37 +309,37 @@ namespace NMib::NIntrusive::NPrivate
 			f_SetAll(0, 0, EAVLTreeSkew_NotInTree);
 		}
 
-		inline_small CLinkPointer &f_GetRight()
+		inline_small CAVLLinkAlignedRightData **f_GetRight()
 		{
-			return m_pNext[1];
+			return &m_pNext[1];
 		}
-		inline_small CLinkPointer &f_GetLeft()
+		inline_small CAVLLinkAlignedRightData **f_GetLeft()
+		{
+			return &m_pNext[0];
+		}
+
+		inline_small CAVLLinkAlignedRightData **f_GetNext(aint _iIndex)
+		{
+			return &m_pNext[_iIndex];
+		}
+
+		inline_small CAVLLinkAlignedRightData *f_GetRightP() const
+		{
+			return (CAVLLinkAlignedRightData *)((mint)m_pNext[1] & (~mint(0x3)));
+		}
+		inline_small CAVLLinkAlignedRightData *f_GetLeftP() const
 		{
 			return m_pNext[0];
 		}
 
-		inline_small CLinkPointer &f_GetNext(aint _iIndex)
+		inline_small CAVLLinkAlignedRightData *f_GetNextP(aint _iIndex) const
 		{
-			return m_pNext[_iIndex];
-		}
-
-		inline_small TCAVLLinkAlignedRightData *f_GetRightP() const
-		{
-			return (TCAVLLinkAlignedRightData *)((mint)(TCAVLLinkAlignedRightData *)m_pNext[1] & (~mint(0x3)));
-		}
-		inline_small TCAVLLinkAlignedRightData *f_GetLeftP() const
-		{
-			return (TCAVLLinkAlignedRightData *)m_pNext[0];
-		}
-
-		inline_small TCAVLLinkAlignedRightData *f_GetNextP(aint _iIndex) const
-		{
-			return (TCAVLLinkAlignedRightData *)((mint)(TCAVLLinkAlignedRightData *)m_pNext[_iIndex] & (~mint(0x3)));
+			return (CAVLLinkAlignedRightData *)((mint)m_pNext[_iIndex] & (~mint(0x3)));
 		}
 
 		inline_small mint f_GetSkew() const
 		{
-			return ((mint)(TCAVLLinkAlignedRightData *)m_pNext[1] & mint(3));
+			return ((mint)m_pNext[1] & mint(3));
 		}
 
 		inline_small bint f_IsBalanced() const
@@ -347,65 +348,65 @@ namespace NMib::NIntrusive::NPrivate
 		}
 
 
-		static inline_small TCAVLLinkAlignedRightData *fs_GetPtr(const CLinkPointer &_Src)
+		static inline_small CAVLLinkAlignedRightData *fs_GetPtr(CAVLLinkAlignedRightData *_Src)
 		{
-			return (TCAVLLinkAlignedRightData *)((mint)(TCAVLLinkAlignedRightData *)_Src & (~mint(0x3)));
+			return (CAVLLinkAlignedRightData *)((mint)_Src & (~mint(0x3)));
 		}
 
-		inline_small void f_SetRight(TCAVLLinkAlignedRightData *_pRight)
+		inline_small void f_SetRight(CAVLLinkAlignedRightData *_pRight)
 		{
 			DMibFastCheck((!((mint)_pRight & 3))); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[1] = (TCAVLLinkAlignedRightData *)(((mint)(TCAVLLinkAlignedRightData *)m_pNext[1] & mint(3)) | (mint)_pRight);
+			m_pNext[1] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[1] & mint(3)) | (mint)_pRight);
 		}
 
-		inline_small void f_SetLeft(TCAVLLinkAlignedRightData *_pLeft)
+		inline_small void f_SetLeft(CAVLLinkAlignedRightData *_pLeft)
 		{
 			m_pNext[0] = _pLeft;
 		}
 
-		inline_small void fp_SetNext(int _iIndex, TCAVLLinkAlignedRightData *_pPtr)
+		inline_small void fp_SetNext(int _iIndex, CAVLLinkAlignedRightData *_pPtr)
 		{
 			DMibFastCheck(!((mint)_pPtr & 3)); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[_iIndex] = (TCAVLLinkAlignedRightData *)(((mint)(TCAVLLinkAlignedRightData *)m_pNext[_iIndex] & mint(3)) | (mint)_pPtr);
+			m_pNext[_iIndex] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[_iIndex] & mint(3)) | (mint)_pPtr);
 		}
 
-		inline_small void f_SetRight(CLinkPointer &_pRight)
+		inline_small void f_SetRight(CAVLLinkAlignedRightData **_pRight)
 		{
-			m_pNext[1] = (TCAVLLinkAlignedRightData *)(((mint)(TCAVLLinkAlignedRightData *)m_pNext[1] & mint(3)) | ((mint)(TCAVLLinkAlignedRightData *)_pRight & (~mint(0x3))));
+			m_pNext[1] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[1] & mint(3)) | ((mint)*_pRight & (~mint(0x3))));
 		}
 
-		inline_small void f_SetLeft(CLinkPointer &_pLeft)
+		inline_small void f_SetLeft(CAVLLinkAlignedRightData **_pLeft)
 		{
-			m_pNext[0] = (TCAVLLinkAlignedRightData *)((mint)(TCAVLLinkAlignedRightData *)_pLeft & (~mint(0x3)));
+			m_pNext[0] = (CAVLLinkAlignedRightData *)((mint)*_pLeft & (~mint(0x3)));
 		}
 
-		static inline_small void f_Assign(CLinkPointer &_Dest, TCAVLLinkAlignedRightData *_pSrc)
+		static inline_small void f_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
 		{
 			DMibFastCheck(!((mint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
-			_Dest = (TCAVLLinkAlignedRightData *)(((mint)(TCAVLLinkAlignedRightData *)_Dest & mint(3)) | (mint)_pSrc);
+			*_Dest = (CAVLLinkAlignedRightData *)(((mint)*_Dest & mint(3)) | (mint)_pSrc);
 		}
 
-		static inline_small void f_Assign(CLinkPointer &_Dest, CLinkPointer &_Src)
+		static inline_small void f_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData **_pSrc)
 		{
-			_Dest = (TCAVLLinkAlignedRightData *)(((mint)(TCAVLLinkAlignedRightData *)_Dest & mint(3)) | ((mint)(TCAVLLinkAlignedRightData *)_Src & (~mint(0x3))));
+			*_Dest = (CAVLLinkAlignedRightData *)(((mint)*_Dest & mint(3)) | ((mint)*_pSrc & (~mint(0x3))));
 		}
 
 		inline_small void f_SetSkew(mint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[1] = (TCAVLLinkAlignedRightData *)(((mint)(TCAVLLinkAlignedRightData *)m_pNext[1]&(~mint(3))) | (_Skew));
+			m_pNext[1] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[1]&(~mint(3))) | (_Skew));
 		}
 
-		inline_small void f_SetAll(TCAVLLinkAlignedRightData *_pLeft, TCAVLLinkAlignedRightData *_pRight, mint _Skew)
+		inline_small void f_SetAll(CAVLLinkAlignedRightData *_pLeft, CAVLLinkAlignedRightData *_pRight, mint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
 			m_pNext[0] = _pLeft;
-			m_pNext[1] = (TCAVLLinkAlignedRightData *)((mint)_pRight | (_Skew));
+			m_pNext[1] = (CAVLLinkAlignedRightData *)((mint)_pRight | (_Skew));
 		}
 		inline_small void f_Clear()
 		{
 			m_pNext[0] = nullptr;
-			m_pNext[1] = (TCAVLLinkAlignedRightData *)mint(EAVLTreeSkew_None);
+			m_pNext[1] = (CAVLLinkAlignedRightData *)mint(EAVLTreeSkew_None);
 		}
 	};
 
@@ -417,16 +418,16 @@ namespace NMib::NIntrusive::NPrivate
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_Aligned>
 	{
-		typedef TCAVLLinkAlignedData<> CType;
+		typedef CAVLLinkAlignedData CType;
 	};
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_AlignedRight>
 	{
-		typedef TCAVLLinkAlignedRightData<> CType;
+		typedef CAVLLinkAlignedRightData CType;
 	};
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_Unaligned>
 	{
-		typedef TCAVLLinkData<> CType;
+		typedef CAVLLinkData CType;
 	};
 }

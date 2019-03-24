@@ -41,7 +41,7 @@ namespace NMib::NIntrusive
 					else
 						fp_RemoveRotate2<1>(pObject);
 					if (pObj == pTarget)
-						_pTarget = &(CLink::fs_GetPtr(*pObject)->f_GetRight());
+						_pTarget = CLink::fs_GetPtr(*pObject)->f_GetRight();
 				}
 				pObject = &pObj->f_GetRight();
 				pObj = CLink::fs_GetPtr(*pObject);
@@ -61,7 +61,7 @@ namespace NMib::NIntrusive
 					else
 							fp_RemoveRotate2<0>(pObject);
 					if (pObj == pTarget)
-							_pTarget = &(CLink::fs_GetPtr(*pObject)->f_GetLeft());
+							_pTarget = CLink::fs_GetPtr(*pObject)->f_GetLeft();
 				}
 					pObject = &pObj->f_GetLeft();
 				pObj = CLink::fs_GetPtr(*pObject);
@@ -84,7 +84,7 @@ namespace NMib::NIntrusive
 		pBP = CLink::fs_GetPtr(*_pTop);
 		pDP = pBP->f_GetNextP(t_Direction);
 		pCP = pDP->f_GetNextP(1-t_Direction);
-		CLink::f_Assign(*_pTop, pDP);
+		CLink::f_Assign(_pTop, pDP);
 		pDP->fp_SetNext(1-t_Direction, pBP);
 		pBP->fp_SetNext(t_Direction, pCP);
 		pBP->f_SetSkew(CLink::EAVLTreeSkew_None);
@@ -109,7 +109,7 @@ namespace NMib::NIntrusive
 		pCP = pDP->f_GetNextP(1-t_Direction);
 		pEP = pDP->f_GetNextP(t_Direction);
 
-		CLink::f_Assign(*_pTop, pDP);
+		CLink::f_Assign(_pTop, pDP);
 
 		pDP->fp_SetNext(1-t_Direction, pBP);
 		pDP->fp_SetNext(t_Direction, pFP);
@@ -138,7 +138,7 @@ namespace NMib::NIntrusive
 		pCP = pDP->f_GetNextP(1-t_Direction);
 		pEP = pDP->f_GetNextP(t_Direction);
 
-		CLink::f_Assign(*_pTop, pDP);
+		CLink::f_Assign(_pTop, pDP);
 
 		pDP->fp_SetNext(1-t_Direction, pBP);
 		pDP->fp_SetNext(t_Direction, pFP);
@@ -209,8 +209,8 @@ namespace NMib::NIntrusive
 		pTarget = fp_RemoveRebalance(pPathTop, pTarget, _pObjectToRemove, fg_Forward<tf_CCompare>(_Compare));
 
 		CLink *pObjDel = CLink::fs_GetPtr(*pTarget);
-		CLink::f_Assign(*pTarget, pObj);
-		CLink::f_Assign(*pObject, pObj->f_GetNextP(1-Dir));
+		CLink::f_Assign(pTarget, pObj);
+		CLink::f_Assign(pObject, pObj->f_GetNextP(1-Dir));
 
 		pObj->f_SetLeft(pObjDel->f_GetLeft());
 		pObj->f_SetRight(pObjDel->f_GetRight());
@@ -336,12 +336,12 @@ namespace NMib::NIntrusive
 				pPathTop = pTree;
 			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)))
 			{
-				pTree = &(pObj->f_GetRight());
+				pTree = pObj->f_GetRight();
 				pObj = CLink::fs_GetPtr(*pTree);
 			}
 			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj)))
 			{
-				pTree = &(pObj->f_GetLeft());
+				pTree = pObj->f_GetLeft();
 				pObj = CLink::fs_GetPtr(*pTree);
 			}
 			else
@@ -351,7 +351,7 @@ namespace NMib::NIntrusive
 			}
 		}
 		_pObjectToInsert->f_Clear();
-		CLink::f_Assign(*pTree, _pObjectToInsert);
+		CLink::f_Assign(pTree, _pObjectToInsert);
 		fp_RebalanceLowStack(pPathTop, _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare));
 		return true;
 	}
