@@ -2961,49 +2961,6 @@ namespace NMib::NIntrusive
 
 			return true;
 		}
-
-		template <typename t_CRegistry>
-		void f_FeedNamed(t_CRegistry &_Registry) const
-		{
-			CIteratorConst Iter(*this);
-			while (Iter)
-			{
-				auto pEntry = _Registry.f_CreateChild("Entry", true);
-				*pEntry << NStream::fg_Named("Value", *Iter);
-				++Iter;
-			};
-		}
-
-		template <typename t_CRegistry>
-		bint f_ConsumeNamed(t_CRegistry const &_Registry)
-		{
-			f_Clear();
-			auto Iter = _Registry.f_GetChildIterator();
-			while (Iter)
-			{
-				auto pValue = Iter->f_GetChildNoPath("Value");
-				if (!pValue)
-					continue;
-
-				auto Memory = t_CAllocator::f_AllocSafe(sizeof(t_CData), NTraits::TCAlignmentOf<t_CData>::mc_Value);
-				t_CData *pNewItem = new(Memory.m_pMemory) t_CData();
-				Memory.f_Claim();
-				auto Cleanup = g_OnScopeExit > [&]
-					{
-						pNewItem->~t_CData();
-						t_CAllocator::f_Free(pNewItem, sizeof(t_CData));
-					}
-				;
-				*pValue >> NStream::fg_Named("Value", *pNewItem);
-				Cleanup.f_Clear();
-				f_Insert(pNewItem);
-
-				++Iter;
-			}
-			return true;
-		}
-
-
 	};
 #ifdef DMibDebuggerHelpers
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
