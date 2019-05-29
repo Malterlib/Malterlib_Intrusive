@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Core/Core>
@@ -30,18 +30,18 @@ namespace NMib
 			};
 			NIntrusive::TCAVLLink<NIntrusive::EAVLLinkType_AlignedRight> m_Link;
 			int m_Data;
-			CMalterlibNode() : m_Data(-1) 
+			CMalterlibNode() : m_Data(-1)
 			{
 			}
 
-			CMalterlibNode(CMalterlibNode const& rhs) : m_Data(rhs.m_Data), m_Link() 
+			CMalterlibNode(CMalterlibNode const& rhs) : m_Data(rhs.m_Data), m_Link()
 			{
 			}
 
-			CMalterlibNode &operator= (CMalterlibNode const& rhs) 
-			{ 
-				m_Data=rhs.m_Data; 
-				return *this; 
+			CMalterlibNode &operator= (CMalterlibNode const& rhs)
+			{
+				m_Data=rhs.m_Data;
+				return *this;
 			}
 		};
 		class CBoostNode : public boost::intrusive::avl_set_base_hook<boost::intrusive::optimize_size<true>, boost::intrusive::constant_time_size<0>>
@@ -60,31 +60,31 @@ namespace NMib
 				}
 			};
 			int m_Data;
-			CBoostNode() : m_Data(-1) 
+			CBoostNode() : m_Data(-1)
 			{
 			}
-			CBoostNode(CMalterlibNode const& rhs) : m_Data(rhs.m_Data) 
+			CBoostNode(CMalterlibNode const& rhs) : m_Data(rhs.m_Data)
 			{
 			}
-			CBoostNode& operator=(CBoostNode const& rhs) 
-			{ 
-				m_Data=rhs.m_Data; 
-				return *this; 
+			CBoostNode& operator=(CBoostNode const& rhs)
+			{
+				m_Data=rhs.m_Data;
+				return *this;
 			}
-			bool operator < (CBoostNode const &_Right) const 
-			{ 
-				return m_Data < _Right.m_Data; 
+			bool operator < (CBoostNode const &_Right) const
+			{
+				return m_Data < _Right.m_Data;
 			}
-			bool operator < (int const &_Right) const 
-			{ 
-				return m_Data < _Right; 
+			bool operator < (int const &_Right) const
+			{
+				return m_Data < _Right;
 			}
 		};
 
 		typedef boost::intrusive::avl_set<CBoostNode, boost::intrusive::constant_time_size<0>> CBoostTree;
 		typedef NIntrusive::TCAVLTree<&CMalterlibNode::m_Link, CMalterlibNode::CCompare> CMalterlibTree;
 
-		template <bint t_bMemoryTests>
+		template <bool t_bMemoryTests>
 		class TCAVLTreeTester
 		{
 			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> m_DataMalterlib;
@@ -96,7 +96,7 @@ namespace NMib
 			typedef typename TCChooseType<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure>::CType CMeasureType;
 			typedef typename TCChooseType<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance>::CType CTestType;
 		public:
-			TCAVLTreeTester(mint _nItems, bint _bRandom)
+			TCAVLTreeTester(mint _nItems, bool _bRandom)
 			{
 				m_nItems = _nItems;
 				m_nTests = fg_Max((100000u / m_nItems), 1u) * 5;
@@ -110,31 +110,31 @@ namespace NMib
 
 				m_DataMalterlib.f_SetLen(_nItems);
 				m_DataBoost.f_SetLen(_nItems);
-				if(!_bRandom) 
+				if(!_bRandom)
 				{
-					for (mint i = 0; i < _nItems; ++i) 
-					{ 
-						m_DataMalterlib[i].m_Data = i; 
-						m_DataBoost[i].m_Data = i; 
+					for (mint i = 0; i < _nItems; ++i)
+					{
+						m_DataMalterlib[i].m_Data = i;
+						m_DataBoost[i].m_Data = i;
 					}
-				} 
-				else 
+				}
+				else
 				{
 					NMisc::CRandomShiftRNG RandomRng;
 					CMalterlibTree MalterlibTree;
-					for(mint i = 0; i < _nItems; ++i) 
-					{ 
+					for(mint i = 0; i < _nItems; ++i)
+					{
 						int x = 1 + (RandomRng.f_GetValue<int>() % (10000000-1));
 						while (MalterlibTree.f_FindEqual(x))
 							x = 1 + (RandomRng.f_GetValue<int>() % (10000000-1));
-						m_DataMalterlib[i].m_Data = x;  
+						m_DataMalterlib[i].m_Data = x;
 						MalterlibTree.f_Insert(m_DataMalterlib[i]);
-						m_DataBoost[i].m_Data = x; 
+						m_DataBoost[i].m_Data = x;
 					}
 				}
 			}
 
-			bint fp_CheckTree(CMalterlibNode *_pMalterlibNode, CBoostNode *_pBoostNode)
+			bool fp_CheckTree(CMalterlibNode *_pMalterlibNode, CBoostNode *_pBoostNode)
 			{
 				if (_pMalterlibNode && !_pBoostNode)
 					return false;
@@ -183,9 +183,9 @@ namespace NMib
 					auto Iter = m_DataMalterlib.f_GetIterator();
 					{
 						DMibTestScopeMeasure(MalterlibTime, m_nItems);
-						for(;Iter; ++Iter) 
-						{ 
-							MalterlibTree.f_Insert(*Iter); 
+						for(;Iter; ++Iter)
+						{
+							MalterlibTree.f_Insert(*Iter);
 						}
 					}
 				}
@@ -197,9 +197,9 @@ namespace NMib
 
 					{
 						DMibTestScopeMeasure(BoostTime, m_nItems);
-						for(;Iter; ++Iter) 
-						{ 
-							BoostTree.insert(*Iter); 
+						for(;Iter; ++Iter)
+						{
+							BoostTree.insert(*Iter);
 						}
 					}
 				}
@@ -207,7 +207,7 @@ namespace NMib
 				CBoostNode *pRoot = (CBoostNode *)(((mint)BoostTree.holder.root.parent_) & ~mint(3));
 				while ((void *)((mint)pRoot->parent_ & ~mint(3)) != (void *)&BoostTree)
 					pRoot = (CBoostNode *)((mint)pRoot->parent_ & ~mint(3));
-				bint bTreesSame = fp_CheckTree(MalterlibTree.f_GetRoot(), pRoot);
+				bool bTreesSame = fp_CheckTree(MalterlibTree.f_GetRoot(), pRoot);
 				bTreesSame = bTreesSame && fp_CheckTree(MalterlibTree.f_GetRoot(), pRoot);
 
 				if (!bTreesSame)
@@ -217,22 +217,22 @@ namespace NMib
 					//fp_TraceTree(pRoot, 0);
 				}
 				DMibTest(DMibExpr(bTreesSame));
-				{				
+				{
 					typedef CMalterlibTree::TIterator<> Iter1;
 					Iter1 it1 = MalterlibTree;
 					auto it2 = BoostTree.begin();
 					auto end2 = BoostTree.end();
-					bint bTreesSameValues = MalterlibTree.f_GetLen() == BoostTree.size();
-					for (;it1 && it2!=end2;++it1,++it2) 
-					{ 
-						auto dummy1 = it1->m_Data; 
-						auto dummy2 = it2->m_Data; 
+					bool bTreesSameValues = MalterlibTree.f_GetLen() == BoostTree.size();
+					for (;it1 && it2!=end2;++it1,++it2)
+					{
+						auto dummy1 = it1->m_Data;
+						auto dummy2 = it2->m_Data;
 						bTreesSameValues = bTreesSame && dummy1 == dummy2;
 					}
 					DMibTest(DMibExpr(bTreesSameValues));
 				}
 
-				bint bMalterlibTreeValid = MalterlibTree.f_CheckTree(false);
+				bool bMalterlibTreeValid = MalterlibTree.f_CheckTree(false);
 				if (!bMalterlibTreeValid)
 					DMibTest(DMibExpr(bMalterlibTreeValid));
 				CTestType Performing(m_AllowedDelta);
@@ -240,7 +240,7 @@ namespace NMib
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
 			}
-			void f_SearchTests() 
+			void f_SearchTests()
 			{
 
 				CMeasureType MalterlibTime("Malterlib");
@@ -251,17 +251,17 @@ namespace NMib
 				{
 					CMalterlibTree MalterlibTree;
 					auto Iter = m_DataMalterlib.f_GetIterator();
-					for (;Iter; ++Iter) 
-					{  
-						MalterlibTree.f_Insert(*Iter);  
+					for (;Iter; ++Iter)
+					{
+						MalterlibTree.f_Insert(*Iter);
 					}
 					Iter = m_DataMalterlib.f_GetIterator();
 					CMalterlibNode::CCompare Compare;
 					{
 						DMibTestScopeMeasure(MalterlibTime, m_nItems);
-						for (;Iter; ++Iter) 
-						{ 
-							bFoundMalterlib += MalterlibTree.f_FindEqual(Iter->m_Data, Compare) != nullptr; 
+						for (;Iter; ++Iter)
+						{
+							bFoundMalterlib += MalterlibTree.f_FindEqual(Iter->m_Data, Compare) != nullptr;
 						}
 					}
 				}
@@ -269,18 +269,18 @@ namespace NMib
 				{
 					CBoostTree BoostTree;
 					auto Iter = m_DataBoost.f_GetIterator();
-					for(;Iter; ++Iter) 
-					{  
-						BoostTree.insert(*Iter);  
+					for(;Iter; ++Iter)
+					{
+						BoostTree.insert(*Iter);
 					}
 					Iter = m_DataBoost.f_GetIterator();
 					auto TreeEnd = BoostTree.end();
 					CBoostNode::CCompare Compare;
 					{
 						DMibTestScopeMeasure(BoostTime, m_nItems);
-						for (;Iter; ++Iter) 
-						{ 
-							bFoundBoost += BoostTree.find(Iter->m_Data, Compare) != TreeEnd; 
+						for (;Iter; ++Iter)
+						{
+							bFoundBoost += BoostTree.find(Iter->m_Data, Compare) != TreeEnd;
 						}
 					}
 				}
@@ -292,23 +292,23 @@ namespace NMib
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
 			}
-			void f_RemoveTests() 
+			void f_RemoveTests()
 			{
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
 				for (mint i = 0; i < m_nTests; ++i)
 				{
 					CMalterlibTree MalterlibTree;
-					for (mint i = 0 ; i < m_nItems; ++i) 
-					{  
-						MalterlibTree.f_Insert(m_DataMalterlib[i]);  
+					for (mint i = 0 ; i < m_nItems; ++i)
+					{
+						MalterlibTree.f_Insert(m_DataMalterlib[i]);
 					}
 					auto Iter = m_DataMalterlib.f_GetIterator();
 					{
 						DMibTestScopeMeasure(MalterlibTime, m_nItems);
-						for (;Iter; ++Iter) 
-						{ 
-							MalterlibTree.f_Remove(*Iter); 
+						for (;Iter; ++Iter)
+						{
+							MalterlibTree.f_Remove(*Iter);
 						}
 					}
 				}
@@ -316,16 +316,16 @@ namespace NMib
 				for (mint i = 0; i < m_nTests; ++i)
 				{
 					CBoostTree BoostTree;
-					for (mint i = 0; i < m_nItems; ++i) 
-					{  
+					for (mint i = 0; i < m_nItems; ++i)
+					{
 						BoostTree.insert(m_DataBoost[i]);
 					}
 					auto Iter = m_DataBoost.f_GetIterator();
 					{
 						DMibTestScopeMeasure(BoostTime, m_nItems);
-						for (;Iter; ++Iter) 
-						{ 
-							BoostTree.erase(*Iter); 
+						for (;Iter; ++Iter)
+						{
+							BoostTree.erase(*Iter);
 						}
 					}
 				}
@@ -335,19 +335,19 @@ namespace NMib
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
 			}
-			void f_TraverseTests() 
+			void f_TraverseTests()
 			{
 				CMalterlibTree MalterlibTree;
 				CBoostTree BoostTree;
 				typedef CBoostTree::const_iterator Iter2;
 				typedef CMalterlibTree::TIterator<> Iter1;
-				for(mint i = 0; i < m_nItems; ++i) 
-				{  
-					MalterlibTree.f_Insert(&m_DataMalterlib[i]);  
+				for(mint i = 0; i < m_nItems; ++i)
+				{
+					MalterlibTree.f_Insert(&m_DataMalterlib[i]);
 				}
-				for(mint i = 0; i < m_nItems; ++i) 
-				{  
-					BoostTree.insert(m_DataBoost[i]);  
+				for(mint i = 0; i < m_nItems; ++i)
+				{
+					BoostTree.insert(m_DataBoost[i]);
 				}
 
 				int dummy1 = 0;
@@ -360,9 +360,9 @@ namespace NMib
 					Iter1 it1 = MalterlibTree;
 					{
 						DMibTestScopeMeasure(MalterlibTime, m_nItems);
-						for (;it1;++it1) 
-						{ 
-							dummy1 += it1->m_Data; 
+						for (;it1;++it1)
+						{
+							dummy1 += it1->m_Data;
 						}
 					}
 				}
@@ -372,9 +372,9 @@ namespace NMib
 					Iter2 end2 = BoostTree.end();
 					{
 						DMibTestScopeMeasure(BoostTime, m_nItems);
-						for (;it2!=end2;++it2) 
-						{ 
-							dummy2 += it2->m_Data; 
+						for (;it2!=end2;++it2)
+						{
+							dummy2 += it2->m_Data;
 						}
 					}
 				}
@@ -391,14 +391,14 @@ namespace NMib
 		{
 
 		public: // Define test suites
-			void f_Suite(bool _bRandom, bint _bMemoryTests)
+			void f_Suite(bool _bRandom, bool _bMemoryTests)
 			{
 #ifdef DMibDebug
 				mint End = 16*1024;
 #else
 				mint End = 512*1024;
 #endif
-				DMibTestCategory("Insert") 
+				DMibTestCategory("Insert")
 				{
 					for (mint i = 1; i <= End; i <<= 1)
 					{
@@ -411,7 +411,7 @@ namespace NMib
 						};
 					}
 				};
-				DMibTestCategory("Search") 
+				DMibTestCategory("Search")
 				{
 					for (mint i = 4; i <= End; i <<= 1)
 					{

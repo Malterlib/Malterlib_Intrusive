@@ -12,7 +12,7 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject)
 	{
 		CLink *pObject = CLink::fs_GetPtr(_pObject);
 
@@ -36,7 +36,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject)
 	{
 		CLink *pObject = CLink::fs_GetPtr(_pObject);
 
@@ -61,7 +61,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_Compare, bint &_bRet)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_Compare, bool &_bRet)
 	{
 		if (!CLink::fs_GetPtrIsFast())
 		{
@@ -138,7 +138,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_Compare)
 	{
 		CLink* pObj = CLink::fs_GetPtr(_pObject);
 
@@ -167,7 +167,7 @@ namespace NMib::NIntrusive
 		if (pObj->f_GetLeftP())
 		{
 			CLink* pHighestObject;
-			bint bLeftShrunk = fsp_BalanceHighest(pHighestObject, *pObj->f_GetLeft());
+			bool bLeftShrunk = fsp_BalanceHighest(pHighestObject, *pObj->f_GetLeft());
 
 			// Remove target from tree
 			pHighestObject->f_SetSkew(pObj->f_GetSkew());
@@ -190,7 +190,7 @@ namespace NMib::NIntrusive
 		{
 			CLink* pLowestObject;
 
-			bint bRightShrunk = fsp_BalanceLowest(pLowestObject, *pObj->f_GetRight());
+			bool bRightShrunk = fsp_BalanceLowest(pLowestObject, *pObj->f_GetRight());
 
 			// Remove target from tree
 			pLowestObject->f_SetSkew(pObj->f_GetSkew());
@@ -223,7 +223,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode *_pToInsert, tf_CCompare &&_Compare)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode *_pToInsert, tf_CCompare &&_Compare)
 	{
 
 		CLink * pToInsert = fsp_LinkFromMember(_pToInsert);
@@ -231,26 +231,26 @@ namespace NMib::NIntrusive
 			((CLinkContainer *)pToInsert)->f_SetTree(this, &TCAVLTreeAggregate::fsp_Remove);
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
 
-		bint bRet = true;
+		bool bRet = true;
 		fspr_Insert(m_Root, pToInsert, fg_Forward<tf_CCompare>(_Compare), bRet);
 		return bRet;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode &_ToInsert)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode &_ToInsert)
 	{
 		return fr_Insert(_ToInsert, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode &_ToInsert, tf_CCompare &&_Compare)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode &_ToInsert, tf_CCompare &&_Compare)
 	{
 		return fr_Insert(&_ToInsert, fg_Forward<tf_CCompare>(_Compare));
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode *_pToInsert)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode *_pToInsert)
 	{
 		return fr_Insert(_pToInsert, t_CCompare());
 	}

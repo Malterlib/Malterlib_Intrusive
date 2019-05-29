@@ -79,7 +79,7 @@ namespace NMib::NIntrusive
 			m_pNext = _pNext;
 		}
 
-		inline_small bint f_IsInList() const
+		inline_small bool f_IsInList() const
 		{
 			return m_pNext != nullptr;
 		}
@@ -139,7 +139,7 @@ namespace NMib::NIntrusive
 		{
 			m_pLast = _pLast;
 		}
-		static inline_small bint fp_HasLast()
+		static inline_small bool fp_HasLast()
 		{
 			return true;
 		}
@@ -177,14 +177,14 @@ namespace NMib::NIntrusive
 		inline_small void fp_SetLast(CSLinkAggr *_pLast)
 		{
 		}
-		static inline_small bint fp_HasLast()
+		static inline_small bool fp_HasLast()
 		{
 			return false;
 		}
 
 	};
 
-	template <typename t_CData, typename t_CTranslator, typename t_CListData, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	class TCSLinkListAggregate
 	{
 		typedef typename t_CTranslator::template TCOffset<t_CData> COffset;
@@ -464,7 +464,7 @@ namespace NMib::NIntrusive
 			}
 		}
 
-		inline_small bint f_IsEmpty() const
+		inline_small bool f_IsEmpty() const
 		{
 			return (m_Data.fp_GetFirst().fp_GetNext() == nullptr);
 		}
@@ -1297,40 +1297,40 @@ namespace NMib::NIntrusive
 	};
 
 #ifdef DMibDebuggerHelpers
-	template <typename t_CData, typename t_CTranslator, typename t_CListData, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	auto TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::fs_Debug_GetOffset() -> COffset
 	{
 		return {};
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CListData, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>*
 	TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::CIterator::fs_Debug_List()
 	{
 		return nullptr;
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CListData, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	auto TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::CIterator::fs_Debug_GetOffset() -> COffset
 	{
 		return {};
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CListData, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>*
 	TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::CIteratorConst::fs_Debug_List()
 	{
 		return nullptr;
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CListData, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	auto TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::CIteratorConst::fs_Debug_GetOffset() -> COffset
 	{
 		return {};
 	}
 #endif
 
-	template <typename t_CData, typename t_CTranslator, typename t_CListData, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	class TCSLinkList : public TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>
 	{
 	private:

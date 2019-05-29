@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Core/Core>
@@ -25,7 +25,7 @@ public:
 		return(((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
-	bool f_AutomaticTest() 
+	bool f_AutomaticTest()
 	{
 		return true;
 	}
@@ -162,7 +162,7 @@ public:
 			return _Node.m_Data;
 		}
 	};
-	
+
 	TCAVLTree<&CTestClass::m_Link, CCompare> m_TestTree;
 	TCAVLTree<&CTestClass2::m_Link, CCompare2> m_TestTree2;
 
@@ -228,7 +228,7 @@ public:
 
 		t_CTestClass *pRight = _Tree.fs_GetRight(_pObj);
 		t_CTestClass *pLeft = _Tree.fs_GetLeft(_pObj);
-		
+
 		if (!pRight &&!pLeft)
 		{
 			if (_CurrentDepth < _MinDepth)
@@ -297,7 +297,7 @@ public:
 
 	template <typename t_CTree, typename t_CTestClass>
 	static void f_CheckTree(t_CTree &_Tree, t_CTestClass *_pObj)
-	{		
+	{
 		t_CTestClass *pRight = _Tree.fs_GetRight(_pObj);
 		t_CTestClass *pLeft = _Tree.fs_GetLeft(_pObj);
 
@@ -328,10 +328,10 @@ public:
 		}
 
 	}
-	
+
 	template <typename t_CTree0, typename t_CTree1, typename t_CTestClass0, typename t_CTestClass1>
-	static bint TreesSame(t_CTree0 &_Tree0, t_CTree1 &_Tree1, t_CTestClass0 *_pObj0, t_CTestClass1 *_pObj1)
-	{		
+	static bool TreesSame(t_CTree0 &_Tree0, t_CTree1 &_Tree1, t_CTestClass0 *_pObj0, t_CTestClass1 *_pObj1)
+	{
 		if (_pObj0 && !_pObj1)
 			return false;
 		if (_pObj1 && !_pObj0)
@@ -397,7 +397,7 @@ public:
 	}
 
 	template <typename t_CTree, typename t_CTestClass>
-	static void TraceTree(t_CTree &_Tree, t_CTestClass *_pParent, t_CTestClass *_pObj, aint _Depth, aint &_CurrentDepth, bint &_bTraced, bint _bLeft, aint _MaxDepth)
+	static void TraceTree(t_CTree &_Tree, t_CTestClass *_pParent, t_CTestClass *_pObj, aint _Depth, aint &_CurrentDepth, bool &_bTraced, bool _bLeft, aint _MaxDepth)
 	{
 		if (_Depth == _CurrentDepth)
 		{
@@ -446,7 +446,7 @@ public:
 		DMibTrace("Tree Trace Depth({}):\n", (MaxDepth));
 		for (aint i = 0; i < MaxDepth; ++i)
 		{
-			bint Traced = false;
+			bool Traced = false;
 			aint CurrentDepth = 0;
 			TraceTree(_Tree, _Tree.f_GetRoot(), _Tree.f_GetRoot(), i, CurrentDepth, Traced, false, MaxDepth);
 			if (Traced)
@@ -703,10 +703,10 @@ public:
 		{
 			NMib::NTime::CTimerMin TimerInsert;
 			NMib::NTime::CTimerMin TimerDelete;
-			for (aint i = 0; i < NumTests; ++i) 
+			for (aint i = 0; i < NumTests; ++i)
 			{
 				{
-					DMibScopeTimerMin(TimerInsert);			
+					DMibScopeTimerMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.f_Insert(m_ClassList[i]);
@@ -728,10 +728,10 @@ public:
 		{
 			NMib::NTime::CTimerMin TimerInsert;
 			NMib::NTime::CTimerMin TimerDelete;
-			for (aint i = 0; i < NumTests; ++i) 
+			for (aint i = 0; i < NumTests; ++i)
 			{
 				{
-					DMibScopeTimerMin(TimerInsert);			
+					DMibScopeTimerMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.f_InsertLowStack(m_ClassList[i]);
@@ -753,10 +753,10 @@ public:
 		{
 			NMib::NTime::CTimerMin TimerInsert;
 			NMib::NTime::CTimerMin TimerDelete;
-			for (aint i = 0; i < NumTests; ++i) 
+			for (aint i = 0; i < NumTests; ++i)
 			{
 				{
-					DMibScopeTimerMin(TimerInsert);			
+					DMibScopeTimerMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.fr_Insert(m_ClassList[i]);
@@ -875,7 +875,7 @@ public:
 
 		CTestClass *pRight = m_TestTree.fs_GetRight(_pObj);
 		CTestClass *pLeft = m_TestTree.fs_GetLeft(_pObj);
-		
+
 		if (!pRight &&!pLeft)
 		{
 			if (_CurrentDepth < _MinDepth)
@@ -983,7 +983,7 @@ public:
 		}
 	}
 
-	void TraceTree(CTestClass *_pObj, aint _Depth, aint &_CurrentDepth, bint &_bTraced, bint _bLeft, aint _MaxDepth)
+	void TraceTree(CTestClass *_pObj, aint _Depth, aint &_CurrentDepth, bool &_bTraced, bool _bLeft, aint _MaxDepth)
 	{
 		if (_Depth == _CurrentDepth)
 		{
@@ -1092,7 +1092,7 @@ public:
 		pTest = m_TestTree.f_FindSmallestGreaterThanEqual(Key);
 		if (pTest)
 			DMibTrace("f_FindSmallestGreaterThanEqual {} = {}\n", (Key) << (pTest->m_Data));
-		
+
 		for (aint i = 0; i < (DebugTest < mc_TestSorted ? DebugTest : mc_TestSorted); ++i)
 		{
 			m_TestTree.f_Remove(m_ClassList[i]);
@@ -1102,7 +1102,7 @@ public:
 		f_CheckTree();
 		DMibSafeCheck(!m_TestTree.f_GetRoot(), "Must be empty");
 
-		for (aint j = 0; j < 10; ++j) 
+		for (aint j = 0; j < 10; ++j)
 		{
 			for (aint i = 0; i < mc_TestSorted*2; ++i)
 			{
@@ -1111,7 +1111,7 @@ public:
 					m_TestTree.f_Remove(m_ClassList[Index]);
 				else
 					m_TestTree.f_Insert(m_ClassList[Index]);
-	
+
 			}
 
 			for (aint u = 0; u < mc_TestSorted; ++u)
@@ -1152,10 +1152,10 @@ public:
 		NMib::NTime::CTimerMin TimerInsertLowStack;
 		NMib::NTime::CTimerMin TimerDeleteLowStack;
 		aint FinalNumber = 0;
-		for (aint i = 0; i < NumTests; ++i) 
+		for (aint i = 0; i < NumTests; ++i)
 		{
 			{
-				DMibScopeTimerMin(TimerInsert);			
+				DMibScopeTimerMin(TimerInsert);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.f_Insert(m_ClassList[i]);
@@ -1163,7 +1163,7 @@ public:
 			}
 			{
 				DMibScopeTimerMin(TimerFindEqual);
-				
+
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					aint Key = Rand() % (mc_TestSorted * 2);
@@ -1174,7 +1174,7 @@ public:
 			if (pTest)
 				FinalNumber += pTest->m_Data;
 			{
-				DMibScopeTimerMin(TimerFindLargestLessThanEqual);			
+				DMibScopeTimerMin(TimerFindLargestLessThanEqual);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					aint Key = Rand() % (mc_TestSorted * 2);
@@ -1184,7 +1184,7 @@ public:
 			if (pTest)
 				FinalNumber += pTest->m_Data;
 			{
-				DMibScopeTimerMin(TimerFindSmallestGreaterThanEqual);			
+				DMibScopeTimerMin(TimerFindSmallestGreaterThanEqual);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					aint Key = Rand() % (mc_TestSorted * 2);
@@ -1201,7 +1201,7 @@ public:
 				}
 			}
 			{
-				DMibScopeTimerMin(TimerInsertRecursive);			
+				DMibScopeTimerMin(TimerInsertRecursive);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.fr_Insert(m_ClassList[i]);

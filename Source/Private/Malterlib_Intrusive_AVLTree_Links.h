@@ -21,7 +21,7 @@ namespace NMib::NIntrusive::NPrivate
 		CAVLLinkData *m_pNext[2];
 		aint m_Skew;
 
-		static inline_small bint fs_GetPtrIsFast()
+		static inline_small bool fs_GetPtrIsFast()
 		{
 			return true;
 		}
@@ -64,7 +64,7 @@ namespace NMib::NIntrusive::NPrivate
 			return m_Skew;
 		}
 
-		inline_small bint f_IsBalanced() const
+		inline_small bool f_IsBalanced() const
 		{
 			return m_Skew == EAVLTreeSkew_None;
 		}
@@ -160,7 +160,7 @@ namespace NMib::NIntrusive::NPrivate
 
 		CAVLLinkAlignedData * m_pNext[2];
 
-		static inline_small bint fs_GetPtrIsFast()
+		static inline_small bool fs_GetPtrIsFast()
 		{
 			return false;
 		}
@@ -203,7 +203,7 @@ namespace NMib::NIntrusive::NPrivate
 			return (((mint)m_pNext[0] & 1) | ((mint)m_pNext[1] & 1) << 1);
 		}
 
-		inline_small bint f_IsBalanced() const
+		inline_small bool f_IsBalanced() const
 		{
 			return f_GetSkew() == EAVLTreeSkew_None;
 		}
@@ -299,7 +299,7 @@ namespace NMib::NIntrusive::NPrivate
 
 		CAVLLinkAlignedRightData * m_pNext[2];
 
-		static inline_small bint fs_GetPtrIsFast()
+		static inline_small bool fs_GetPtrIsFast()
 		{
 			return false;
 		}
@@ -342,7 +342,7 @@ namespace NMib::NIntrusive::NPrivate
 			return ((mint)m_pNext[1] & mint(3));
 		}
 
-		inline_small bint f_IsBalanced() const
+		inline_small bool f_IsBalanced() const
 		{
 			return f_GetSkew() == EAVLTreeSkew_None;
 		}

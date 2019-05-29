@@ -32,7 +32,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_medium bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RightShrunk(CLinkPointer &_pObject)
+	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RightShrunk(CLinkPointer &_pObject)
 	{
 		CLink *pObj = CLink::fs_GetPtr(_pObject);
 
@@ -88,7 +88,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_medium bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LeftShrunk(CLinkPointer &_pObject)
+	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LeftShrunk(CLinkPointer &_pObject)
 	{
 		CLink *pObj = CLink::fs_GetPtr(_pObject);
 		switch (pObj->f_GetSkew())
@@ -144,13 +144,13 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RightGrown(CLinkPointer &_pObject)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RightGrown(CLinkPointer &_pObject)
 	{
 		return fsp_RightGrown_Inl(_pObject);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_medium bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RightGrown_Inl(CLinkPointer &_pObject)
+	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RightGrown_Inl(CLinkPointer &_pObject)
 	{
 		CLink *pObj = CLink::fs_GetPtr(_pObject);
 		switch (pObj->f_GetSkew())
@@ -201,13 +201,13 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LeftGrown(CLinkPointer &_pObject)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LeftGrown(CLinkPointer &_pObject)
 	{
 		return fsp_LeftGrown_Inl(_pObject);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_medium bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LeftGrown_Inl(CLinkPointer &_pObject)
+	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LeftGrown_Inl(CLinkPointer &_pObject)
 	{
 		CLink *pObj = CLink::fs_GetPtr(_pObject);
 		switch (pObj->f_GetSkew())

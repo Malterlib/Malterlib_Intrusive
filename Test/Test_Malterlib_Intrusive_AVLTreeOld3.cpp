@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #if 0
@@ -28,9 +28,9 @@
 /*
  *  Which of a given node's subtrees is higher?
  */
-enum AVLSKEW 
+enum AVLSKEW
 {
-	NONE,	
+	NONE,
 	LEFT,
 	RIGHT
 };
@@ -66,24 +66,24 @@ struct avlnode
  *
  *  Return values:
  *
- *    nonzero     The item has been inserted. The excact value of 
+ *    nonzero     The item has been inserted. The excact value of
  *                nonzero yields is of no concern to user code; when
- *                avlinsert recursively calls itself, the number 
- *                returned tells the parent activation if the AVL tree 
+ *                avlinsert recursively calls itself, the number
+ *                returned tells the parent activation if the AVL tree
  *                may have become unbalanced; specifically:
  *
- *      OK        None of the subtrees of the node that n points to 
+ *      OK        None of the subtrees of the node that n points to
  *                has grown, the AVL tree is valid.
  *
- *      BALANCE   One of the subtrees of the node that n points to 
+ *      BALANCE   One of the subtrees of the node that n points to
  *                has grown, the node's "skew" flag needs adjustment,
  *                and the AVL tree may have become unbalanced.
  *
- *    zero        The datum provided could not be inserted, either due 
+ *    zero        The datum provided could not be inserted, either due
  *                to AVLKEY collision (the tree already contains another
  *                item with which the same AVLKEY is associated), or
  *                due to insufficient memory.
- */   
+ */
 enum AVLRES
 avlinsert(struct avlnode **n, AVLDATUM d);
 
@@ -98,7 +98,7 @@ avlinsert(struct avlnode **n, AVLDATUM d);
  *
  *  Return values:
  *
- *    nonzero     The item has been removed. The exact value of 
+ *    nonzero     The item has been removed. The exact value of
  *                nonzero yields if of no concern to user code; when
  *                avlremove recursively calls itself, the number
  *                returned tells the parent activation if the AVL tree
@@ -150,7 +150,7 @@ avlaccess(struct avlnode *n, aint key);
  *                determine how many levels the node bein processed is
  *                below the root node. Can be used, for example,
  *                for selecting the proper indentation width when
- *                avldepthfirst is used to print a tree dump to 
+ *                avldepthfirst is used to print a tree dump to
  *                the screen.
  */
 typedef void AVLWORKER(struct avlnode *n, aint param, aint depth);
@@ -182,7 +182,7 @@ avldepthfirst(struct avlnode *n, AVLWORKER *f, aint param, aint depth);
 
 /*
  *  avlbreadthfirst: breadth-first tree traversal.
- * 
+ *
  *  See avldepthfirst for details.
  */
 void
@@ -207,7 +207,7 @@ class CTestTreeRef : public CMalterlibTest
 {
 public:
 
-	bool f_AutomaticTest() 
+	bool f_AutomaticTest()
 	{
 		return true;
 	}
@@ -259,7 +259,7 @@ public:
 
 		avlnode *pRight = _pObj->right;
 		avlnode *pLeft = _pObj->left;
-		
+
 		if (!pRight &&!pLeft)
 		{
 			if (_CurrentDepth < _MinDepth)
@@ -366,7 +366,7 @@ public:
 		}
 	}
 
-	void TraceTree(avlnode *_pObj, aint _Depth, aint &_CurrentDepth, bint &_bTraced, bint _bLeft, aint _MaxDepth)
+	void TraceTree(avlnode *_pObj, aint _Depth, aint &_CurrentDepth, bool &_bTraced, bool _bLeft, aint _MaxDepth)
 	{
 		if (_Depth == _CurrentDepth)
 		{
@@ -404,7 +404,7 @@ public:
 		DMibTrace("Tree Trace Depth({}):\n", (MaxDepth));
 		for (aint i = 0; i < MaxDepth; ++i)
 		{
-			bint Traced = false;
+			bool Traced = false;
 			aint CurrentDepth = 0;
 			TraceTree(m_TreeRoot, i, CurrentDepth, Traced, false, MaxDepth);
 			if (Traced)
@@ -431,7 +431,7 @@ public:
 
 		f_CheckTree();
 
-		
+
 		for (aint i = 0; i < (DebugTest < mc_TestSorted ? DebugTest : mc_TestSorted); ++i)
 		{
 			avlremove(&m_TreeRoot, m_ClassList[i].m_Data);
@@ -443,7 +443,7 @@ public:
 
 		NMib::NTime::CTimer Timer;
 		{
-			DMibScopeTimer(Timer);			
+			DMibScopeTimer(Timer);
 			for (aint i = 0; i < mc_TestSorted; ++i)
 			{
 				avlinsert(&m_TreeRoot, &m_ClassList[i]);
@@ -453,7 +453,7 @@ public:
 
 
 		{
-			DMibScopeTimer(Timer);			
+			DMibScopeTimer(Timer);
 			for (aint i = 0; i < mc_TestSorted; ++i)
 			{
 				avlremove(&m_TreeRoot, m_ClassList[i].m_Data);
@@ -519,17 +519,17 @@ avlrotright(struct avlnode **n)
  *
  *  Parameters:
  *
- *    n           Address of a pointer to a node. This node's left 
- *                subtree has just grown due to item insertion; its 
- *                "skew" flag needs adjustment, and the local tree 
- *                (the subtree of which this node is the root node) may 
+ *    n           Address of a pointer to a node. This node's left
+ *                subtree has just grown due to item insertion; its
+ *                "skew" flag needs adjustment, and the local tree
+ *                (the subtree of which this node is the root node) may
  *                have become unbalanced.
  *
  *  Return values:
  *
- *    OK          The local tree could be rebalanced or was balanced 
- *                from the start. The parent activations of the avlinsert 
- *                activation that called this function may assume the 
+ *    OK          The local tree could be rebalanced or was balanced
+ *                from the start. The parent activations of the avlinsert
+ *                activation that called this function may assume the
  *                entire tree is valid.
  *
  *    BALANCE     The local tree was balanced, but has grown in height.
@@ -543,7 +543,7 @@ avlleftgrown(struct avlnode **n)
 		if ((*n)->left->skew == LEFT) {
 			(*n)->skew = (*n)->left->skew = NONE;
 			avlrotright(n);
-		}	
+		}
 		else {
 			switch ((*n)->left->right->skew) {
 			case LEFT:
@@ -569,7 +569,7 @@ avlleftgrown(struct avlnode **n)
 	case RIGHT:
 		(*n)->skew = NONE;
 		return OK;
-	
+
 	default:
 		(*n)->skew = LEFT;
 		return BALANCE;
@@ -585,12 +585,12 @@ enum AVLRES
 avlrightgrown(struct avlnode **n)
 {
 	switch ((*n)->skew) {
-	case LEFT:					
+	case LEFT:
 		(*n)->skew = NONE;
 		return OK;
 
 	case RIGHT:
-		if ((*n)->right->skew == RIGHT) {	
+		if ((*n)->right->skew == RIGHT) {
 			(*n)->skew = (*n)->right->skew = NONE;
 			avlrotleft(n);
 		}
@@ -633,30 +633,30 @@ avlrightgrown(struct avlnode **n)
  *
  *  Return values:
  *
- *    nonzero     The item has been inserted. The excact value of 
+ *    nonzero     The item has been inserted. The excact value of
  *                nonzero yields is of no concern to user code; when
- *                avlinsert recursively calls itself, the number 
- *                returned tells the parent activation if the AVL tree 
+ *                avlinsert recursively calls itself, the number
+ *                returned tells the parent activation if the AVL tree
  *                may have become unbalanced; specifically:
  *
- *      OK        None of the subtrees of the node that n points to 
+ *      OK        None of the subtrees of the node that n points to
  *                has grown, the AVL tree is valid.
  *
- *      BALANCE   One of the subtrees of the node that n points to 
+ *      BALANCE   One of the subtrees of the node that n points to
  *                has grown, the node's "skew" flag needs adjustment,
  *                and the AVL tree may have become unbalanced.
  *
- *    zero        The datum provided could not be inserted, either due 
+ *    zero        The datum provided could not be inserted, either due
  *                to AVLKEY collision (the tree already contains another
  *                item with which the same AVLKEY is associated), or
  *                due to insufficient memory.
- */   
+ */
 enum AVLRES
 avlinsert(struct avlnode **n, AVLDATUM d)
 {
 	enum AVLRES tmp;
 
-	if (!(*n)) 
+	if (!(*n))
 	{
 		mint Size = sizeof(struct avlnode);
 		((*n) = (struct avlnode *)NMib::NMemory::fg_Alloc(Size));
@@ -668,7 +668,7 @@ avlinsert(struct avlnode **n, AVLDATUM d)
 		(*n)->skew = NONE;
 		return BALANCE;
 	}
-	
+
 	if (AVLKEY(d) < AVLKEY((*n)->d)) {
 		if ((tmp = avlinsert(& (*n)->left, d)) == BALANCE) {
 			return avlleftgrown(n);
@@ -703,7 +703,7 @@ avlinsert(struct avlnode **n, AVLDATUM d)
  *                tree is valid.
  *
  *    BALANCE     Do not assume the entire tree is valid.
- */                
+ */
 enum AVLRES
 avlleftshrunk(struct avlnode **n)
 {
@@ -786,9 +786,9 @@ avlrightshrunk(struct avlnode **n)
 
 			case RIGHT:
 				(*n)->skew = NONE;
-				(*n)->left->skew = LEFT;	
+				(*n)->left->skew = LEFT;
 				break;
-			
+
 			default:
 				(*n)->skew = NONE;
 				(*n)->left->skew = NONE;
@@ -816,7 +816,7 @@ avlrightshrunk(struct avlnode **n)
  *
  *    res         Pointer to variable used to tell the caller whether
  *                further checks are necessary; analog to the return
- *                values of avlleftgrown and avlleftshrunk (see there). 
+ *                values of avlleftgrown and avlleftshrunk (see there).
  *
  *  Return values:
  *
@@ -893,7 +893,7 @@ avlfindlowest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
  *
  *  Return values:
  *
- *    nonzero     The item has been removed. The exact value of 
+ *    nonzero     The item has been removed. The exact value of
  *                nonzero yields if of no concern to user code; when
  *                avlremove recursively calls itself, the number
  *                returned tells the parent activation if the AVL tree

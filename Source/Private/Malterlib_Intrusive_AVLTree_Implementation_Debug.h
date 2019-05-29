@@ -13,7 +13,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fpr_CheckTree(CLink *_pCurrent, bint _bBreak, tf_CCompare &&_Compare, mint &_Depth)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_Compare, mint &_Depth)
 	{
 		CLink *pLeft = _pCurrent->f_GetLeftP();
 		CLink *pRight = _pCurrent->f_GetRightP();
@@ -66,19 +66,19 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_CheckTree(bint _bBreak)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_CheckTree(bool _bBreak)
 	{
 		return f_CheckTree(_bBreak, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_CheckTree(bint _bBreak, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_CheckTree(bool _bBreak, tf_CCompare &&_Compare)
 	{
 		if (CLink::fs_GetPtr(m_Root))
 		{
 			mint Depth = 0;
-			bint bFail = !fpr_CheckTree(CLink::fs_GetPtr(m_Root), _bBreak, fg_Forward<tf_CCompare>(_Compare), Depth);
+			bool bFail = !fpr_CheckTree(CLink::fs_GetPtr(m_Root), _bBreak, fg_Forward<tf_CCompare>(_Compare), Depth);
 			if (bFail)
 				return false;
 		}

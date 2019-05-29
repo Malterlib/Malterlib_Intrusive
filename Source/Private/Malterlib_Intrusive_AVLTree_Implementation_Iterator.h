@@ -272,7 +272,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindEqualForward(const tf_CKey &_Key)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindEqualForward(const tf_CKey &_Key)
 	{
 		return f_FindEqualForward(_Key, t_CCompare());
 	}
@@ -280,7 +280,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey, typename tf_CCompare>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
 	{
 		aint iStack = m_iStack;
 
@@ -312,7 +312,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key)
 	{
 		return f_FindSmallestGreaterThanEqualForward(_Key, t_CCompare());
 	}
@@ -320,7 +320,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey, typename tf_CCompare>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
 	{
 		const CLink* pBestFit = nullptr;
 
@@ -365,7 +365,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindLargestLessThanEqualForward(const tf_CKey &_Key)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindLargestLessThanEqualForward(const tf_CKey &_Key)
 	{
 		return f_FindLargestLessThanEqualForward(_Key, t_CCompare());
 	}
@@ -373,7 +373,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey, typename tf_CCompare>
-	bint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindLargestLessThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindLargestLessThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
 	{
 		const CLink *pBestFit = nullptr;
 

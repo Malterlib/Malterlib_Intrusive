@@ -77,7 +77,7 @@ namespace NMib::NIntrusive
 			m_pPrevPtr = _pPrev;
 		}
 
-		inline_small bint f_IsListLink() const
+		inline_small bool f_IsListLink() const
 		{
 			return (mint)(void *)m_pNextPtr & 1;
 		}
@@ -155,7 +155,7 @@ namespace NMib::NIntrusive
 		{
 		}
 
-		inline_small bint fp_IsListLink() const
+		inline_small bool fp_IsListLink() const
 		{
 			return m_Data.f_IsListLink();
 		}
@@ -266,7 +266,7 @@ namespace NMib::NIntrusive
 			fp_LinkNoUnlinkLast(_pLinkAfter);
 		}
 
-		bint fp_IsValid() const
+		bool fp_IsValid() const
 		{
 			if (fp_IsListLink())
 			{
@@ -590,12 +590,12 @@ namespace NMib::NIntrusive
 			}
 		}
 
-		inline_small bint f_IsAloneInList() const
+		inline_small bool f_IsAloneInList() const
 		{
 			return f_IsInList() && fp_GetPrevPtr() == this;
 		}
 
-		inline_small bint f_IsInList() const
+		inline_small bool f_IsInList() const
 		{
 			return fp_GetNextNotList() != nullptr;
 		}
@@ -621,7 +621,7 @@ namespace NMib::NIntrusive
 		}
 #endif
 
-		bint fp_IsValid() const
+		bool fp_IsValid() const
 		{
 			return true;
 		}
@@ -724,7 +724,7 @@ namespace NMib::NIntrusive
 			m_pPrevPtr = (CDLinkAggregate *)((mint)_pPrev | 1);
 		}
 
-		inline_small bint fp_IsListLink() const
+		inline_small bool fp_IsListLink() const
 		{
 			return ((mint)(CDLinkAggregate *)m_pPrevPtr & 1);
 		}
@@ -803,7 +803,7 @@ namespace NMib::NIntrusive
 
 		// Public functions
 
-		inline_small bint f_IsAloneInList() const
+		inline_small bool f_IsAloneInList() const
 		{
 			return f_IsInList() && (fp_GetPrev()->fp_IsListLink()) && (fp_GetNext()->fp_IsListLink());
 		}
@@ -874,7 +874,7 @@ namespace NMib::NIntrusive
 			}
 		}
 
-		inline_small bint f_IsInList() const
+		inline_small bool f_IsInList() const
 		{
 			return fp_GetNext() != nullptr;
 		}
@@ -961,7 +961,7 @@ namespace NMib::NIntrusive
 			m_Link.fp_SetPrevInitListLink(_pPrev);
 		}
 
-		inline_small bint fp_IsListLink() const
+		inline_small bool fp_IsListLink() const
 		{
 			return m_Link.fp_IsListLink();
 		}
@@ -1018,18 +1018,18 @@ namespace NMib::NIntrusive
 			m_Link.f_UnlinkFirstLinked();
 		}
 
-		inline_small bint f_IsAloneInList() const
+		inline_small bool f_IsAloneInList() const
 		{
 			return m_Link.f_IsAloneInList();
 		}
 
-		inline_small bint f_IsInList() const
+		inline_small bool f_IsInList() const
 		{
 			return m_Link.f_IsInList();
 		}
 	};
 
-	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	class TCDLinkListAggregate
 	{
 
@@ -1105,7 +1105,7 @@ namespace NMib::NIntrusive
 
 		}
 
-		template <typename t_CDataInternal1, typename t_CAllocator1, bint _bAutoDelete1>
+		template <typename t_CDataInternal1, typename t_CAllocator1, bool _bAutoDelete1>
 		class CAutoDeleteHelper
 		{
 		public:
@@ -1362,7 +1362,7 @@ namespace NMib::NIntrusive
 		}
 
 
-		inline_small bint f_IsEmpty() const
+		inline_small bool f_IsEmpty() const
 		{
 			auto pLink = fp_GetLink();
 			return pLink->fp_GetNextList() == pLink;
@@ -1381,7 +1381,7 @@ namespace NMib::NIntrusive
 		}
 
 		template <typename t_CData2>
-		bint f_Contains(const t_CData2 &_CheckFor) const
+		bool f_Contains(const t_CData2 &_CheckFor) const
 		{
 			CIteratorConst Iter(*this);
 			while (Iter)
@@ -1445,7 +1445,7 @@ namespace NMib::NIntrusive
 			return nullptr;
 		}
 
-		bint f_Contains(const t_CData *_pCheckFor) const
+		bool f_Contains(const t_CData *_pCheckFor) const
 		{
 			CIteratorConst Iter(*this);
 			while (Iter)
@@ -1457,7 +1457,7 @@ namespace NMib::NIntrusive
 			return false;
 		}
 
-		bint f_Contains(t_CData *_pCheckFor) const
+		bool f_Contains(t_CData *_pCheckFor) const
 		{
 			CIteratorConst Iter(*this);
 			while (Iter)
@@ -2357,7 +2357,7 @@ namespace NMib::NIntrusive
 
 		}
 
-		bint f_CheckList(bint _bBreak) const
+		bool f_CheckList(bool _bBreak) const
 		{
 			auto *pLink = fp_GetLink();
 			t_CLink *pCurrent = pLink;
@@ -2940,7 +2940,7 @@ namespace NMib::NIntrusive
 			return CIteratorConst(*this);
 		}
 
-		bint operator == (const TCDLinkListAggregate &_Other) const
+		bool operator == (const TCDLinkListAggregate &_Other) const
 		{
 			CIteratorConst Iter0 = *this;
 			CIteratorConst Iter1 = _Other;
@@ -2963,40 +2963,40 @@ namespace NMib::NIntrusive
 		}
 	};
 #ifdef DMibDebuggerHelpers
-	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	auto TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::fs_Debug_GetOffset() -> COffset
 	{
 		return {};
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>*
 	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIterator::fs_Debug_List()
 	{
 		return nullptr;
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	auto TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIterator::fs_Debug_GetOffset() -> COffset
 	{
 		return {};
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>*
 	TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIteratorConst::fs_Debug_List()
 	{
 		return nullptr;
 	}
 
-	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	auto TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::CIteratorConst::fs_Debug_GetOffset() -> COffset
 	{
 		return {};
 	}
 #endif
 
-	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bint t_bAutoDelete, typename t_CAllocator>
+	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	class TCDLinkList : public TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>
 	{
 	private:
@@ -3006,7 +3006,7 @@ namespace NMib::NIntrusive
 	public:
 
 		typedef TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator> CSuper;
-		bint operator == (const TCDLinkList &_Other) const
+		bool operator == (const TCDLinkList &_Other) const
 		{
 			return (const CSuper &)*this == (const CSuper &)_Other;
 		}

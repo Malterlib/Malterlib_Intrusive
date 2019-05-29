@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Test/Test>
@@ -8,7 +8,7 @@ namespace
 {
 	using namespace NMib::NIntrusive;
 	using namespace NMib::NStr;
- 
+
 	class CAVLTree_Tests : public NMib::NTest::CTest
 	{
 	public:
@@ -37,7 +37,7 @@ namespace
 			CData(CStr const& _Data) : m_Data(_Data), m_Valid(true) {}
 			CData(CData const &_Other) : m_Data(_Other.m_Data), m_Valid(_Other.m_Valid) {}
 		public:
-			CData(CData &&_Other) : m_Data(_Other.m_Data), m_Valid(_Other.m_Valid) 
+			CData(CData &&_Other) : m_Data(_Other.m_Data), m_Valid(_Other.m_Valid)
 			{
 				_Other.m_Valid = false;
 			}
@@ -67,22 +67,22 @@ namespace
 				bool m_Valid;
 			public:
 				CCompare() : m_Valid(true) {}
-				CCompare(CCompare &&_Other) : m_Valid(true) 
-				{ 
-					_Other.m_Valid = false; 
+				CCompare(CCompare &&_Other) : m_Valid(true)
+				{
+					_Other.m_Valid = false;
 				}
 				~CCompare() { m_Valid = false; }
-				CCompare& operator = (CCompare &&_Other) 
-				{ 
+				CCompare& operator = (CCompare &&_Other)
+				{
 					m_Valid = _Other.m_Valid;
 					_Other.m_Valid = false;
-					return *this; 
+					return *this;
 				}
 				CData const &operator () (CTestClass const &_Node) const
 				{
 					return _Node.m_Data;
 				}
-				inline_small bint operator () (CData const &_Left, CData const &_Right) const
+				inline_small bool operator () (CData const &_Left, CData const &_Right) const
 				{
 					DMibTest(DMibExpr(_Left.m_Valid)) (ETestFlag_Aggregated);
 					DMibTest(DMibExpr(_Right.m_Valid)) (ETestFlag_Aggregated);
@@ -100,7 +100,7 @@ namespace
 
 		void f_DoTests() override
 		{
-			
+
 			DMibTestSuite("AVL")
 			{
 
@@ -165,14 +165,14 @@ namespace
 				Test.m_Tree.f_Remove(Test3);
 				Test.m_Tree.f_Remove(Test4);*/
 			};
-			
+
 		}
 	};
 
 
 	[[maybe_unused]] TCAVLTreeAggregate<&CAVLTree_Tests::CTestClass::m_Link, CAVLTree_Tests::CTestClass::CCompare> g_Tree = { DAggregateInit };
 
-	
+
 	DMibTestRegister(CAVLTree_Tests, Malterlib::Intrusive);
 }
 

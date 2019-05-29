@@ -27,7 +27,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <EAVLLinkType t_LinkType, typename t_CLinkData>
-	bint TCAVLLinkAggregate<t_LinkType, t_CLinkData>::f_IsInTree() const
+	bool TCAVLLinkAggregate<t_LinkType, t_CLinkData>::f_IsInTree() const
 	{
 		return m_Link.f_GetSkew() != t_CLinkData::EAVLTreeSkew_NotInTree;
 	}
