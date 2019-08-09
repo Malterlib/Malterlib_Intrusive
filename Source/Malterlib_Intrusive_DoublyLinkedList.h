@@ -1126,7 +1126,7 @@ namespace NMib::NIntrusive
 
 		inline_small void f_Destruct()
 		{
-			if (t_bAutoDelete)
+			if constexpr (t_bAutoDelete)
 			{
 				while(t_CData *pCurrent = f_GetLast())
 				{

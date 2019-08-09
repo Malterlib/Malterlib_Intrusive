@@ -94,7 +94,7 @@ namespace NMib::NIntrusive
 
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate3Short(CLinkPointer *_pTop, int t_Direction)
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate3Short(CLinkPointer *_pTop, int _Direction)
 	{
 		CLink *pBP;
 		CLink *pCP;
@@ -103,18 +103,18 @@ namespace NMib::NIntrusive
 		CLink *pFP;
 
 		pBP = CLink::fs_GetPtr(*_pTop);
-		pFP = pBP->f_GetNextP(t_Direction);
-		pDP = pFP->f_GetNextP(1-t_Direction);
+		pFP = pBP->f_GetNextP(_Direction);
+		pDP = pFP->f_GetNextP(1-_Direction);
 
-		pCP = pDP->f_GetNextP(1-t_Direction);
-		pEP = pDP->f_GetNextP(t_Direction);
+		pCP = pDP->f_GetNextP(1-_Direction);
+		pEP = pDP->f_GetNextP(_Direction);
 
 		CLink::f_Assign(_pTop, pDP);
 
-		pDP->fp_SetNext(1-t_Direction, pBP);
-		pDP->fp_SetNext(t_Direction, pFP);
-		pBP->fp_SetNext(t_Direction, pCP);
-		pFP->fp_SetNext(1-t_Direction, pEP);
+		pDP->fp_SetNext(1-_Direction, pBP);
+		pDP->fp_SetNext(_Direction, pFP);
+		pBP->fp_SetNext(_Direction, pCP);
+		pFP->fp_SetNext(1-_Direction, pEP);
 
 		pDP->f_SetSkew(CLink::EAVLTreeSkew_None);
 		pBP->f_SetSkew(CLink::EAVLTreeSkew_None);
@@ -123,7 +123,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate3(CLinkPointer *_pTop, int t_Direction, int t_Third)
+	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third)
 	{
 		CLink *pBP;
 		CLink *pCP;
@@ -132,35 +132,35 @@ namespace NMib::NIntrusive
 		CLink *pFP;
 
 		pBP = CLink::fs_GetPtr(*_pTop);
-		pFP = pBP->f_GetNextP(t_Direction);
-		pDP = pFP->f_GetNextP(1-t_Direction);
+		pFP = pBP->f_GetNextP(_Direction);
+		pDP = pFP->f_GetNextP(1-_Direction);
 
-		pCP = pDP->f_GetNextP(1-t_Direction);
-		pEP = pDP->f_GetNextP(t_Direction);
+		pCP = pDP->f_GetNextP(1-_Direction);
+		pEP = pDP->f_GetNextP(_Direction);
 
 		CLink::f_Assign(_pTop, pDP);
 
-		pDP->fp_SetNext(1-t_Direction, pBP);
-		pDP->fp_SetNext(t_Direction, pFP);
-		pBP->fp_SetNext(t_Direction, pCP);
-		pFP->fp_SetNext(1-t_Direction, pEP);
+		pDP->fp_SetNext(1-_Direction, pBP);
+		pDP->fp_SetNext(_Direction, pFP);
+		pBP->fp_SetNext(_Direction, pCP);
+		pFP->fp_SetNext(1-_Direction, pEP);
 
 		pDP->f_SetSkew(CLink::EAVLTreeSkew_None);
 
 //				CLink *pTree0 = pDP->f_GetNextP(_Direction);
 //				CLink *pTree1 = pDP->f_GetNextP(1-_Direction);
 
-		if (t_Third == t_Direction)
+		if (_Third == _Direction)
 		{
-			pBP->f_SetSkew(1-t_Direction);
+			pBP->f_SetSkew(1-_Direction);
 			pFP->f_SetSkew(CLink::EAVLTreeSkew_None);
-			return pFP->f_GetNextP(1-t_Direction);
+			return pFP->f_GetNextP(1-_Direction);
 		}
 		else
 		{
 			pBP->f_SetSkew(CLink::EAVLTreeSkew_None);
-			pFP->f_SetSkew(t_Direction);
-			return pBP->f_GetNextP(t_Direction);
+			pFP->f_SetSkew(_Direction);
+			return pBP->f_GetNextP(_Direction);
 		}
 	}
 

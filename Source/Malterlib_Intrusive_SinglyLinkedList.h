@@ -254,7 +254,7 @@ namespace NMib::NIntrusive
 
 		void f_Destruct()
 		{
-			if (t_bAutoDelete)
+			if constexpr (t_bAutoDelete)
 				fp_AutoDelete<t_bAutoDelete>();
 			else
 				f_Clear();

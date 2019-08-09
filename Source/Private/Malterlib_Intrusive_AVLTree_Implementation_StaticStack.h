@@ -188,10 +188,10 @@ namespace NMib::NIntrusive
 
 		pB->f_SetSkew(CLink::EAVLTreeSkew_None);
 		pF->f_SetSkew(CLink::EAVLTreeSkew_None);
-		int DSkew = pD->f_GetSkew();
-		if (DSkew == tf_Direction)
+		int Skew = pD->f_GetSkew();
+		if (Skew == tf_Direction)
 			pB->f_SetSkew(1-tf_Direction);
-		else if (DSkew == 1-tf_Direction)
+		else if (Skew == 1-tf_Direction)
 			pF->f_SetSkew(tf_Direction);
 		pD->f_SetSkew(CLink::EAVLTreeSkew_None);
 
