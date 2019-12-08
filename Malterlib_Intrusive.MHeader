@@ -10,9 +10,9 @@ Property.MalterlibBoostModules "intrusive;static_assert;assert;move;@(MalterlibB
 
 %Group "{Malterlib}/{Lib_Malterlib_Intrusive}"
 {
-	%Group Intrusive
+	%Group "Intrusive"
 	{
-		%Group Include
+		%Group "Include"
 		{
 			Compile.Type "C++"
 			{
@@ -21,7 +21,7 @@ Property.MalterlibBoostModules "intrusive;static_assert;assert;move;@(MalterlibB
 			%File "Include/Mib/Intrusive/^*"
 		}
 		%File "Source/^*"
-		%Group Documentation
+		%Group "Documentation"
 		{
 			%File "Documentation/*"
 		}
