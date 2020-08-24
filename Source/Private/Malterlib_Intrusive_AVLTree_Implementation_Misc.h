@@ -69,7 +69,11 @@ namespace NMib::NIntrusive
 	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLink(CLink *_pLink)
 	{
-		mint Offset = (smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link);
+#ifdef DCompiler_MSVC_Workaround
+		static mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+#else
+		static constexpr mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+#endif
 		return ((CNode *)(((uint8 *)_pLink) - Offset));
 	}
 
@@ -77,7 +81,11 @@ namespace NMib::NIntrusive
 	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLinkConst(const CLink *_pLink)
 	{
-		mint Offset = (smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link);
+#ifdef DCompiler_MSVC_Workaround
+		static mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+#else
+		static constexpr mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+#endif
 		return ((CNode *)(((uint8 *)_pLink) - Offset));
 	}
 
