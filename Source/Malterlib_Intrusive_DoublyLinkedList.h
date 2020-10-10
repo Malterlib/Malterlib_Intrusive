@@ -17,7 +17,6 @@ namespace NMib::NIntrusive
 		using CThis = CDLinkAggregateListNoPrevPtrList;
 		mint m_pNextPtr;
 
-#ifndef DMibNoAggregateConstexpr
 		constexpr CDLinkAggregateListNoPrevPtrList(EAggregateInitialization _Init)
 			: m_pNextPtr{0}
 		{
@@ -25,7 +24,7 @@ namespace NMib::NIntrusive
 		CDLinkAggregateListNoPrevPtrList()
 		{
 		}
-#endif
+
  		inline_small void fp_Internal_SetNextList(void *_pNext)
 		{
 			DMibFastCheck(fp_Internal_IsListLink());
@@ -118,7 +117,6 @@ namespace NMib::NIntrusive
 
 		mint m_pPrevPtr;
 
-#ifndef DMibNoAggregateConstexpr
 		constexpr CDLinkAggregateListNoPrevPtr(EAggregateInitialization _Init)
 			: CDLinkAggregateListNoPrevPtrList{_Init}
 			, m_pPrevPtr{0}
@@ -127,7 +125,7 @@ namespace NMib::NIntrusive
 		CDLinkAggregateListNoPrevPtr()
 		{
 		}
-#endif
+
 		inline_small void f_Construct()
 		{
 			fp_SetNextInit(nullptr);
@@ -611,7 +609,6 @@ namespace NMib::NIntrusive
 		CDLinkAggregate *m_pNextPtr;
 		CDLinkAggregate *m_pPrevPtr;
 
-#ifndef DMibNoAggregateConstexpr
 		constexpr CDLinkAggregate(EAggregateInitialization _Init)
 			: m_pNextPtr{nullptr}
 			, m_pPrevPtr{nullptr}
@@ -620,7 +617,6 @@ namespace NMib::NIntrusive
 		CDLinkAggregate()
 		{
 		}
-#endif
 
 		bool fp_IsValid() const
 		{
@@ -1088,7 +1084,6 @@ namespace NMib::NIntrusive
 //			t_CLink m_Last;
 		t_CLinkInList m_Link;
 
-#ifndef DMibNoAggregateConstexpr
 		constexpr TCDLinkListAggregate(EAggregateInitialization _Init)
 			: m_Link{_Init}
 		{
@@ -1102,7 +1097,7 @@ namespace NMib::NIntrusive
 			static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 		}
-#endif
+
 		inline_small void f_Construct()
 		{
 #ifdef DMibDebuggerHelpers

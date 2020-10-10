@@ -76,7 +76,6 @@ namespace NMib::NIntrusive
 	public:
 		CLinkPointer m_Root;
 
-#ifndef DMibNoAggregateConstexpr
 		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init)
 			: m_Root{nullptr}
 		{
@@ -90,7 +89,6 @@ namespace NMib::NIntrusive
 			static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);
 #endif
 		}
-#endif
 
 	protected:
 

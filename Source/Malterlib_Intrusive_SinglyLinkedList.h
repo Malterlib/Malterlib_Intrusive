@@ -18,7 +18,6 @@ namespace NMib::NIntrusive
 	{
 		using CThis = CSLinkAggr;
 	public:
-#ifndef DMibNoAggregateConstexpr
 		constexpr CSLinkAggr(EAggregateInitialization _Init)
 			: m_pNext(nullptr)
 		{
@@ -26,7 +25,7 @@ namespace NMib::NIntrusive
 		inline_always CSLinkAggr()
 		{
 		}
-#endif
+
 		CSLinkAggr *m_pNext;
 
 		inline_small void f_Construct()
@@ -107,7 +106,6 @@ namespace NMib::NIntrusive
 	class CSLinkListData_Last
 	{
 	public:
-#ifndef DMibNoAggregateConstexpr
 		constexpr CSLinkListData_Last(EAggregateInitialization _Init)
 			: m_First(_Init)
 			, m_pLast(nullptr)
@@ -116,7 +114,7 @@ namespace NMib::NIntrusive
 		inline_always CSLinkListData_Last()
 		{
 		}
-#endif
+
 		CSLinkAggr m_First;
 		CSLinkAggr *m_pLast;
 		inline_small CSLinkAggr &fp_GetFirst()
@@ -148,7 +146,6 @@ namespace NMib::NIntrusive
 	class CSLinkListData
 	{
 	public:
-#ifndef DMibNoAggregateConstexpr
 		constexpr CSLinkListData(EAggregateInitialization _Init)
 			: m_First(_Init)
 		{
@@ -156,7 +153,7 @@ namespace NMib::NIntrusive
 		inline_always CSLinkListData()
 		{
 		}
-#endif
+
 		CSLinkAggr m_First;
 		inline_small CSLinkAggr &fp_GetFirst()
 		{
@@ -189,7 +186,6 @@ namespace NMib::NIntrusive
 	{
 		typedef typename t_CTranslator::template TCOffset<t_CData> COffset;
 	public:
-#ifndef DMibNoAggregateConstexpr
 		constexpr TCSLinkListAggregate(EAggregateInitialization _Init)
 			: m_Data(_Init)
 		{
@@ -203,7 +199,7 @@ namespace NMib::NIntrusive
 			static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 		}
-#endif
+
 		t_CListData m_Data;
 
 #ifdef DMibDebuggerHelpers
