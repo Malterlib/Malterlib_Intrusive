@@ -941,6 +941,16 @@ namespace NMib::NIntrusive
 		{
 			m_Link.f_Destruct();
 		}
+
+		inline_small t_CLink const *f_GetNext() const
+		{
+			return (t_CLink const *)m_Link.fp_GetNextNotList();
+		}
+
+		inline_small t_CLink const *f_GetPrev() const
+		{
+			return (t_CLink const *)m_Link.fp_GetPrevNotList();
+		}
 /*
 		inline_small void fp_Link(t_CLink *_pLinkAfter)
 		{
@@ -1598,7 +1608,7 @@ namespace NMib::NIntrusive
 
 			while (pCurrent != pLink)
 			{
-				if (t_CSortClass::fs_Compare(_pContext, fp_MemberFromLink(pCurrent), _pToInsert) >= 0)
+				if (t_CSortClass::fs_Compare(_pContext, fp_MemberFromLink(pCurrent->f_Upcast()), _pToInsert) >= 0)
 					break;
 				pLast = pCurrent;
 				pCurrent = pCurrent->fp_GetNextNotList();
@@ -1785,7 +1795,7 @@ namespace NMib::NIntrusive
 
 			while (pCurrent != pLink)
 			{
-				if (t_CSortClass::fs_Compare(_pContext, fp_MemberFromLink(pCurrent->f_Upcast()), _pToInsert) > 0)
+				if (t_CSortClass::fs_Compare(_pContext, this->fp_MemberFromLink(pCurrent->f_Upcast()), _pToInsert) > 0)
 					break;
 				pCurrent = pCurrent->fp_GetNextNotList();
 			}
