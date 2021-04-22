@@ -3,7 +3,7 @@
 
 Import "../Core/Lib_Malterlib.MTarget"
 
-Property.MalterlibBoostModules "intrusive;static_assert;assert;move;@(MalterlibBoostModules)"
+Property.MalterlibBoostModules =+ ["intrusive", "static_assert", "assert", "move"]
 {
 	!!MalterlibEnableInternalTests true
 }
@@ -31,20 +31,13 @@ Property.MalterlibBoostModules "intrusive;static_assert;assert;move;@(MalterlibB
 
 Property
 {
-	MalterlibLibrary_Intrusive true
-	{
-		&
-		{
-			MalterlibLibrary_Intrusive ""
-			MalterlibLibrary_All true
-		}
-	}
-	MalterlibSubLibraries "Intrusive;@(MalterlibSubLibraries)"
+	MalterlibLibrary_Intrusive define bool = MalterlibLibrary_All
+	MalterlibSubLibraries =+ "Intrusive"
 	{
 		!!MalterlibLibrary_Intrusive true
 	}
-//	MalterlibSubLibrarySeparate_Lib_Malterlib_Intrusive true
-	MalterlibIncludeRoots "@('Include'->MakeAbsolute());@(MalterlibIncludeRoots)"
+//	MalterlibSubLibrarySeparate_Lib_Malterlib_Intrusive define bool = true
+	MalterlibIncludeRoots =+ "Include"->MakeAbsolute()
 	{
 		!!MalterlibLibrary_Intrusive true
 	}
@@ -54,7 +47,6 @@ Property
 {
 	!!MalterlibEnableInternalTests true
 	
-	MalterlibTests "Malterlib_Intrusive;@(MalterlibTests)"
-	MalterlibTestFiles_Malterlib_Intrusive "@('Test/*'->MakeAbsolute())"
+	MalterlibTests =+ "Malterlib_Intrusive"
+	MalterlibTestFiles_Malterlib_Intrusive define [type(CEntity)] = ["Test/*"->MakeAbsolute()]
 }
-
