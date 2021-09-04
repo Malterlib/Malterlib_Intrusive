@@ -326,7 +326,7 @@ namespace NMib::NIntrusive
 
 		inline_extralarge void fp_LinkNoUnlink(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
 		{
-			if (unlikely(_pLinkAfter->fp_IsListLink()))
+			if (_pLinkAfter->fp_IsListLink()) [[unlikely]]
 			{
 				auto *pAfterNext = _pLinkAfter->fp_GetNextList();
 				if (pAfterNext == _pLinkAfter)
@@ -348,7 +348,7 @@ namespace NMib::NIntrusive
 			else
 			{
 				auto *pAfterNext = _pLinkAfter->fp_GetNextNotList();
-				if (unlikely(pAfterNext->fp_IsListLink()))
+				if (pAfterNext->fp_IsListLink()) [[unlikely]]
 				{
 					// Last in list
 					fp_SetPrevInit(_pLinkAfter);
@@ -401,7 +401,7 @@ namespace NMib::NIntrusive
 
 		inline_extralarge void fp_LinkNoUnlinkLast(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
 		{
-			if (unlikely(_pLinkAfter->fp_IsListLink()))
+			if (_pLinkAfter->fp_IsListLink()) [[unlikely]]
 			{
 				DMibFastCheck(_pLinkAfter->fp_GetNextList() == _pLinkAfter);
 				// Empty list
@@ -429,7 +429,7 @@ namespace NMib::NIntrusive
 			DMibFastCheck(pPrev->fp_IsListLink());
 			auto pNext = fp_GetNextNotList();
 			pPrev->fp_SetNextList(pNext);
-			if (likely(!pNext->fp_IsListLink()))
+			if (!pNext->fp_IsListLink()) [[likely]]
 				pNext->f_Upcast()->fp_SetPrevNotList(pPrevPtr);
 			else
 			{
@@ -442,10 +442,10 @@ namespace NMib::NIntrusive
 		{
 			auto pPrev = fp_GetPrevNotList();
 			auto pNext = fp_GetNextNotList();
-			if (unlikely(pPrev->fp_IsListLink()))
+			if (pPrev->fp_IsListLink()) [[unlikely]]
 			{
 				pPrev->fp_SetNextList(pNext);
-				if (likely(!pNext->fp_IsListLink()))
+				if (!pNext->fp_IsListLink()) [[likely]]
 					pNext->f_Upcast()->fp_SetPrevNotList(fp_GetPrevPtr());
 				else
 				{
@@ -457,7 +457,7 @@ namespace NMib::NIntrusive
 			{
 				pPrev->f_Upcast()->fp_SetNextNotList(pNext);
 
-				if (unlikely(pNext->fp_IsListLink())) // Last in list
+				if (pNext->fp_IsListLink()) [[unlikely]] // Last in list
 					pNext->fp_GetNextList()->f_Upcast()->fp_SetPrevNotList(pPrev);
 				else // Between two usual blocks
 					pNext->f_Upcast()->fp_SetPrevNotList(pPrev);
