@@ -52,6 +52,7 @@ namespace NMib::NIntrusive
 		using CLinkContainer = typename NTraits::TCRemoveMemberObjectPointer<CMemberPointer>::CType;
 
 		typedef typename CLinkContainer::CLink CLink; // The inner link type containing the storage for links, has to be the first member of CLinkContainer
+
 	protected:
 		using CLinkPointer = CLink *; // The pointer type of the inner link type for each left/right link
 
@@ -348,7 +349,7 @@ namespace NMib::NIntrusive
 		static inline_small CNode *fs_GetLeft(CNode *_pObject);
 		inline_medium mint f_GetLen() const;
 		bool operator == (const TCAVLTreeAggregate &_Other) const;
-		bool operator < (const TCAVLTreeAggregate &_Other) const;
+		auto operator <=> (const TCAVLTreeAggregate &_Other) const;
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -587,7 +588,7 @@ namespace NMib::NIntrusive
 		TCAVLTree &operator = (TCAVLTree &&_Other);
 
 		bool operator == (const TCAVLTree &_Other) const;
-		bool operator < (const TCAVLTree &_Other) const;
+		auto operator <=> (const TCAVLTree &_Other) const;
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\

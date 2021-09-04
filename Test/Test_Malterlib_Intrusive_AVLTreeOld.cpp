@@ -71,13 +71,13 @@ namespace NMib
 				m_Data=rhs.m_Data;
 				return *this;
 			}
-			bool operator < (CBoostNode const &_Right) const
+			auto operator <=> (CBoostNode const &_Right) const
 			{
-				return m_Data < _Right.m_Data;
+				return m_Data <=> _Right.m_Data;
 			}
-			bool operator < (int const &_Right) const
+			auto operator <=> (int const &_Right) const
 			{
-				return m_Data < _Right;
+				return m_Data <=> _Right;
 			}
 		};
 

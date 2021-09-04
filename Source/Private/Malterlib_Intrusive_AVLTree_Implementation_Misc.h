@@ -200,34 +200,35 @@ namespace NMib::NIntrusive
 			++Iter1;
 		}
 
-		if (Iter0 && !Iter1)
+		if (!!Iter0 != !!Iter1)
 			return false;
-		if (!Iter0 && Iter1)
-			return false;
+
 		return true;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator < (const TCAVLTreeAggregate &_Other) const
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTreeAggregate &_Other) const
 	{
 		TIterator<> Iter0 = *this;
 		TIterator<> Iter1 = _Other;
 
+		using COrdering = decltype(*Iter0 <=> *Iter1);
+
 		while (Iter0 && Iter1)
 		{
-			if (*Iter0 < *Iter1)
-				return true;
-			if (*Iter0 > *Iter1)
-				return false;
+			if (auto Result = *Iter0 <=> *Iter1; Result != 0)
+				return Result;
+
 			++Iter0;
 			++Iter1;
 		}
 
 		if (Iter0 && !Iter1)
-			return false;
+			return COrdering::greater;
 		if (!Iter0 && Iter1)
-			return true;
-		return false;
+			return COrdering::less;
+
+		return COrdering::equivalent;
 	}
 
 	/***************************************************************************************************\
@@ -243,8 +244,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator < (const TCAVLTree &_Other) const
+	auto TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTree &_Other) const
 	{
-		return (const CSuper &)(*this) < (const CSuper &)_Other;
+		return (const CSuper &)(*this) <=> (const CSuper &)_Other;
 	}
 }
