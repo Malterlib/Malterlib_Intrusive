@@ -67,7 +67,7 @@ namespace NMib::NStream
 
 			while(nItems)
 			{
-				auto Memory = t_CAllocator::f_AllocSafe(sizeof(CNode), NTraits::TCAlignmentOf<CNode>::mc_Value);
+				auto Memory = t_CAllocator::f_AllocSafe(sizeof(CNode), alignof(CNode));
 				CNode *pNewItem = new(Memory.m_pMemory) CNode();
 				Memory.f_Claim();
 				auto Cleanup = g_OnScopeExit > [&]
