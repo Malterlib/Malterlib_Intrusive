@@ -494,13 +494,13 @@ namespace NMib::NIntrusive
 			f_InsertSorted<t_CSortClass>(&_ToInsert);
 		}
 
-		template <class t_CSortClass>
-		void f_InsertSorted(t_CData *_pToInsert)
+		template <typename tf_CCompare>
+		void f_InsertSorted(t_CData *_pToInsert, tf_CCompare &&_fCompare)
 		{
 			CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 			if (pCurrent)
 			{
-				while (t_CSortClass::fs_Compare(fp_MemberFromLink(pCurrent), _pToInsert) > 0)
+				while (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent), *_pToInsert)) > 0)
 				{
 					pCurrent = pCurrent->fp_GetNext();
 				}
@@ -730,29 +730,6 @@ namespace NMib::NIntrusive
 			}
 		}
 
-		//element *listsort(element *list, aint is_circular, aint is_double) {
-
-		typedef aint FMergeCompare(void *_pContext, void *_pFirst, void *_pSecond);
-		class CMergeCallbackSort
-		{
-		public:
-			void *m_pContext;
-			FMergeCompare *m_pSortFunction;
-			typedef aint CRet;
-			static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
-			{
-				return ((CMergeCallbackSort *)_pContext)->m_pSortFunction(((CMergeCallbackSort *)_pContext)->m_pContext, _pFirst, _pSecond);
-			}
-		};
-
-		void f_MergeSortCallback(FMergeCompare *_pSortfunction, void *_pContext = nullptr, aint _InsertionBits = 3)
-		{
-			CMergeCallbackSort SortContext;
-			SortContext.m_pContext = _pContext;
-			SortContext.m_pSortFunction = _pSortfunction;
-			f_MergeSort<CMergeCallbackSort>(&SortContext, _InsertionBits);
-		}
-
 		/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
 		|	Function:			Sorts the linked list								|
 		|																			|
@@ -790,8 +767,8 @@ namespace NMib::NIntrusive
 		|																			|
 		\*_________________________________________________________________________*/
 
-		template <class t_CSortClass>
-		void f_MergeSort(void *_pContext = nullptr, aint _InsertionBits = 3)
+		template <class tf_CCompare>
+		void f_MergeSort(tf_CCompare &&_fCompare, aint _InsertionBits = 3)
 		{
 			// We use mergesort as a stable and predictably performing algorithm, needing no extra heapspace or stackspace
 			// O = n(log n)
@@ -836,7 +813,7 @@ namespace NMib::NIntrusive
 
 						while (NumChecked)
 						{
-							if (t_CSortClass::fs_Compare(_pContext,fp_MemberFromLink(pCurrent),fp_MemberFromLink(pTemp)) <= 0)
+							if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent), *fp_MemberFromLink(pTemp))) <= 0)
 								break;
 							--NumChecked;
 							pTempAfter = pTemp;
@@ -908,7 +885,7 @@ namespace NMib::NIntrusive
 					}
 					else
 					{
-						if (t_CSortClass::fs_Compare(_pContext,fp_MemberFromLink(pLastFirst),fp_MemberFromLink(pSecond)) <= 0)
+						if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pLastFirst), *fp_MemberFromLink(pSecond))) <= 0)
 						{
 							// Lists already sorted
 							pLast->fp_SetNext(pFirst);
@@ -927,7 +904,7 @@ namespace NMib::NIntrusive
 							while (1)
 							{
 								// decide whether m_pNext element of merge comes from pFirst or pSecond
-								if (t_CSortClass::fs_Compare(_pContext,fp_MemberFromLink(pFirst),fp_MemberFromLink(pSecond)) <= 0)
+								if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pFirst), *fp_MemberFromLink(pSecond))) <= 0)
 								{
 									// First element of pFirst is lower (or same); pTemp must come from pFirst.
 									pLast->fp_SetNext(pFirst);
@@ -1115,32 +1092,10 @@ namespace NMib::NIntrusive
 
 		}
 
-		template <typename t_CFunctor>
-		struct TCComparerer
+		template <typename tf_CCompare>
+		void f_Sort(tf_CCompare &&_fCompare)
 		{
-			t_CFunctor m_Functor;
-			TCComparerer(t_CFunctor _Functor)
-				: m_Functor(_Functor)
-			{
-			}
-			typedef int32 CRet;
-			template <typename t_CLeft, typename t_CRight>
-			static inline_small CRet fs_Compare(void * _pContext, t_CLeft &&_Left, t_CRight &&_Right)
-			{
-				TCComparerer *pContext = (TCComparerer *)_pContext;
-				if (pContext->m_Functor(*_Left, *_Right))
-					return -1;
-				else if (pContext->m_Functor(*_Right, *_Left))
-					return 1;
-				return 0;
-			}
-		};
-
-		template <typename t_CFunctor>
-		void f_Sort(t_CFunctor &&_Functor)
-		{
-			TCComparerer<t_CFunctor> Comparerer(_Functor);
-			f_MergeSort<TCComparerer<t_CFunctor>>(&Comparerer);
+			f_MergeSort(_fCompare);
 		}
 
 		class CIterator
