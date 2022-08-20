@@ -82,13 +82,12 @@ namespace
 				{
 					return _Node.m_Data;
 				}
-				inline_small bool operator () (CData const &_Left, CData const &_Right) const
+				inline_small NMib::COrdering_Partial operator () (CData const &_Left, CData const &_Right) const
 				{
 					DMibTest(DMibExpr(_Left.m_Valid)) (ETestFlag_Aggregated);
 					DMibTest(DMibExpr(_Right.m_Valid)) (ETestFlag_Aggregated);
 
-					return fg_StrCmpNoCase(_Left.m_Data, _Right.m_Data) < 0;
-					//return _Left.m_Data > _Right.m_Data;
+					return fg_StrCmpNoCase(_Left.m_Data, _Right.m_Data) <=> 0;
 				}
 			};
 

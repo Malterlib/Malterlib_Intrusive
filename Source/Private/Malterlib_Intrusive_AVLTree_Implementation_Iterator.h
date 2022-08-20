@@ -280,7 +280,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey, typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindEqualForward(const tf_CKey &_Key, tf_CCompare &&_fCompare)
 	{
 		aint iStack = m_iStack;
 
@@ -288,11 +288,10 @@ namespace NMib::NIntrusive
 
 		while (pCurrentSearch)
 		{
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLinkConst(pCurrentSearch), _Key))
-			{
+			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLinkConst(pCurrentSearch), _Key);
+			if (CompareResult < 0)
 				pCurrentSearch = pCurrentSearch->f_GetRightP();
-			}
-			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), _Key, *fsp_MemberFromLinkConst(pCurrentSearch)))
+			else if (CompareResult > 0)
 			{
 				m_pStack[iStack++] = pCurrentSearch;
 				pCurrentSearch = pCurrentSearch->f_GetLeftP();
@@ -320,7 +319,11 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey, typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindSmallestGreaterThanEqualForward
+		(
+			const tf_CKey &_Key
+			, tf_CCompare &&_fCompare
+		)
 	{
 		const CLink* pBestFit = nullptr;
 
@@ -330,13 +333,12 @@ namespace NMib::NIntrusive
 
 		while (pCurrentSearch)
 		{
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLinkConst(pCurrentSearch), _Key))
-			{
+			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLinkConst(pCurrentSearch), _Key);
+			if (CompareResult < 0)
 				pCurrentSearch = pCurrentSearch->f_GetRightP();
-			}
-			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), _Key, *fsp_MemberFromLinkConst(pCurrentSearch)))
+			else if (CompareResult > 0)
 			{
-				DMibFastCheck(!pBestFit || (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLinkConst(pCurrentSearch), *fsp_MemberFromLinkConst(pBestFit)))); // Tree is damaged
+				DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLinkConst(pCurrentSearch), *fsp_MemberFromLinkConst(pBestFit)) < 0)); // Tree is damaged
 				pBestFit = pCurrentSearch;
 				m_pStack[iStack++] = pCurrentSearch;
 				pCurrentSearch = pCurrentSearch->f_GetLeftP();
@@ -373,7 +375,11 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CKey, typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindLargestLessThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_FindLargestLessThanEqualForward
+		(
+			const tf_CKey &_Key
+			, tf_CCompare &&_fCompare
+		)
 	{
 		const CLink *pBestFit = nullptr;
 
@@ -384,14 +390,15 @@ namespace NMib::NIntrusive
 
 		while (pCurrentSearch)
 		{
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), _Key, *fsp_MemberFromLinkConst(pCurrentSearch)))
+			auto CompareResult = fsp_Compare(_fCompare, _Key, *fsp_MemberFromLinkConst(pCurrentSearch));
+			if (CompareResult < 0)
 			{
 				m_pStack[iStack++] = pCurrentSearch;
 				pCurrentSearch = pCurrentSearch->f_GetLeftP();
 			}
-			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLinkConst(pCurrentSearch), _Key))
+			else if (CompareResult > 0)
 			{
-				DMibFastCheck(!pBestFit || (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLinkConst(pBestFit), *fsp_MemberFromLinkConst(pCurrentSearch)))); // Tree is damaged
+				DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLinkConst(pBestFit), *fsp_MemberFromLinkConst(pCurrentSearch)) < 0)); // Tree is damaged
 				pBestFit = pCurrentSearch;
 				iBestFitStack = iStack;
 				pCurrentSearch = pCurrentSearch->f_GetRightP();
@@ -428,12 +435,12 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_Delete(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare)
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_Delete(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare)
 	{
 		CNode *pToDelete = f_GetCurrent();
 		f_Next();
 		CNode *pToFind = f_GetCurrent();
-		_Tree.f_Remove(pToDelete, fg_Forward<tf_CCompare>(_Compare));
+		_Tree.f_Remove(pToDelete, _fCompare);
 		fg_DeleteObject(CAllocator(), pToDelete);
 		if (pToFind)
 		{
@@ -455,12 +462,12 @@ namespace NMib::NIntrusive
 	void
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>
 	::TIterator<_RecursionDepth>
-	::f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare, tf_CAllocator &_Allocator)
+	::f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare, tf_CAllocator &_Allocator)
 	{
 		CNode *pToDelete = f_GetCurrent();
 		f_Next();
 		CNode *pToFind = f_GetCurrent();
-		_Tree.f_Remove(pToDelete, fg_Forward<tf_CCompare>(_Compare));
+		_Tree.f_Remove(pToDelete, _fCompare);
 		fg_DeleteObject(_Allocator, pToDelete);
 		if (pToFind)
 		{
@@ -483,12 +490,12 @@ namespace NMib::NIntrusive
 	void
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>
 	::TIterator<_RecursionDepth>
-	::f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare, tf_CAllocator &_Allocator)
+	::f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare, tf_CAllocator &_Allocator)
 	{
 		CNode *pToDelete = f_GetCurrent();
 		f_Next();
 		CNode *pToFind = f_GetCurrent();
-		_Tree.f_Remove(pToDelete, fg_Forward<tf_CCompare>(_Compare));
+		_Tree.f_Remove(pToDelete, _fCompare);
 		fg_DeleteObjectDefiniteType(_Allocator, pToDelete);
 		if (pToFind)
 		{
@@ -508,12 +515,12 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <aint _RecursionDepth>
 	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_Remove(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare)
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::f_Remove(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare)
 	{
 		CNode *pToDelete = f_GetCurrent();
 		f_Next();
 		CNode *pToFind = f_GetCurrent();
-		_Tree.f_Remove(pToDelete, fg_Forward<tf_CCompare>(_Compare));
+		_Tree.f_Remove(pToDelete, _fCompare);
 		if (pToFind)
 		{
 			f_InitForSearch(&_Tree);
@@ -578,12 +585,12 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CIterator TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetIterator()
 	{
-		return CIterator(*this);
+		return *this;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CIteratorConst TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetIterator() const
 	{
-		return CIteratorConst(*this);
+		return *this;
 	}
 }

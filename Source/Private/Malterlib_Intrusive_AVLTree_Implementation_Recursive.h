@@ -61,22 +61,23 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_Compare, bool &_bRet)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare, bool &_bRet)
 	{
 		if (!CLink::fs_GetPtrIsFast())
 		{
 			if (CLink *pObj = CLink::fs_GetPtr(_pObject))
 			{
-				if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj)))
+				auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj));
+				if (CompareResult < 0)
 				{
-					if (fspr_Insert(pObj->f_GetLeft(), _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare), _bRet))
+					if (fspr_Insert(pObj->f_GetLeft(), _pObjectToInsert, _fCompare, _bRet))
 					{
 						return fsp_LeftGrown(_pObject);
 					}
 				}
-				else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)))
+				else if (CompareResult > 0)
 				{
-					if (fspr_Insert(pObj->f_GetRight(), _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare), _bRet))
+					if (fspr_Insert(pObj->f_GetRight(), _pObjectToInsert, _fCompare, _bRet))
 					{
 						return fsp_RightGrown(_pObject);
 					}
@@ -112,16 +113,17 @@ namespace NMib::NIntrusive
 				return true;
 			}
 
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(CLink::fs_GetPtr(_pObject))))
+			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(CLink::fs_GetPtr(_pObject)));
+			if (CompareResult < 0)
 			{
-				if (fspr_Insert(CLink::fs_GetPtr(_pObject)->f_GetLeft(), _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare), _bRet))
+				if (fspr_Insert(CLink::fs_GetPtr(_pObject)->f_GetLeft(), _pObjectToInsert, _fCompare, _bRet))
 				{
 					return fsp_LeftGrown_Inl(_pObject);
 				}
 			}
-			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(CLink::fs_GetPtr(_pObject)), *fsp_MemberFromLink(_pObjectToInsert)))
+			else if (CompareResult > 0)
 			{
-				if (fspr_Insert(CLink::fs_GetPtr(_pObject)->f_GetRight(), _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare), _bRet))
+				if (fspr_Insert(CLink::fs_GetPtr(_pObject)->f_GetRight(), _pObjectToInsert, _fCompare, _bRet))
 				{
 					return fsp_RightGrown_Inl(_pObject);
 				}
@@ -138,7 +140,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare)
 	{
 		CLink* pObj = CLink::fs_GetPtr(_pObject);
 
@@ -146,17 +148,18 @@ namespace NMib::NIntrusive
 
 		if (pObj != _pObjectToRemove)
 		{
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(_pObjectToRemove), *fsp_MemberFromLink(pObj)))
+			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToRemove), *fsp_MemberFromLink(pObj));
+			if (CompareResult < 0)
 			{
-				if (fspr_Remove(pObj->f_GetLeft(), _pObjectToRemove, fg_Forward<tf_CCompare>(_Compare)))
+				if (fspr_Remove(pObj->f_GetLeft(), _pObjectToRemove, _fCompare))
 				{
 					return fsp_LeftShrunk(_pObject);
 				}
 				return false;
 			}
-			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove)))
+			else if (CompareResult > 0)
 			{
-				if (fspr_Remove(pObj->f_GetRight(), _pObjectToRemove, fg_Forward<tf_CCompare>(_Compare)))
+				if (fspr_Remove(pObj->f_GetRight(), _pObjectToRemove, _fCompare))
 				{
 					return fsp_RightShrunk(_pObject);
 				}
@@ -223,7 +226,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode *_pToInsert, tf_CCompare &&_Compare)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode *_pToInsert, tf_CCompare &&_fCompare)
 	{
 
 		CLink * pToInsert = fsp_LinkFromMember(_pToInsert);
@@ -232,7 +235,7 @@ namespace NMib::NIntrusive
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
 
 		bool bRet = true;
-		fspr_Insert(m_Root, pToInsert, fg_Forward<tf_CCompare>(_Compare), bRet);
+		fspr_Insert(m_Root, pToInsert, _fCompare, bRet);
 		return bRet;
 	}
 
@@ -244,9 +247,9 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode &_ToInsert, tf_CCompare &&_Compare)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode &_ToInsert, tf_CCompare &&_fCompare)
 	{
-		return fr_Insert(&_ToInsert, fg_Forward<tf_CCompare>(_Compare));
+		return fr_Insert(&_ToInsert, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -257,18 +260,18 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Remove(CNode *_pToRemove, tf_CCompare &&_Compare)
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare)
 	{
 		CLink * pToRemove = fsp_LinkFromMember(_pToRemove);
 
-		fspr_Remove(m_Root, pToRemove, fg_Forward<tf_CCompare>(_Compare));
+		fspr_Remove(m_Root, pToRemove, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Remove(CNode &_ToRemove, tf_CCompare &&_Compare)
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Remove(CNode &_ToRemove, tf_CCompare &&_fCompare)
 	{
-		fr_Remove(&_ToRemove, fg_Forward<tf_CCompare>(_Compare));
+		fr_Remove(&_ToRemove, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

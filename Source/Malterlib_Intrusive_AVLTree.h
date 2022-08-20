@@ -100,7 +100,7 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		bool fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_Compare, mint &_Depth);
+		bool fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, mint &_Depth);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -124,85 +124,46 @@ namespace NMib::NIntrusive
 			operator t_Inner& () { return m_Inner; }
 		};
 		template <typename tf_CCompare, typename tf_CNode>
-		inline_small static auto fsp_GetKey(tf_CCompare &&_Compare, tf_CNode &&_Node)
-		-> typename TCEnableIf
-		<
-			NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::mc_Value
-			, typename NTraits::TCIsCallableWith< typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::CReturnType
-		>::CType
+		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
+			-> typename NTraits::TCIsCallableWith< typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::CReturnType
+			requires (NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::mc_Value)
 		{
-			return fg_Forward<tf_CCompare>(_Compare)(fg_Forward<tf_CNode>(TCImplicitConvert<tf_CNode>(_Node)));
+			return _fCompare(fg_Forward<tf_CNode>(TCImplicitConvert<tf_CNode>(_Node)));
 		}
 
 		template <typename tf_CCompare, typename tf_CNode>
-		inline_small static auto fsp_GetKey(tf_CCompare &&_Compare, tf_CNode &&_Node)
-		-> typename TCEnableIf
-		<
-			!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::mc_Value
-			, typename NTraits::TCRemoveRValueReference<tf_CNode>::CType
-		>::CType
+		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
+			-> typename NTraits::TCRemoveRValueReference<tf_CNode>::CType
+			requires (!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::mc_Value)
 		{
-			return fg_Forward<tf_CNode>(_Node);
+			return _Node;
 		}
 
 		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_DoCompare(tf_CCompare &&_Compare, tf_CLeft &&_Left, tf_CRight &&_Right)
-		-> typename TCEnableIf<NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, bool (tf_CLeft &&, tf_CRight &&)>::mc_Value, bool>::CType
+		inline_small static auto fsp_DoCompare(tf_CCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
+			requires (NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (tf_CLeft &&, tf_CRight &&)>::mc_Value)
 		{
-			return fg_Forward<tf_CCompare>(_Compare)(fg_Forward<tf_CLeft>(_Left), fg_Forward<tf_CRight>(_Right));
+			return _fCompare(_Left, _Right);
 		}
 
 		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_DoCompare(tf_CCompare &&_Compare, tf_CLeft &&_Left, tf_CRight &&_Right)
-		-> typename TCEnableIf<!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, bool (tf_CLeft &&, tf_CRight &&)>::mc_Value, bool>::CType
+		inline_small static auto fsp_DoCompare(tf_CCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
+			requires (!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (tf_CLeft &&, tf_CRight &&)>::mc_Value)
 		{
-			return fg_Forward<tf_CLeft>(_Left) < fg_Forward<tf_CRight>(_Right);
+			return _Left <=> _Right;
 		}
 
-/*
 		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_Compare(tf_CCompare &&_Compare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			-> typename TCEnableIf
-			<
-			NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, bool (tf_CLeft,tf_CRight)>::mc_Value
-			, typename NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, bool (tf_CLeft,tf_CRight)>::CReturnType
-			>::CType
+		inline_small static auto fsp_Compare(tf_CCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
 		{
 			return fsp_DoCompare
 				(
-				_Compare
-				, fg_Forward<tf_CLeft>(_Left)
-				, fg_Forward<tf_CRight>(_Right)
-				);
-		}
-		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_Compare(tf_CCompare &&_Compare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			-> typename TCEnableIf
-			<
-			!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, bool (tf_CLeft,tf_CRight)>::mc_Value
-			, bool
-			>::CType
-		{
-			return fsp_DoCompare
-				(
-				_Compare
-				, fsp_GetKey(_Compare, fg_Forward<tf_CLeft>(_Left))
-				, fsp_GetKey(_Compare, fg_Forward<tf_CRight>(_Right))
-				);
-		}
-*/
-		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static bool fsp_Compare(tf_CCompare &&_Compare, tf_CLeft &&_Left, tf_CRight &&_Right)
-		{
-			return fsp_DoCompare
-				(
-					fg_Forward<tf_CCompare>(_Compare)
-					, fsp_GetKey(_Compare, fg_Forward<tf_CLeft>(_Left))
-					, fsp_GetKey(_Compare, fg_Forward<tf_CRight>(_Right))
+					fg_Forward<tf_CCompare>(_fCompare)
+					, fsp_GetKey(_fCompare, fg_Forward<tf_CLeft>(_Left))
+					, fsp_GetKey(_fCompare, fg_Forward<tf_CRight>(_Right))
 				)
 			;
 		}
-
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -228,9 +189,9 @@ namespace NMib::NIntrusive
 		static bool fsp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject);
 		static bool fsp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject);
 		template <typename tf_CCompare>
-		static bool fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_Compare);
+		static bool fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static bool fspr_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_Compare, bool &_bRet);
+		static bool fspr_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare, bool &_bRet);
 
 
 		/***************************************************************************************************\
@@ -242,13 +203,13 @@ namespace NMib::NIntrusive
 		static inline_medium bool fp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject, CStackObj *&_pStack);
 		static inline_medium bool fp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject, CStackObj *&_pStack);
 		template <typename tf_CCompare>
-		static void fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_Compare);
+		static void fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 		template <int tf_Direction>
 		static void fp_RemoveRotate3(CLinkPointer *_pObject);
 		template <int tf_Direction>
 		static void fp_RemoveRotate2(CLinkPointer *_pObject);
 		template <typename tf_CCompare>
-		static bool fp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_Compare);
+		static bool fp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -257,22 +218,22 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		static inline_medium CLinkPointer *fp_RemoveRebalance(CLinkPointer *_pTop, CLinkPointer *_pTarget, CLink *_pObjectToRemove, tf_CCompare &&_Compare);
+		static inline_medium CLinkPointer *fp_RemoveRebalance(CLinkPointer *_pTop, CLinkPointer *_pTarget, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static void fp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_Compare);
+		static void fp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 
 		template <int tf_Direction>
 		static inline_small CLink *fp_Rotate2(CLinkPointer *_pTop);
 		static void fp_Rotate3Short(CLinkPointer *_pTop, int _Direction);
 		static CLink *fp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third);
 		template <typename tf_CCompare>
-		static inline_small void fp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_CCompare &&_Compare);
+		static inline_small void fp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static inline_small void fp_RebalanceCase3LowStack(int _Direction, CLink *pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_Compare);
+		static inline_small void fp_RebalanceCase3LowStack(int _Direction, CLink *pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static inline_small void fp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_Compare);
+		static inline_small void fp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static bool fp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_Compare);
+		static bool fp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 
 
 	public:
@@ -289,13 +250,13 @@ namespace NMib::NIntrusive
 		inline_small void f_Destruct();
 
 		template <typename tf_CCompare>
-		void f_DeleteAll(tf_CCompare &&_Compare);
+		void f_DeleteAll(tf_CCompare &&_fCompare);
 		void f_DeleteAll();
 
 		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompare(tf_CCompare &&_Compare);
+		void f_DeleteAllAllocatorCompare(tf_CCompare &&_fCompare);
 		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompare(tf_CCompare &&_Compare, tf_CAllocator &_Allocator);
+		void f_DeleteAllAllocatorCompare(tf_CCompare &&_fCompare, tf_CAllocator &_Allocator);
 
 		template <typename tf_CAllocator>
 		void f_DeleteAllAllocator();
@@ -304,13 +265,13 @@ namespace NMib::NIntrusive
 
 
 		template <typename tf_CCompare>
-		void f_DeleteAllDefiniteType(tf_CCompare &&_Compare);
+		void f_DeleteAllDefiniteType(tf_CCompare &&_fCompare);
 		void f_DeleteAllDefiniteType();
 
 		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_Compare);
+		void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_fCompare);
 		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_Compare, tf_CAllocator &_Allocator);
+		void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_fCompare, tf_CAllocator &_Allocator);
 
 		template <typename tf_CAllocator>
 		void f_DeleteAllAllocatorDefiniteType();
@@ -319,20 +280,20 @@ namespace NMib::NIntrusive
 
 
 		template <typename tf_CDeleter, typename tf_CCompare>
-		void f_DeleteAllDeleter(tf_CCompare &&_Compare);
+		void f_DeleteAllDeleter(tf_CCompare &&_fCompare);
 		template <typename tf_CDeleter>
 		void f_DeleteAllDeleter();
 
 		template <typename tf_CCompare>
-		void f_DeleteAllDeleter(tf_CCompare &&_Compare);
+		void f_DeleteAllDeleter(tf_CCompare &&_fCompare);
 		void f_DeleteAllDeleter();
 
 		template <typename tf_CCompare>
-		void f_RemoveAll(tf_CCompare &&_Compare);
+		void f_RemoveAll(tf_CCompare &&_fCompare);
 		void f_RemoveAll();
 
 		template <typename tf_CCompare>
-		void f_Clear(tf_CCompare &&_Compare);
+		void f_Clear(tf_CCompare &&_fCompare);
 		void f_Clear();
 
 		/***************************************************************************************************\
@@ -358,16 +319,16 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		inline_small bool fr_Insert(CNode *_pToInsert, tf_CCompare &&_Compare);
+		inline_small bool fr_Insert(CNode *_pToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		inline_small bool fr_Insert(CNode &_ToInsert, tf_CCompare &&_Compare);
+		inline_small bool fr_Insert(CNode &_ToInsert, tf_CCompare &&_fCompare);
 		inline_small bool fr_Insert(CNode &_ToInsert);
 		inline_small bool fr_Insert(CNode *_pToInsert);
 
 		template <typename tf_CCompare>
-		inline_small void fr_Remove(CNode *_pToRemove, tf_CCompare &&_Compare);
+		inline_small void fr_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		inline_small void fr_Remove(CNode &_ToRemove, tf_CCompare &&_Compare);
+		inline_small void fr_Remove(CNode &_ToRemove, tf_CCompare &&_fCompare);
 		inline_small void fr_Remove(CNode &_ToRemove);
 		inline_small void fr_Remove(CNode *_pToRemove);
 
@@ -378,21 +339,21 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		inline_small bool f_Insert(CNode *_pToInsert, tf_CCompare &&_Compare);
+		inline_small bool f_Insert(CNode *_pToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		inline_small bool f_Insert(CNode &_ToInsert, tf_CCompare &&_Compare);
+		inline_small bool f_Insert(CNode &_ToInsert, tf_CCompare &&_fCompare);
 		inline_small bool f_Insert(CNode &_ToInsert);
 		inline_small bool f_Insert(CNode *_pToInsert);
 
 		template <typename tf_ToMap, typename tf_CCompare>
-		inline_small CNode *f_Map(tf_ToMap &_ToMap, tf_CCompare &&_Compare);
+		inline_small CNode *f_Map(tf_ToMap &_ToMap, tf_CCompare &&_fCompare);
 		template <typename tf_ToMap>
 		inline_small CNode *f_Map(tf_ToMap &_ToMap);
 
 		template <typename tf_CCompare>
-		inline_small void f_Remove(CNode *_pToRemove, tf_CCompare &&_Compare);
+		inline_small void f_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		inline_small void f_Remove(CNode &_ToRemove, tf_CCompare &&_Compare);
+		inline_small void f_Remove(CNode &_ToRemove, tf_CCompare &&_fCompare);
 		inline_small void f_Remove(CNode &_ToRemove);
 		inline_small void f_Remove(CNode *_pToRemove);
 
@@ -403,18 +364,18 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		inline_small bool f_InsertLowStack(CNode *_pToInsert, tf_CCompare &&_Compare);
+		inline_small bool f_InsertLowStack(CNode *_pToInsert, tf_CCompare &&_fCompare);
 		inline_small bool f_InsertLowStack(CNode &_ToInsert);
 		template <typename tf_CCompare>
-		inline_small bool f_InsertLowStack(CNode &_ToInsert, tf_CCompare &&_Compare);
+		inline_small bool f_InsertLowStack(CNode &_ToInsert, tf_CCompare &&_fCompare);
 		inline_small bool f_InsertLowStack(CNode *_pToInsert);
 
 		inline_small void f_RemoveLowStack(CNode &_ToRemove);
 		template <typename tf_CCompare>
-		inline_small void f_RemoveLowStack(CNode &_ToRemove, tf_CCompare &&_Compare);
+		inline_small void f_RemoveLowStack(CNode &_ToRemove, tf_CCompare &&_fCompare);
 		inline_small void f_RemoveLowStack(CNode *_pToRemove);
 		template <typename tf_CCompare>
-		inline_small void f_RemoveLowStack(CNode *_pToRemove, tf_CCompare &&_Compare);
+		inline_small void f_RemoveLowStack(CNode *_pToRemove, tf_CCompare &&_fCompare);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -426,24 +387,24 @@ namespace NMib::NIntrusive
 		CNode* f_FindLargest() const;
 
 		template <typename tf_CKey, typename tf_CCompare>
-		inline_medium CNode* f_FindEqual(const tf_CKey &_Key, tf_CCompare &&_Compare) const;
+		inline_medium CNode *f_FindEqual(const tf_CKey &_Key, tf_CCompare &&_fCompare) const;
 		template <typename tf_CKey>
 		inline_small CNode* f_FindEqual(const tf_CKey &_Key) const;
 
 		template <typename tf_CKey>
 		inline_small CNode* f_FindSmallestGreaterThanEqual(const tf_CKey &_Key) const;
 		template <typename tf_CKey, typename tf_CCompare>
-		inline_large CNode* f_FindSmallestGreaterThanEqual(const tf_CKey &_Key, tf_CCompare &&_Compare) const;
+		inline_large CNode* f_FindSmallestGreaterThanEqual(const tf_CKey &_Key, tf_CCompare &&_fCompare) const;
 
 		template <typename tf_CKey>
 		inline_small CNode* f_FindSmallestGreaterThanEqualAndPrev(const tf_CKey &_Key, CNode* &_pPrev) const;
 		template <typename tf_CKey, typename tf_CCompare>
-		inline_large CNode* f_FindSmallestGreaterThanEqualAndPrev(const tf_CKey &_Key, CNode* &_pPrev, tf_CCompare &&_Compare) const;
+		inline_large CNode* f_FindSmallestGreaterThanEqualAndPrev(const tf_CKey &_Key, CNode* &_pPrev, tf_CCompare &&_fCompare) const;
 
 		template <typename tf_CKey>
 		inline_small CNode* f_FindLargestLessThanEqual(const tf_CKey &_Key) const;
 		template <typename tf_CKey, typename tf_CCompare>
-		inline_large CNode* f_FindLargestLessThanEqual(const tf_CKey &_Key, tf_CCompare &&_Compare) const;
+		inline_large CNode* f_FindLargestLessThanEqual(const tf_CKey &_Key, tf_CCompare &&_fCompare) const;
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -453,7 +414,7 @@ namespace NMib::NIntrusive
 
 		bool f_CheckTree(bool _bBreak);
 		template <typename tf_CCompare>
-		bool f_CheckTree(bool _bBreak, tf_CCompare &&_Compare);
+		bool f_CheckTree(bool _bBreak, tf_CCompare &&_fCompare);
 
 		/************************************************************************************************\
 		||¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯||
@@ -510,36 +471,36 @@ namespace NMib::NIntrusive
 			void f_InitForSearch(const TCAVLTreeAggregate *_pTree);
 
 			template <typename tf_CKey, typename tf_CCompare>
-			bool f_FindEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare);
+			bool f_FindEqualForward(const tf_CKey &_Key, tf_CCompare &&_fCompare);
 			template <typename tf_CKey>
 			bool f_FindEqualForward(const tf_CKey &_Key);
 
 			template <typename tf_CKey, typename tf_CCompare>
-			bool f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare);
+			bool f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_fCompare);
 			template <typename tf_CKey>
 			bool f_FindSmallestGreaterThanEqualForward(const tf_CKey &_Key);
 
 			template <typename tf_CKey, typename tf_CCompare>
-			bool f_FindLargestLessThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_Compare);
+			bool f_FindLargestLessThanEqualForward(const tf_CKey &_Key, tf_CCompare &&_fCompare);
 			template <typename tf_CKey>
 			bool f_FindLargestLessThanEqualForward(const tf_CKey &_Key);
 
 			template <typename tf_CCompare>
-			void f_Delete(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare);
+			void f_Delete(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare);
 			void f_Delete(TCAVLTreeAggregate &_Tree);
 
 			template <typename tf_CCompare, typename tf_CAllocator>
-			void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare, tf_CAllocator &_Allocator);
+			void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare, tf_CAllocator &_Allocator);
 			template <typename tf_CAllocator>
 			void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
 
 			template <typename tf_CCompare, typename tf_CAllocator>
-			void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare, tf_CAllocator &_Allocator);
+			void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare, tf_CAllocator &_Allocator);
 			template <typename tf_CAllocator>
 			void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
 
 			template <typename tf_CCompare>
-			void f_Remove(TCAVLTreeAggregate &_Tree, tf_CCompare &&_Compare);
+			void f_Remove(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare);
 			void f_Remove(TCAVLTreeAggregate &_Tree);
 
 			inline_small operator CNode *() const;

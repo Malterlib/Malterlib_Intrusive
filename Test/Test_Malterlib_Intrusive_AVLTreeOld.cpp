@@ -50,6 +50,19 @@ namespace NMib
 			class CCompare
 			{
 			public:
+				COrdering_Partial operator () (CBoostNode const & _Left, int _Right) const
+				{
+					return _Left.m_Data <=> _Right;
+				}
+				COrdering_Partial operator () (int _Left, CBoostNode const & _Right) const
+				{
+					return _Left <=> _Right.m_Data;
+				}
+			};
+
+			class CCompareLessThan
+			{
+			public:
 				bool operator () (CBoostNode const & _Left, int _Right) const
 				{
 					return _Left.m_Data < _Right;
@@ -59,6 +72,7 @@ namespace NMib
 					return _Left < _Right.m_Data;
 				}
 			};
+
 			int m_Data;
 			CBoostNode() : m_Data(-1)
 			{
@@ -275,7 +289,7 @@ namespace NMib
 					}
 					Iter = m_DataBoost.f_GetIterator();
 					auto TreeEnd = BoostTree.end();
-					CBoostNode::CCompare Compare;
+					CBoostNode::CCompareLessThan Compare;
 					{
 						DMibTestScopeMeasure(BoostTime, m_nItems);
 						for (;Iter; ++Iter)

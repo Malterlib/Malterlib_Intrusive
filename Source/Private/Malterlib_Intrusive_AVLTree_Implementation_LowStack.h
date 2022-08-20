@@ -14,7 +14,13 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
 	inline_medium typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLinkPointer *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveRebalance(CLinkPointer *_pTop, CLinkPointer *_pTarget, CLink *_pObjectToRemove, tf_CCompare &&_Compare)
+	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveRebalance
+		(
+			CLinkPointer *_pTop
+			, CLinkPointer *_pTarget
+			, CLink *_pObjectToRemove
+			, tf_CCompare &&_fCompare
+		)
 	{
 		// each node from treep down towards target, but
 		// excluding the last, will have a subtree grow
@@ -26,7 +32,7 @@ namespace NMib::NIntrusive
 
 		while (1)
 		{
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove)))
+			if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove)) < 0)
 			{
 				if (!pObj->f_GetRightP())
 					break;
@@ -166,7 +172,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_Compare)
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare)
 	{
 		CLinkPointer *pObject = &_pObject;
 		CLinkPointer *pPathTop = pObject;
@@ -179,7 +185,7 @@ namespace NMib::NIntrusive
 			if (pObj == _pObjectToRemove)
 				pTarget = pObject;
 
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove)))
+			if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove)) < 0)
 			{
 				if (!pObj->f_GetRightP())
 				{
@@ -206,7 +212,7 @@ namespace NMib::NIntrusive
 
 		DMibFastCheck(pTarget); // Target not found in tree
 
-		pTarget = fp_RemoveRebalance(pPathTop, pTarget, _pObjectToRemove, fg_Forward<tf_CCompare>(_Compare));
+		pTarget = fp_RemoveRebalance(pPathTop, pTarget, _pObjectToRemove, _fCompare);
 
 		CLink *pObjDel = CLink::fs_GetPtr(*pTarget);
 		CLink::f_Assign(pTarget, pObj);
@@ -221,7 +227,12 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_CCompare &&_Compare)
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RebalancePathLowStack
+		(
+			CLink *_pPath
+			, CLink *_pObjectToInsert
+			, tf_CCompare &&_fCompare
+		)
 	{
 		// Each node in path is currently balanced.
 		// Until we find target, mark each node as longer
@@ -231,7 +242,7 @@ namespace NMib::NIntrusive
 
 		while (pPath && pPath != _pObjectToInsert)
 		{
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pPath), *fsp_MemberFromLink(_pObjectToInsert)))
+			if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pPath), *fsp_MemberFromLink(_pObjectToInsert)) < 0)
 			{
 				pPath->f_SetSkew(1);
 				pPath = pPath->f_GetRightP();
@@ -246,7 +257,14 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RebalanceCase3LowStack(int _Direction, CLink *pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_Compare)
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RebalanceCase3LowStack
+		(
+			int _Direction
+			, CLink *pPath
+			, CLinkPointer *_pTop
+			, CLink *_pObjectToInsert
+			, tf_CCompare &&_fCompare
+		)
 	{
 		CLink *pObj = pPath;
 		if (pObj == _pObjectToInsert)
@@ -255,17 +273,22 @@ namespace NMib::NIntrusive
 		}
 		else
 		{
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)))
+			if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)) < 0)
 				pObj = fp_Rotate3(_pTop, _Direction, 1);
 			else
 				pObj = fp_Rotate3(_pTop, _Direction, 0);
-			fp_RebalancePathLowStack(pObj, _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare));
+			fp_RebalancePathLowStack(pObj, _pObjectToInsert, _fCompare);
 		}
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_Compare)
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RebalanceLowStack
+		(
+			CLinkPointer *_pTop
+			, CLink *_pObjectToInsert
+			, tf_CCompare &&_fCompare
+		)
 	{
 		CLink *pObj = CLink::fs_GetPtr(*_pTop);
 		if (pObj->f_IsBalanced())
@@ -273,7 +296,7 @@ namespace NMib::NIntrusive
 			if (pObj == _pObjectToInsert)
 				return;
 		}
-		else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)))
+		else if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)) < 0)
 		{
 			if (!pObj->f_GetSkew())
 			{
@@ -283,13 +306,13 @@ namespace NMib::NIntrusive
 			else
 			{
 				pObj = pObj->f_GetRightP();
-				if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)))
+				if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)) < 0)
 				{
 					pObj = fp_Rotate2<1>(_pTop);
 				}
 				else
 				{
-					fp_RebalanceCase3LowStack(1, pObj->f_GetLeftP(), _pTop, _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare));
+					fp_RebalanceCase3LowStack(1, pObj->f_GetLeftP(), _pTop, _pObjectToInsert, _fCompare);
 					return;
 				}
 			}
@@ -304,24 +327,24 @@ namespace NMib::NIntrusive
 			else
 			{
 				pObj = pObj->f_GetLeftP();
-				if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj)))
+				if (fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj)) < 0)
 				{
 					pObj = fp_Rotate2<0>(_pTop);
 				}
 				else
 				{
-					fp_RebalanceCase3LowStack(0,pObj->f_GetRightP(), _pTop, _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare));
+					fp_RebalanceCase3LowStack(0,pObj->f_GetRightP(), _pTop, _pObjectToInsert, _fCompare);
 					return;
 				}
 			}
 		}
 
-		fp_RebalancePathLowStack(pObj, _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare));
+		fp_RebalancePathLowStack(pObj, _pObjectToInsert, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_Compare)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare)
 	{
 		// insert the target into the tree, returning 1 on success or 0 if it
 		// already existed
@@ -331,15 +354,15 @@ namespace NMib::NIntrusive
 		CLink *pObj = CLink::fs_GetPtr(*pTree);
 		while (pObj)
 		{
-
 			if (pObj->f_GetSkew() != CLink::EAVLTreeSkew_None)
 				pPathTop = pTree;
-			if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)))
+			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert));
+			if (CompareResult < 0)
 			{
 				pTree = pObj->f_GetRight();
 				pObj = CLink::fs_GetPtr(*pTree);
 			}
-			else if (fsp_Compare(fg_Forward<tf_CCompare>(_Compare), *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj)))
+			else if (CompareResult > 0)
 			{
 				pTree = pObj->f_GetLeft();
 				pObj = CLink::fs_GetPtr(*pTree);
@@ -352,7 +375,7 @@ namespace NMib::NIntrusive
 		}
 		_pObjectToInsert->f_Clear();
 		CLink::f_Assign(pTree, _pObjectToInsert);
-		fp_RebalanceLowStack(pPathTop, _pObjectToInsert, fg_Forward<tf_CCompare>(_Compare));
+		fp_RebalanceLowStack(pPathTop, _pObjectToInsert, _fCompare);
 		return true;
 	}
 
@@ -364,25 +387,25 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertLowStack(CNode *_pToInsert, tf_CCompare &&_Compare)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertLowStack(CNode *_pToInsert, tf_CCompare &&_fCompare)
 	{
 		CLink * pToInsert = fsp_LinkFromMember(_pToInsert);
 		if constexpr (CLinkContainer::mc_bNeedSetTree)
 			((CLinkContainer *)pToInsert)->f_SetTree(this, &TCAVLTreeAggregate::fsp_Remove);
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
 
-		return fp_InsertLowStack(m_Root, pToInsert, fg_Forward<tf_CCompare>(_Compare));
+		return fp_InsertLowStack(m_Root, pToInsert, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveLowStack(CNode *_pToRemove, tf_CCompare &&_Compare)
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveLowStack(CNode *_pToRemove, tf_CCompare &&_fCompare)
 	{
 		CLink * pToRemove = fsp_LinkFromMember(_pToRemove);
 
 		DMibFastCheck(pToRemove->f_GetSkew() != CLink::EAVLTreeSkew_NotInTree); // Must be in tree already
 
-		fp_RemoveLowStack(m_Root, pToRemove, fg_Forward<tf_CCompare>(_Compare));
+		fp_RemoveLowStack(m_Root, pToRemove, _fCompare);
 #			ifdef DMibEnableSafeCheck
 			// Remove tree ptr in debug
 			if constexpr (CLinkContainer::mc_bNeedSetTree)
@@ -393,16 +416,16 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertLowStack(CNode &_ToInsert, tf_CCompare &&_Compare)
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertLowStack(CNode &_ToInsert, tf_CCompare &&_fCompare)
 	{
-		return f_InsertLowStack(&_ToInsert, fg_Forward<tf_CCompare>(_Compare));
+		return f_InsertLowStack(&_ToInsert, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveLowStack(CNode &_ToRemove, tf_CCompare &&_Compare)
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveLowStack(CNode &_ToRemove, tf_CCompare &&_fCompare)
 	{
-		f_RemoveLowStack(&_ToRemove, fg_Forward<tf_CCompare>(_Compare));
+		f_RemoveLowStack(&_ToRemove, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
