@@ -210,6 +210,8 @@ namespace NMib::NIntrusive
 		static void fp_RemoveRotate2(CLinkPointer *_pObject);
 		template <typename tf_CCompare>
 		static bool fp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
+		template <typename tf_CKey, typename tf_FOnInsert, typename tf_CCompare>
+		CNode *fp_FindEqualOrInsert(CLinkPointer &_pObject, tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert, tf_CCompare &&_fCompare);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -344,6 +346,11 @@ namespace NMib::NIntrusive
 		inline_small bool f_Insert(CNode &_ToInsert, tf_CCompare &&_fCompare);
 		inline_small bool f_Insert(CNode &_ToInsert);
 		inline_small bool f_Insert(CNode *_pToInsert);
+
+		template <typename tf_CKey, typename tf_FOnInsert, typename tf_CCompare>
+		inline_small CNode *f_FindEqualOrInsert(tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert, tf_CCompare &&_fCompare);
+		template <typename tf_CKey, typename tf_FOnInsert>
+		inline_small CNode *f_FindEqualOrInsert(tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert);
 
 		template <typename tf_ToMap, typename tf_CCompare>
 		inline_small CNode *f_Map(tf_ToMap &_ToMap, tf_CCompare &&_fCompare);

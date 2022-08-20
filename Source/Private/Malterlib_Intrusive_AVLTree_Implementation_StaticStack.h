@@ -280,6 +280,76 @@ namespace NMib::NIntrusive
 		return true;
 	}
 
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CKey, typename tf_FOnInsert, typename tf_CCompare>
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_FindEqualOrInsert
+		(
+			CLinkPointer &_pObject
+			, tf_CKey const &_Key
+			, tf_FOnInsert &&_fOnInsert
+			, tf_CCompare &&_fCompare
+		)
+		-> CNode *
+	{
+		const int Size = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
+		CStackObj Stack[Size]; // Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
+		CStackObj *pStack = Stack;
+
+		CLinkPointer *pObject = &_pObject;
+		CLink *pObj = CLink::fs_GetPtr(*pObject);
+
+		while (pObj)
+		{
+			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), _Key);
+			if (CompareResult < 0)
+			{
+				pStack->f_SetAll(pObject, true);
+				++pStack;
+				pObject = pObj->f_GetRight();
+			}
+			else if (CompareResult > 0)
+			{
+				pStack->f_SetAll(pObject, false);
+				++pStack;
+				pObject = pObj->f_GetLeft();
+			}
+			else
+				return fsp_MemberFromLink(pObj);
+
+			pObj = CLink::fs_GetPtr(*pObject);
+		}
+
+		auto pCreatedObject = _fOnInsert();
+		if (!pCreatedObject)
+			return nullptr;
+		
+		CLink *pObjectToInsert = fsp_LinkFromMember(pCreatedObject);
+
+		if constexpr (CLinkContainer::mc_bNeedSetTree)
+			((CLinkContainer *)pObjectToInsert)->f_SetTree(this, &TCAVLTreeAggregate::fsp_Remove);
+		DMibFastCheck(pObjectToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
+
+		pObjectToInsert->f_Clear();
+		CLink::f_Assign(pObject, pObjectToInsert);
+		while (pStack - Stack)
+		{
+			--pStack;
+
+			if (pStack->f_IsLarger())
+			{
+				if (!fsp_RightGrown_Inl(*(pStack->f_GetStack())))
+					break;
+			}
+			else
+			{
+				if (!fsp_LeftGrown_Inl(*(pStack->f_GetStack())))
+					break;
+			}
+		}
+
+		return pCreatedObject;
+	}
+
 	/***************************************************************************************************\
 	|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
 	| Public																							|
@@ -315,6 +385,47 @@ namespace NMib::NIntrusive
 	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Insert(CNode *_pToInsert)
 	{
 		return f_Insert(_pToInsert, t_CCompare());
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CKey, typename tf_FOnInsert, typename tf_CCompare>
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualOrInsert
+		(
+			tf_CKey const &_Key
+			, tf_FOnInsert &&_fOnInsert
+			, tf_CCompare &&_fCompare
+		)
+		-> CNode *
+	{
+		return fp_FindEqualOrInsert(m_Root, _Key, _fOnInsert, _fCompare);
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CKey, typename tf_FOnInsert>
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualOrInsert(tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert)
+		-> CNode *
+	{
+		return fp_FindEqualOrInsert(m_Root, _Key, _fOnInsert, t_CCompare());
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CToMap, typename tf_CCompare>
+	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
+	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Map(tf_CToMap &_ToMap, tf_CCompare &&_fCompare)
+	{
+		return f_FindEqualOrInsert
+			(
+				_ToMap
+				, [&]()
+				{
+					auto Memory = CAllocator::f_AllocSafe(sizeof(CNode), alignof(CNode));
+					auto pData = new(Memory.m_pMemory) CNode(_ToMap);
+					Memory.f_Claim();
+					return pData;
+				}
+				, _fCompare
+			)
+		;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
