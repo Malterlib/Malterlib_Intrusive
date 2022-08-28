@@ -6,16 +6,21 @@
 namespace NMib::NIntrusive
 {
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject, CStackObj *&_pStack)
+	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_BalanceLowest
+		(
+			CLink* &_pLowestObject
+			, CLinkPointer &_pObject
+			, CLinkPointer **_pStack
+		)
 	{
-		CStackObj *pStack = _pStack;
+		auto *pStack = _pStack;
 
 		CLinkPointer *pObject = &_pObject;
 
 		CLink *pObj = CLink::fs_GetPtr(_pObject);
 		while (pObj->f_GetLeftP())
 		{
-			pStack->f_SetAll(pObject, 0);
+			*pStack = pObject;
 			++pStack;
 			pObject = pObj->f_GetLeft();
 			pObj = CLink::fs_GetPtr(*pObject);
@@ -27,10 +32,10 @@ namespace NMib::NIntrusive
 		CLink::f_Assign(pObject, pObj->f_GetRight());
 		//_pStack = pStack;
 
-		while (pStack - _pStack)
+		while (pStack != _pStack)
 		{
 			--pStack;
-			if (!fsp_LeftShrunk(*pStack->f_GetStack()))
+			if (!fsp_LeftShrunk(**pStack))
 				return false;
 		}
 
@@ -38,16 +43,21 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject, CStackObj *&_pStack)
+	inline_medium bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_BalanceHighest
+		(
+			CLink* &_pHighestObject
+			, CLinkPointer &_pObject
+			, CLinkPointer **_pStack
+		)
 	{
-		CStackObj *pStack = _pStack;
+		auto *pStack = _pStack;
 
 		CLinkPointer *pObject = &_pObject;
 
 		CLink *pObj = CLink::fs_GetPtr(_pObject);
 		while (pObj->f_GetRightP())
 		{
-			pStack->f_SetAll(pObject, 1);
+			*pStack = pObject;
 			++pStack;
 			pObject = pObj->f_GetRight();
 			pObj = CLink::fs_GetPtr(*pObject);
@@ -57,12 +67,11 @@ namespace NMib::NIntrusive
 		_pHighestObject = pObj;
 		// Remove pObject from the tree
 		CLink::f_Assign(pObject, pObj->f_GetLeft());
-	//	_pStack = pStack;
 
-		while (pStack - _pStack)
+		while (pStack != _pStack)
 		{
 			--pStack;
-			if (!fsp_RightShrunk(*pStack->f_GetStack()))
+			if (!fsp_RightShrunk(**pStack))
 				return false;
 		}
 
@@ -75,13 +84,15 @@ namespace NMib::NIntrusive
 		(
 			CLinkPointer *_pObject
 			, CLink *_pObj
-			, CStackObj *_pTopStack
-			, CStackObj *_pBottomStack
+			, CTemporaryStack &_Stack
 		)
 	{
-		CStackObj *pStack = _pTopStack;
 		CLinkPointer *pObject = _pObject;
 		CLink *pObj = _pObj;
+
+		auto *pStack = _Stack.m_pStack;
+		auto *pStartStack = _Stack.m_Stack;
+		auto *pLarger = _Stack.m_pLarger;
 
 		if (pObj->f_GetLeftP())
 		{
@@ -99,13 +110,15 @@ namespace NMib::NIntrusive
 
 			if (!bLeftShrunk)
 				return;
-			pStack->f_SetAll(pObject, 0);
+
+			*pStack = pObject;
+			*pLarger = false;
 			++pStack;
+			++pLarger;
 		}
 		else if (pObj->f_GetRightP())
 		{
 			CLink* pLowestObject;
-
 			bool bRightShrunk = fp_BalanceLowest(pLowestObject, *pObj->f_GetRight(), pStack);
 
 			// Remove target from tree
@@ -118,27 +131,30 @@ namespace NMib::NIntrusive
 
 			if (!bRightShrunk)
 				return;
-			pStack->f_SetAll(pObject, 1);
+
+			*pStack = pObject;
+			*pLarger = true;
 			++pStack;
+			++pLarger;
 		}
 		else
 		{
 			pObj->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
-
 			CLink::f_Assign(pObject, (CLink *)nullptr);
 		}
 
-		while (pStack - _pBottomStack)
+		while (pStack != pStartStack)
 		{
 			--pStack;
-			if (pStack->f_IsLarger())
+			--pLarger;
+			if (*pLarger)
 			{
-				if (!fsp_RightShrunk(*(pStack->f_GetStack())))
+				if (!fsp_RightShrunk(**pStack))
 					break;
 			}
 			else
 			{
-				if (!fsp_LeftShrunk(*(pStack->f_GetStack())))
+				if (!fsp_LeftShrunk(**pStack))
 					break;
 			}
 		}
@@ -148,9 +164,10 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare)
 	{
-		const int Size = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
-		CStackObj Stack[Size]; // Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
-		CStackObj *pStack = Stack;
+		CTemporaryStack Stack;
+
+		auto *pStack = Stack.m_Stack;
+		auto *pLarger = Stack.m_Larger;
 
 		CLinkPointer *pObject = &_pObject;
 
@@ -159,22 +176,27 @@ namespace NMib::NIntrusive
 		{
 			DMibFastCheck(pObj); // Object not found
 
+			*pStack = pObject;
 			if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove)) < 0)
 			{
-				pStack->f_SetAll(pObject, true);
+				*pLarger = true;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetRight();
 			}
 			else
 			{
-				pStack->f_SetAll(pObject, false);
+				*pLarger = false;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetLeft();
 			}
 			pObj = CLink::fs_GetPtr(*pObject);
 		}
 
-		fp_Removed(pObject, pObj, pStack, Stack);
+		Stack.m_pStack = pStack;
+		Stack.m_pLarger = pLarger;
+		fp_Removed(pObject, pObj, Stack);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -182,9 +204,10 @@ namespace NMib::NIntrusive
 	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_FindEqualAndRemove(CLinkPointer &_pObject, tf_CKey const &_Key, tf_CCompare &&_fCompare)
 		-> CNode *
 	{
-		const int Size = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
-		CStackObj Stack[Size]; // Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
-		CStackObj *pStack = Stack;
+		CTemporaryStack Stack;
+
+		auto *pStack = Stack.m_Stack;
+		auto *pLarger = Stack.m_Larger;
 
 		CLinkPointer *pObject = &_pObject;
 
@@ -194,21 +217,26 @@ namespace NMib::NIntrusive
 			DMibFastCheck(pObj); // Object not found
 
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), _Key);
+			*pStack = pObject;
 			if (CompareResult < 0)
 			{
-				pStack->f_SetAll(pObject, true);
+				*pLarger = true;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetRight();
 			}
 			else if (CompareResult > 0)
 			{
-				pStack->f_SetAll(pObject, false);
+				*pLarger = false;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetLeft();
 			}
 			else
 			{
-				fp_Removed(pObject, pObj, pStack, Stack);
+				Stack.m_pStack = pStack;
+				Stack.m_pLarger = pLarger;
+				fp_Removed(pObject, pObj, Stack);
 				return fsp_MemberFromLink(pObj);
 			}
 
@@ -284,9 +312,11 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare)
 	{
-		const int Size = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
-		CStackObj Stack[Size]; // Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
-		CStackObj *pStack = Stack;
+		CTemporaryStack Stack;
+
+		auto *pStack = Stack.m_Stack;
+		auto *pStartStack = Stack.m_Stack;
+		auto *pLarger = Stack.m_Larger;
 
 		CLinkPointer *pObject = &_pObject;
 //				int iStack = 0;
@@ -295,16 +325,19 @@ namespace NMib::NIntrusive
 		while (pObj)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert));
+			*pStack = pObject;
 			if (CompareResult < 0)
 			{
-				pStack->f_SetAll(pObject, true);
+				*pLarger = true;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetRight();
 			}
 			else if (CompareResult > 0)
 			{
-				pStack->f_SetAll(pObject, false);
+				*pLarger = false;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetLeft();
 			}
 			else
@@ -316,19 +349,20 @@ namespace NMib::NIntrusive
 		}
 
 		_pObjectToInsert->f_Clear();
+
 		CLink::f_Assign(pObject, _pObjectToInsert);
-		while (pStack - Stack)
+		while (pStack != pStartStack)
 		{
 			--pStack;
-//					const CStackObj &StackObj = Stack[iStack];
-			if (pStack->f_IsLarger())
+			--pLarger;
+			if (*pLarger)
 			{
-				if (!fsp_RightGrown_Inl(*(pStack->f_GetStack())))
+				if (!fsp_RightGrown_Inl(**pStack))
 					break;
 			}
 			else
 			{
-				if (!fsp_LeftGrown_Inl(*(pStack->f_GetStack())))
+				if (!fsp_LeftGrown_Inl(**pStack))
 					break;
 			}
 		}
@@ -346,9 +380,11 @@ namespace NMib::NIntrusive
 		)
 		-> CNode *
 	{
-		const int Size = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
-		CStackObj Stack[Size]; // Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
-		CStackObj *pStack = Stack;
+		CTemporaryStack Stack;
+
+		auto *pStack = Stack.m_Stack;
+		auto *pStartStack = Stack.m_Stack;
+		auto *pLarger = Stack.m_Larger;
 
 		CLinkPointer *pObject = &_pObject;
 		CLink *pObj = CLink::fs_GetPtr(*pObject);
@@ -356,16 +392,19 @@ namespace NMib::NIntrusive
 		while (pObj)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), _Key);
+			*pStack = pObject;
 			if (CompareResult < 0)
 			{
-				pStack->f_SetAll(pObject, true);
+				*pLarger = true;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetRight();
 			}
 			else if (CompareResult > 0)
 			{
-				pStack->f_SetAll(pObject, false);
+				*pLarger = false;
 				++pStack;
+				++pLarger;
 				pObject = pObj->f_GetLeft();
 			}
 			else
@@ -386,18 +425,18 @@ namespace NMib::NIntrusive
 
 		pObjectToInsert->f_Clear();
 		CLink::f_Assign(pObject, pObjectToInsert);
-		while (pStack - Stack)
+		while (pStack != pStartStack)
 		{
 			--pStack;
-
-			if (pStack->f_IsLarger())
+			--pLarger;
+			if (*pLarger)
 			{
-				if (!fsp_RightGrown_Inl(*(pStack->f_GetStack())))
+				if (!fsp_RightGrown_Inl(**pStack))
 					break;
 			}
 			else
 			{
-				if (!fsp_LeftGrown_Inl(*(pStack->f_GetStack())))
+				if (!fsp_LeftGrown_Inl(**pStack))
 					break;
 			}
 		}

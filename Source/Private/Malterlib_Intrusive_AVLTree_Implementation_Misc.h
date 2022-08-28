@@ -29,29 +29,6 @@ namespace NMib::NIntrusive
 #endif
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CStackObj::f_SetAll(CLinkPointer *_pPtr, bool _bLarger)
-	{
-		m_pStack = _pPtr;
-		m_bLarger = _bLarger;
-	}
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CStackObj::f_SetStack(CLinkPointer *_pPtr)
-	{
-		m_pStack = _pPtr;
-	}
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLinkPointer *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CStackObj::f_GetStack() const
-	{
-		return m_pStack;
-	}
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small aint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CStackObj::f_IsLarger() const
-	{
-		return m_bLarger;
-	}
-
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LinkFromMember(CNode *_pMember)
 	{

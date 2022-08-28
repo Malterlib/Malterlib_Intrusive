@@ -63,33 +63,29 @@ namespace NMib::NIntrusive
 		friend class TCAVLTreeAggregate;
 
 	public:
-		typedef t_CCompare CCompare;
-		typedef t_CAllocator CAllocator;
+		using CCompare = t_CCompare;
+		using CAllocator = t_CAllocator;
 		using CMemberPointer = decltype(t_pLinkMember);
 		using CNode = t_COverrideNodeType;
 		using CLinkContainer = typename NTraits::TCRemoveMemberObjectPointer<CMemberPointer>::CType;
+		using CLink = typename CLinkContainer::CLink; // The inner link type containing the storage for links, has to be the first member of CLinkContainer
 
-		typedef typename CLinkContainer::CLink CLink; // The inner link type containing the storage for links, has to be the first member of CLinkContainer
+		// Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
+		constexpr static mint mc_SafeTreeDepth = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
 
 	protected:
 		using CLinkPointer = CLink *; // The pointer type of the inner link type for each left/right link
 
-	public:
-	protected:
-
 #ifdef DMibDebuggerHelpers
 		static CNode *fs_Debug_GetNode();
 #endif
-
-		class CStackObj
+		struct CTemporaryStack
 		{
-			CLinkPointer * m_pStack;
-			bool m_bLarger;
-		public:
-			inline_small void f_SetAll(CLinkPointer *_pPtr, bool _bLarger);
-			inline_small void f_SetStack(CLinkPointer *_pPtr);
-			inline_small CLinkPointer *f_GetStack() const;
-			inline_small aint f_IsLarger() const;
+			CLinkPointer *m_Stack[mc_SafeTreeDepth];
+			bool m_Larger[mc_SafeTreeDepth];
+
+			CLinkPointer **m_pStack;
+			bool *m_pLarger;
 		};
 
 	public:
@@ -235,11 +231,11 @@ namespace NMib::NIntrusive
 		|___________________________________________________________________________________________________|
 		\***************************************************************************************************/
 
-		static inline_medium bool fp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject, CStackObj *&_pStack);
-		static inline_medium bool fp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject, CStackObj *&_pStack);
+		static inline_medium bool fp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
+		static inline_medium bool fp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
 		template <typename tf_CCompare>
 		static void fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
-		static void fp_Removed(CLinkPointer *_pObject, CLink *_pObj, CStackObj *_pTopStack, CStackObj *_pBottomStack);
+		static void fp_Removed(CLinkPointer *_pObject, CLink *_pObj, CTemporaryStack &_Stack);
 		template <int tf_Direction>
 		static void fp_RemoveRotate3(CLinkPointer *_pObject);
 		template <int tf_Direction>
@@ -470,7 +466,7 @@ namespace NMib::NIntrusive
 
 		template
 		<
-			aint _RecursionDepth = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1) // Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
+			aint _RecursionDepth = mc_SafeTreeDepth
 		>
 		class TIterator
 		{
