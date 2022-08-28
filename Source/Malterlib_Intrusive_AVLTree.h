@@ -204,6 +204,7 @@ namespace NMib::NIntrusive
 		static inline_medium bool fp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject, CStackObj *&_pStack);
 		template <typename tf_CCompare>
 		static void fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
+		static void fp_Removed(CLinkPointer *_pObject, CLink *_pObj, CStackObj *_pTopStack, CStackObj *_pBottomStack);
 		template <int tf_Direction>
 		static void fp_RemoveRotate3(CLinkPointer *_pObject);
 		template <int tf_Direction>
@@ -212,6 +213,9 @@ namespace NMib::NIntrusive
 		static bool fp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CKey, typename tf_FOnInsert, typename tf_CCompare>
 		CNode *fp_FindEqualOrInsert(CLinkPointer &_pObject, tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert, tf_CCompare &&_fCompare);
+
+		template <typename tf_CKey, typename tf_CCompare>
+		static CNode *fp_FindEqualAndRemove(CLinkPointer &_pObject, tf_CKey const &_Key, tf_CCompare &&_fCompare);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -363,6 +367,11 @@ namespace NMib::NIntrusive
 		inline_small void f_Remove(CNode &_ToRemove, tf_CCompare &&_fCompare);
 		inline_small void f_Remove(CNode &_ToRemove);
 		inline_small void f_Remove(CNode *_pToRemove);
+
+		template <typename tf_CKey, typename tf_CCompare>
+		inline_small CNode *f_FindEqualAndRemove(tf_CKey const &_Key, tf_CCompare &&_fCompare);
+		template <typename tf_CKey>
+		inline_small CNode *f_FindEqualAndRemove(tf_CKey const &_Key);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
