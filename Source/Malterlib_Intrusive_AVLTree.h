@@ -613,7 +613,7 @@ namespace NMib::NIntrusive
 	\*_________________________________________________________________________________________________*/
 	template
 	<
-		EAVLLinkType t_LinkType = EAVLLinkType_Aligned
+		EAVLLinkType t_LinkType = EAVLLinkType_AlignedRight
 		, typename t_CLinkData = typename NPrivate::TCLinkTypeToLink<t_LinkType>::CType
 	>
 	class TCAVLLinkAggregate
@@ -654,7 +654,7 @@ namespace NMib::NIntrusive
 	\*_________________________________________________________________________________________________*/
 	template
 	<
-		EAVLLinkType t_LinkType = EAVLLinkType_Aligned
+		EAVLLinkType t_LinkType = EAVLLinkType_AlignedRight
 		, typename t_CLinkData = typename NPrivate::TCLinkTypeToLink<t_LinkType>::CType
 	>
 	class TCAVLLink : public TCAVLLinkAggregate<t_LinkType, t_CLinkData>
@@ -683,7 +683,7 @@ namespace NMib::NIntrusive
 	\*_________________________________________________________________________________________________*/
 	template
 	<
-		EAVLLinkType t_LinkType = EAVLLinkType_Aligned
+		EAVLLinkType t_LinkType = EAVLLinkType_AlignedRight
 		, typename t_CLinkData = typename NPrivate::TCLinkTypeToLink<t_LinkType>::CType
 	>
 	class TCAVLLinkAutoRemove : public TCAVLLink<t_LinkType, t_CLinkData>
