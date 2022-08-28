@@ -114,8 +114,6 @@ namespace NMib::NIntrusive
 		static inline_small return_not_aliased CNode *fsp_MemberFromLinkConst(const CLink *_pLink);
 		static inline_small void fsp_Remove(void *_pTree, CLink &_Link);
 
-		void fpr_Unlink(CLinkPointer &_pUnlink);
-
 		template <typename t_Inner>
 		struct TCImplicitConvert
 		{
@@ -164,6 +162,13 @@ namespace NMib::NIntrusive
 				)
 			;
 		}
+
+		//static void fp_RemoveAll(CLink *_pObject);
+		template <typename tf_FOnRemove>
+		void fp_RemoveAll(tf_FOnRemove &&_fOnRemove);
+
+		template <typename tf_FOnRemove>
+		void fp_RemoveAllRecursive(CLink *_pNode, tf_FOnRemove &&_fOnRemove);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -241,7 +246,6 @@ namespace NMib::NIntrusive
 		template <typename tf_CCompare>
 		static bool fp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 
-
 	public:
 
 		/***************************************************************************************************\
@@ -255,51 +259,21 @@ namespace NMib::NIntrusive
 		inline_small void f_Construct();
 		inline_small void f_Destruct();
 
-		template <typename tf_CCompare>
-		void f_DeleteAll(tf_CCompare &&_fCompare);
 		void f_DeleteAll();
-
-		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompare(tf_CCompare &&_fCompare);
-		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompare(tf_CCompare &&_fCompare, tf_CAllocator &_Allocator);
-
 		template <typename tf_CAllocator>
 		void f_DeleteAllAllocator();
 		template <typename tf_CAllocator>
 		void f_DeleteAllAllocator(tf_CAllocator &_Allocator);
-
-
-		template <typename tf_CCompare>
-		void f_DeleteAllDefiniteType(tf_CCompare &&_fCompare);
 		void f_DeleteAllDefiniteType();
-
-		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_fCompare);
-		template <typename tf_CAllocator, typename tf_CCompare>
-		void f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_fCompare, tf_CAllocator &_Allocator);
-
 		template <typename tf_CAllocator>
 		void f_DeleteAllAllocatorDefiniteType();
 		template <typename tf_CAllocator>
 		void f_DeleteAllAllocatorDefiniteType(tf_CAllocator &_Allocator);
-
-
-		template <typename tf_CDeleter, typename tf_CCompare>
-		void f_DeleteAllDeleter(tf_CCompare &&_fCompare);
 		template <typename tf_CDeleter>
 		void f_DeleteAllDeleter();
-
-		template <typename tf_CCompare>
-		void f_DeleteAllDeleter(tf_CCompare &&_fCompare);
 		void f_DeleteAllDeleter();
 
-		template <typename tf_CCompare>
-		void f_RemoveAll(tf_CCompare &&_fCompare);
 		void f_RemoveAll();
-
-		template <typename tf_CCompare>
-		void f_Clear(tf_CCompare &&_fCompare);
 		void f_Clear();
 
 		/***************************************************************************************************\

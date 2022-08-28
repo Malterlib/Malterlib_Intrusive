@@ -33,94 +33,123 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Destruct()
 	{
-		if (CLink::fs_GetPtr(m_Root))
-			fpr_Unlink(m_Root);
-	}
-
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAll(tf_CCompare &&_fCompare)
-	{
-		while (f_GetRoot())
-		{
-			CNode *pData = f_GetRoot();
-			f_Remove(pData, _fCompare);
-			fg_DeleteObject(CAllocator(), pData);
-		}
+		fp_RemoveAll([&](CNode *) inline_always_lambda {});
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAll()
 	{
-		f_DeleteAll(t_CCompare());
-	}
-
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CAllocator, typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorCompare(tf_CCompare &&_fCompare)
-	{
-		while (f_GetRoot())
-		{
-			CNode *pData = f_GetRoot();
-			f_Remove(pData, _fCompare);
-			fg_DeleteObject(tf_CAllocator(), pData);
-		}
+		fp_RemoveAll
+			(
+				[&](CNode *_pToRemove)
+				{
+					fg_DeleteObject(CAllocator(), _pToRemove);
+				}
+			)
+		;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CAllocator>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocator()
 	{
-		f_DeleteAllAllocatorCompare<tf_CAllocator>(t_CCompare());
-	}
-
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CAllocator, typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorCompare(tf_CCompare &&_fCompare, tf_CAllocator &_Allocator)
-	{
-		while (f_GetRoot())
-		{
-			CNode *pData = f_GetRoot();
-			f_Remove(pData, _fCompare);
-			fg_DeleteObject(_Allocator, pData);
-		}
+		fp_RemoveAll
+			(
+				[&](CNode *_pToRemove)
+				{
+					fg_DeleteObject(tf_CAllocator(), _pToRemove);
+				}
+			)
+		;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CAllocator>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocator(tf_CAllocator &_Allocator)
 	{
-		f_DeleteAllAllocatorCompare<tf_CAllocator>(t_CCompare(), _Allocator);
-	}
-
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDefiniteType(tf_CCompare &&_fCompare)
-	{
-		while (f_GetRoot())
-		{
-			CNode *pData = f_GetRoot();
-			f_Remove(pData, _fCompare);
-			fg_DeleteObjectDefiniteType(CAllocator(), pData);
-		}
+		fp_RemoveAll
+			(
+				[&](CNode *_pToRemove)
+				{
+					fg_DeleteObject(_Allocator, _pToRemove);
+				}
+			)
+		;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDefiniteType()
 	{
-		f_DeleteAllDefiniteType(t_CCompare());
+		fp_RemoveAll
+			(
+				[&](CNode *_pToRemove)
+				{
+					fg_DeleteObjectDefiniteType(CAllocator(), _pToRemove);
+				}
+			)
+		;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CAllocator, typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_fCompare)
+	template <typename tf_CAllocator>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorDefiniteType()
 	{
-		while (f_GetRoot())
-		{
-			CNode *pData = f_GetRoot();
-			f_Remove(pData, _fCompare);
-			fg_DeleteObjectDefiniteType(tf_CAllocator(), pData);
-		}
+		fp_RemoveAll
+			(
+				[&](CNode *_pToRemove)
+				{
+					fg_DeleteObjectDefiniteType(tf_CAllocator(), _pToRemove);
+				}
+			)
+		;
+	}
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CAllocator>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorDefiniteType(tf_CAllocator &_Allocator)
+	{
+		fp_RemoveAll
+			(
+				[&](CNode *_pToRemove)
+				{
+					fg_DeleteObjectDefiniteType(_Allocator, _pToRemove);
+				}
+			)
+		;
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CDeleter>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDeleter()
+	{
+		fp_RemoveAll
+			(
+				[&](CNode *_pToRemove)
+				{
+					tf_CDeleter::fs_Delete(_pToRemove);
+				}
+			)
+		;
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDeleter()
+	{
+		f_DeleteAllDeleter<CNode>();
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_FOnRemove>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveAllRecursive(CLink *_pNode, tf_FOnRemove &&_fOnRemove)
+	{
+		auto *pLeft = _pNode->f_GetLeftP();
+		auto *pRight = _pNode->f_GetRightP();
+
+		_pNode->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
+		if (pRight)
+			fp_RemoveAllRecursive(pRight, _fOnRemove);
+		_fOnRemove(fsp_MemberFromLink(_pNode));
+		if (pLeft)
+			fp_RemoveAllRecursive(pLeft, _fOnRemove);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -192,25 +221,26 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveAll()
+	template <typename tf_FOnRemove>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveAll(tf_FOnRemove &&_fOnRemove)
 	{
-		f_RemoveAll(t_CCompare());
+		auto pRoot = CLink::fs_GetPtr(m_Root);
+		if (!pRoot)
+			return;
+		fp_RemoveAllRecursive(pRoot, _fOnRemove);
+		CLink::f_Assign(&m_Root, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Clear(tf_CCompare &&_fCompare)
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveAll()
 	{
-		while (f_GetRoot())
-		{
-			f_Remove(f_GetRoot(), _fCompare);
-		}
+		fp_RemoveAll([&](CNode *) inline_always_lambda {});
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Clear()
 	{
-		f_RemoveAll(t_CCompare());
+		fp_RemoveAll([&](CNode *) inline_always_lambda {});
 	}
 
 	/***************************************************************************************************\
