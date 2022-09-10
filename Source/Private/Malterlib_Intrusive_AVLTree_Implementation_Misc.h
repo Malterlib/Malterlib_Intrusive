@@ -152,6 +152,16 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	mint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetDepth() const
+	{
+		auto pRoot = CLink::fs_GetPtr(m_Root);
+		if (!pRoot)
+			return 0;
+
+		return fp_GetDepthRecursive(pRoot);
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTreeAggregate &_Other) const
 	{
 		TIterator<> Iter0 = *this;

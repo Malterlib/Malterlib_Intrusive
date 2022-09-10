@@ -138,6 +138,22 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	mint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_GetDepthRecursive(CLink *_pNode) const
+	{
+		auto *pLeft = _pNode->f_GetLeftP();
+		auto *pRight = _pNode->f_GetRightP();
+
+		if (pLeft && pRight)
+			return fg_Max(fp_GetDepthRecursive(pLeft), fp_GetDepthRecursive(pRight)) + 1;
+		else if (pLeft)
+			return fp_GetDepthRecursive(pLeft) + 1;
+		else if (pRight)
+			return fp_GetDepthRecursive(pRight) + 1;
+		else
+			return 1;
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_FOnRemove>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveAllRecursive(CLink *_pNode, tf_FOnRemove &&_fOnRemove)
 	{

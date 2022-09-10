@@ -196,6 +196,8 @@ namespace NMib::NIntrusive
 		template <typename tf_CTree, typename tf_FCreateNode>
 		CLink *fp_MoveTreeRecursive(typename tf_CTree::CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
 
+		mint fp_GetDepthRecursive(CLink *_pNode) const;
+
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
 		| Shared																							|
@@ -341,6 +343,7 @@ namespace NMib::NIntrusive
 		static inline_small CNode *fs_GetRight(CNode *_pObject);
 		static inline_small CNode *fs_GetLeft(CNode *_pObject);
 		inline_medium mint f_GetLen() const;
+		mint f_GetDepth() const;
 		bool operator == (const TCAVLTreeAggregate &_Other) const;
 		auto operator <=> (const TCAVLTreeAggregate &_Other) const;
 
