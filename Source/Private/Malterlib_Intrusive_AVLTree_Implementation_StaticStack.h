@@ -177,19 +177,34 @@ namespace NMib::NIntrusive
 			DMibFastCheck(pObj); // Object not found
 
 			*pStack = pObject;
-			if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove)) < 0)
+			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove));
+#if !defined(DCompiler_MSVC) && false
+			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
-				*pLarger = true;
+				auto Direction = CompareResult < 0 ? 1 : 0;
+				*pLarger = Direction;
 				++pStack;
 				++pLarger;
-				pObject = pObj->f_GetRight();
+				pObject = pObj->f_GetNext(Direction);
 			}
 			else
+#endif
 			{
-				*pLarger = false;
-				++pStack;
-				++pLarger;
-				pObject = pObj->f_GetLeft();
+				if (CompareResult < 0)
+				{
+					*pLarger = true;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(1);
+
+				}
+				else
+				{
+					*pLarger = false;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(0);
+				}
 			}
 			pObj = CLink::fs_GetPtr(*pObject);
 		}
@@ -218,26 +233,48 @@ namespace NMib::NIntrusive
 
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), _Key);
 			*pStack = pObject;
-			if (CompareResult < 0)
+#if !defined(DCompiler_MSVC) && false
+			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
-				*pLarger = true;
+				if (CompareResult == 0)// [[unlikely]]
+				{
+					Stack.m_pStack = pStack;
+					Stack.m_pLarger = pLarger;
+					fp_Removed(pObject, pObj, Stack);
+					return fsp_MemberFromLink(pObj);
+				}
+
+				auto Direction = CompareResult > 0 ? 0 : 1;
+
+				*pLarger = Direction;
 				++pStack;
 				++pLarger;
-				pObject = pObj->f_GetRight();
-			}
-			else if (CompareResult > 0)
-			{
-				*pLarger = false;
-				++pStack;
-				++pLarger;
-				pObject = pObj->f_GetLeft();
+				pObject = pObj->f_GetNext(Direction);
 			}
 			else
+#endif
 			{
-				Stack.m_pStack = pStack;
-				Stack.m_pLarger = pLarger;
-				fp_Removed(pObject, pObj, Stack);
-				return fsp_MemberFromLink(pObj);
+				if (CompareResult < 0)
+				{
+					*pLarger = true;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(1);
+				}
+				else if (CompareResult > 0)
+				{
+					*pLarger = false;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(0);
+				}
+				else
+				{
+					Stack.m_pStack = pStack;
+					Stack.m_pLarger = pLarger;
+					fp_Removed(pObject, pObj, Stack);
+					return fsp_MemberFromLink(pObj);
+				}
 			}
 
 			pObj = CLink::fs_GetPtr(*pObject);
@@ -326,24 +363,43 @@ namespace NMib::NIntrusive
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert));
 			*pStack = pObject;
-			if (CompareResult < 0)
+#if !defined(DCompiler_MSVC) && false
+			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
-				*pLarger = true;
+				if (CompareResult == 0)// [[unlikely]]
+				{
+					DMibFastCheck(false); // Tree does not support inserting two equal objects
+					return false;
+				}
+
+				auto Direction = CompareResult < 0 ? 1 : 0;
+				*pLarger = Direction;
 				++pStack;
 				++pLarger;
-				pObject = pObj->f_GetRight();
-			}
-			else if (CompareResult > 0)
-			{
-				*pLarger = false;
-				++pStack;
-				++pLarger;
-				pObject = pObj->f_GetLeft();
+				pObject = pObj->f_GetNext(Direction);
 			}
 			else
+#endif
 			{
-				DMibFastCheck(false); // Tree does not support inserting two equal objects
-				return false;
+				if (CompareResult < 0)
+				{
+					*pLarger = true;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(1);
+				}
+				else if (CompareResult > 0)
+				{
+					*pLarger = false;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(0);
+				}
+				else
+				{
+					DMibFastCheck(false); // Tree does not support inserting two equal objects
+					return false;
+				}
 			}
 			pObj = CLink::fs_GetPtr(*pObject);
 		}
@@ -393,23 +449,39 @@ namespace NMib::NIntrusive
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), _Key);
 			*pStack = pObject;
-			if (CompareResult < 0)
+#if !defined(DCompiler_MSVC) && false
+			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
-				*pLarger = true;
+				if (CompareResult == 0)// [[unlikely]]
+					return fsp_MemberFromLink(pObj);
+
+				auto Direction = CompareResult < 0 ? 1 : 0;
+
+				*pLarger = Direction;
 				++pStack;
 				++pLarger;
-				pObject = pObj->f_GetRight();
-			}
-			else if (CompareResult > 0)
-			{
-				*pLarger = false;
-				++pStack;
-				++pLarger;
-				pObject = pObj->f_GetLeft();
+				pObject = pObj->f_GetNext(Direction);
 			}
 			else
-				return fsp_MemberFromLink(pObj);
-
+#endif
+			{
+				if (CompareResult < 0)
+				{
+					*pLarger = true;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(1);
+				}
+				else if (CompareResult > 0)
+				{
+					*pLarger = false;
+					++pStack;
+					++pLarger;
+					pObject = pObj->f_GetNext(0);
+				}
+				else
+					return fsp_MemberFromLink(pObj);
+			}
 			pObj = CLink::fs_GetPtr(*pObject);
 		}
 

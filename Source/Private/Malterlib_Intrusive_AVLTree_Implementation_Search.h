@@ -25,15 +25,28 @@ namespace NMib::NIntrusive
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqual(const tf_CKey &_Key, tf_CCompare &&_fCompare) const
 	{
 		CLink* pCurrentSearch = CLink::fs_GetPtr(m_Root);
+
 		while (pCurrentSearch)
 		{
 			auto Compare = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
-			if (Compare < 0)
-				pCurrentSearch = pCurrentSearch->f_GetRightP();
-			else if (Compare > 0)
-				pCurrentSearch = pCurrentSearch->f_GetLeftP();
+#if !defined(DCompiler_MSVC)
+			if constexpr (NTraits::TCIsSame<decltype(Compare), COrdering_Strong>::mc_Value)
+			{
+				if (Compare == 0)// [[unlikely]]
+					return fsp_MemberFromLink(pCurrentSearch);
+				else
+					pCurrentSearch = pCurrentSearch->f_GetNextP((Compare > 0 ? 0 : 1));
+			}
 			else
-				return fsp_MemberFromLink(pCurrentSearch);
+#endif
+			{
+				if (Compare < 0)
+					pCurrentSearch = pCurrentSearch->f_GetNextP(1);
+				else if (Compare > 0)
+					pCurrentSearch = pCurrentSearch->f_GetNextP(0);
+				else
+					return fsp_MemberFromLink(pCurrentSearch);
+			}
 		}
 
 		return nullptr;
@@ -59,16 +72,34 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
-			if (CompareResult < 0)
-				pCurrentSearch = pCurrentSearch->f_GetNextP(1);
-			else if (CompareResult > 0)
+#if !defined(DCompiler_MSVC)
+			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
-				DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), *fsp_MemberFromLink(pBestFit)) < 0)); // Tree is damaged
-				pBestFit = pCurrentSearch;
-				pCurrentSearch = pCurrentSearch->f_GetNextP(0);
+				if (CompareResult == 0)// [[unlikely]]
+					return fsp_MemberFromLink(pCurrentSearch);
+				else if (CompareResult < 0)
+					pCurrentSearch = pCurrentSearch->f_GetNextP(1);
+				else
+				{
+					DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), *fsp_MemberFromLink(pBestFit)) < 0)); // Tree is damaged
+					pBestFit = pCurrentSearch;
+					pCurrentSearch = pCurrentSearch->f_GetNextP(0);
+				}
 			}
 			else
-				return fsp_MemberFromLink(pCurrentSearch);
+#endif
+			{
+				if (CompareResult < 0)
+					pCurrentSearch = pCurrentSearch->f_GetNextP(1);
+				else if (CompareResult > 0)
+				{
+					DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), *fsp_MemberFromLink(pBestFit)) < 0)); // Tree is damaged
+					pBestFit = pCurrentSearch;
+					pCurrentSearch = pCurrentSearch->f_GetNextP(0);
+				}
+				else
+					return fsp_MemberFromLink(pCurrentSearch);
+			}
 		}
 
 		return pBestFit ? fsp_MemberFromLink(pBestFit) : nullptr;
@@ -155,18 +186,34 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
-			if (CompareResult < 0)
+#if !defined(DCompiler_MSVC)
+			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
-				DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLink(pBestFit), *fsp_MemberFromLink(pCurrentSearch)) < 0)); // Tree is damaged
-				pBestFit = pCurrentSearch;
-				pCurrentSearch = pCurrentSearch->f_GetNextP(1);
-			}
-			else if (CompareResult > 0)
-			{
-				pCurrentSearch = pCurrentSearch->f_GetNextP(0);
+				if (CompareResult == 0)// [[unlikely]]
+					return fsp_MemberFromLink(pCurrentSearch);
+				else if (CompareResult < 0)
+				{
+					DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLink(pBestFit), *fsp_MemberFromLink(pCurrentSearch)) < 0)); // Tree is damaged
+					pBestFit = pCurrentSearch;
+					pCurrentSearch = pCurrentSearch->f_GetNextP(1);
+				}
+				else
+					pCurrentSearch = pCurrentSearch->f_GetNextP(0);
 			}
 			else
-				return fsp_MemberFromLink(pCurrentSearch);
+#endif
+			{
+				if (CompareResult < 0)
+				{
+					DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLink(pBestFit), *fsp_MemberFromLink(pCurrentSearch)) < 0)); // Tree is damaged
+					pBestFit = pCurrentSearch;
+					pCurrentSearch = pCurrentSearch->f_GetNextP(1);
+				}
+				else if (CompareResult > 0)
+					pCurrentSearch = pCurrentSearch->f_GetNextP(0);
+				else
+					return fsp_MemberFromLink(pCurrentSearch);
+			}
 		}
 
 		return pBestFit ? fsp_MemberFromLink(pBestFit) : nullptr;
