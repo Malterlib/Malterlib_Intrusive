@@ -153,71 +153,189 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CAllocator>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorDefiniteType()
+	template <typename tf_CTree, typename tf_FCreateNode>
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_CopyTreeRecursive(typename tf_CTree::CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode)
+		-> CLink *
 	{
-		f_DeleteAllAllocatorCompareDefiniteType<tf_CAllocator>(t_CCompare());
+		auto *pLeftSource = _pSourceNode->f_GetLeftP();
+		auto *pRightSource = _pSourceNode->f_GetRightP();
+		auto OldSourceSkew = _pSourceNode->f_GetSkew();
+
+		CLink *pLeft;
+		if (pLeftSource)
+			pLeft = fp_CopyTreeRecursive<tf_CTree>(pLeftSource, _fCreateNode);
+		else
+			pLeft = nullptr;
+
+		auto *pNewNode = _fCreateNode(*tf_CTree::fsp_MemberFromLinkConst(_pSourceNode));
+		auto *pNewLink = fsp_LinkFromMember(pNewNode);
+
+		CLink *pRight;
+		if (pRightSource)
+			pRight = fp_CopyTreeRecursive<tf_CTree>(pRightSource, _fCreateNode);
+		else
+			pRight = nullptr;
+
+		pNewLink->f_SetAll(pLeft, pRight, OldSourceSkew);
+
+		return pNewLink;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CAllocator, typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorCompareDefiniteType(tf_CCompare &&_fCompare, tf_CAllocator &_Allocator)
+	template <typename tf_FCreateNode>
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_CopyTreeRecursive(CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode) -> CLink *
 	{
-		while (f_GetRoot())
-		{
-			CNode *pData = f_GetRoot();
-			f_Remove(pData, _fCompare);
-			fg_DeleteObjectDefiniteType(_Allocator, pData);
-		}
+		auto *pLeftSource = _pSourceNode->f_GetLeftP();
+		auto *pRightSource = _pSourceNode->f_GetRightP();
+		auto OldSourceSkew = _pSourceNode->f_GetSkew();
+
+		CLink *pLeft;
+		if (pLeftSource)
+			pLeft = fp_CopyTreeRecursive(pLeftSource, _fCreateNode);
+		else
+			pLeft = nullptr;
+
+		auto *pNewNode = _fCreateNode(*fsp_MemberFromLinkConst(_pSourceNode));
+		auto *pNewLink = fsp_LinkFromMember(pNewNode);
+
+		CLink *pRight;
+		if (pRightSource)
+			pRight = fp_CopyTreeRecursive(pRightSource, _fCreateNode);
+		else
+			pRight = nullptr;
+
+		pNewLink->f_SetAll(pLeft, pRight, OldSourceSkew);
+
+		return pNewLink;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CAllocator>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllAllocatorDefiniteType(tf_CAllocator &_Allocator)
+	template <typename tf_FCreateNode>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_CopyTree(TCAVLTreeAggregate const &_Source, tf_FCreateNode &&_fCreateNode)
 	{
-		f_DeleteAllAllocatorCompareDefiniteType<tf_CAllocator>(t_CCompare(), _Allocator);
+		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_Root);
+		if (!pSourceRoot)
+			return;
+
+		auto pRoot = fp_CopyTreeRecursive(pSourceRoot, _fCreateNode);
+		CLink::f_Assign(&m_Root, pRoot);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CDeleter, typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDeleter(tf_CCompare &&_fCompare)
+	template
+	<
+		auto tf_pLinkMember
+		, typename tf_CCompare
+		, typename tf_CAllocator
+		, typename tf_COverrideNodeType
+		, typename tf_FCreateNode
+	>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_CopyTree
+		(
+			TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType> const &_Source
+			, tf_FCreateNode &&_fCreateNode
+		)
 	{
-		while (f_GetRoot())
-		{
-			CNode *pData = f_GetRoot();
-			f_Remove(pData, _fCompare);
-			tf_CDeleter::fs_Delete(pData);
-		}
+		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_Root);
+		if (!pSourceRoot)
+			return;
+
+		auto pRoot = fp_CopyTreeRecursive<TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>>(pSourceRoot, _fCreateNode);
+		CLink::f_Assign(&m_Root, pRoot);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CDeleter>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDeleter()
+	template <typename tf_CTree, typename tf_FCreateNode>
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_MoveTreeRecursive(typename tf_CTree::CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode) -> CLink *
 	{
-		f_DeleteAllDeleter<tf_CDeleter>(t_CCompare());
+		auto *pLeftSource = _pSourceNode->f_GetLeftP();
+		auto *pRightSource = _pSourceNode->f_GetRightP();
+		auto OldSourceSkew = _pSourceNode->f_GetSkew();
+		_pSourceNode->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
+
+		CLink *pLeft;
+		if (pLeftSource)
+			pLeft = fp_MoveTreeRecursive<tf_CTree>(pLeftSource, _fCreateNode);
+		else
+			pLeft = nullptr;
+
+		auto *pNewNode = _fCreateNode(tf_CTree::fsp_MemberFromLink(_pSourceNode));
+		auto *pNewLink = fsp_LinkFromMember(pNewNode);
+
+		CLink *pRight;
+		if (pRightSource)
+			pRight = fp_MoveTreeRecursive<tf_CTree>(pRightSource, _fCreateNode);
+		else
+			pRight = nullptr;
+
+		pNewLink->f_SetAll(pLeft, pRight, OldSourceSkew);
+
+		return pNewLink;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDeleter(tf_CCompare &&_fCompare)
+	template <typename tf_FCreateNode>
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_MoveTreeRecursive(CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode) -> CLink *
 	{
-		f_DeleteAllDeleter<CNode>(_fCompare);
+		auto *pLeftSource = _pSourceNode->f_GetLeftP();
+		auto *pRightSource = _pSourceNode->f_GetRightP();
+		auto OldSourceSkew = _pSourceNode->f_GetSkew();
+		_pSourceNode->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
+
+		CLink *pLeft;
+		if (pLeftSource)
+			pLeft = fp_MoveTreeRecursive(pLeftSource, _fCreateNode);
+		else
+			pLeft = nullptr;
+
+		auto *pNewNode = _fCreateNode(fsp_MemberFromLink(_pSourceNode));
+		auto *pNewLink = fsp_LinkFromMember(pNewNode);
+
+		CLink *pRight;
+		if (pRightSource)
+			pRight = fp_MoveTreeRecursive(pRightSource, _fCreateNode);
+		else
+			pRight = nullptr;
+
+		pNewLink->f_SetAll(pLeft, pRight, OldSourceSkew);
+
+		return pNewLink;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDeleter()
+	template <typename tf_FCreateNode>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_MoveTree(TCAVLTreeAggregate &_Source, tf_FCreateNode &&_fCreateNode)
 	{
-		f_DeleteAllDeleter<CNode>();
+		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_Root);
+		if (!pSourceRoot)
+			return;
+
+		auto pRoot = fp_MoveTreeRecursive(pSourceRoot, _fCreateNode);
+		CLink::f_Assign(&m_Root, pRoot);
+		CLink::f_Assign(&_Source.m_Root, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveAll(tf_CCompare &&_fCompare)
+	template
+	<
+		auto tf_pLinkMember
+		, typename tf_CCompare
+		, typename tf_CAllocator
+		, typename tf_COverrideNodeType
+		, typename tf_FCreateNode
+	>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_MoveTree
+		(
+			TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType> &_Source
+			, tf_FCreateNode &&_fCreateNode
+		)
 	{
-		while (f_GetRoot())
-		{
-			f_Remove(f_GetRoot(), _fCompare);
-		}
+		auto pSourceRoot = TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>::CLink::fs_GetPtr(_Source.m_Root);
+		if (!pSourceRoot)
+			return;
+		auto pRoot = fp_MoveTreeRecursive<TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>>(pSourceRoot, _fCreateNode);
+		CLink::f_Assign(&m_Root, pRoot);
+		TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>::CLink::f_Assign(&_Source.m_Root, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

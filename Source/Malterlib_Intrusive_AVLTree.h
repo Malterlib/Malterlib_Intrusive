@@ -22,6 +22,15 @@ namespace NMib::NIntrusive
 
 namespace NMib::NIntrusive
 {
+	template
+	<
+		auto t_pLinkMember
+		, typename t_CCompare
+		, typename t_CAllocator
+		, typename t_COverrideNodeType
+	>
+	class TCAVLTreeAggregate;
+
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
 	|	Template Class:																					|
 	|																									|
@@ -44,6 +53,15 @@ namespace NMib::NIntrusive
 	>
 	class TCAVLTreeAggregate
 	{
+		template
+		<
+			auto t_pLinkMember2
+			, typename t_CCompare2
+			, typename t_CAllocator2
+			, typename t_COverrideNodeType2
+		>
+		friend class TCAVLTreeAggregate;
+
 	public:
 		typedef t_CCompare CCompare;
 		typedef t_CAllocator CAllocator;
@@ -170,6 +188,18 @@ namespace NMib::NIntrusive
 		template <typename tf_FOnRemove>
 		void fp_RemoveAllRecursive(CLink *_pNode, tf_FOnRemove &&_fOnRemove);
 
+		template <typename tf_FCreateNode>
+		CLink *fp_CopyTreeRecursive(CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
+		template <typename tf_CTree, typename tf_FCreateNode>
+		CLink *fp_CopyTreeRecursive(typename tf_CTree::CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
+		template <typename tf_FCreateNode>
+		CLink *fp_MoveTreeRecursive(CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
+		template <typename tf_CTree, typename tf_FCreateNode>
+		CLink *fp_MoveTreeRecursive(typename tf_CTree::CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
 		| Shared																							|
@@ -275,6 +305,32 @@ namespace NMib::NIntrusive
 
 		void f_RemoveAll();
 		void f_Clear();
+
+		template <typename tf_FCreateNode>
+		void f_CopyTree(TCAVLTreeAggregate const &_Source, tf_FCreateNode &&_fCreateNode);
+
+		template
+		<
+			auto tf_pLinkMember
+			, typename tf_CCompare
+			, typename tf_CAllocator
+			, typename tf_COverrideNodeType
+			, typename tf_FCreateNode
+		>
+		void f_CopyTree(TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType> const &_Source, tf_FCreateNode &&_fCreateNode);
+
+		template <typename tf_FCreateNode>
+		void f_MoveTree(TCAVLTreeAggregate &_Source, tf_FCreateNode &&_fCreateNode);
+
+		template
+		<
+			auto tf_pLinkMember
+			, typename tf_CCompare
+			, typename tf_CAllocator
+			, typename tf_COverrideNodeType
+			, typename tf_FCreateNode
+		>
+		void f_MoveTree(TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType> &_Source, tf_FCreateNode &&_fCreateNode);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
