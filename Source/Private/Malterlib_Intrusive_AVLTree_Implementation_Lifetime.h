@@ -118,6 +118,13 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_FDoDelete>
+	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAll(tf_FDoDelete &&_fDoDelete)
+	{
+		fp_RemoveAll(_fDoDelete);
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CDeleter>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_DeleteAllDeleter()
 	{

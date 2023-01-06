@@ -288,6 +288,8 @@ namespace NMib::NIntrusive
 		inline_small void f_Destruct();
 
 		void f_DeleteAll();
+		template <typename tf_FDoDelete>
+		void f_DeleteAll(tf_FDoDelete &&_fDoDelete);
 		template <typename tf_CAllocator>
 		void f_DeleteAllAllocator();
 		template <typename tf_CAllocator>
