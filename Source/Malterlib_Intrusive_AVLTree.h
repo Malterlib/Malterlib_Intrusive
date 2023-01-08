@@ -340,7 +340,7 @@ namespace NMib::NIntrusive
 
 		static inline_small CNode *fs_MemberFromLink(CLink *_pLink);
 		inline_small bool f_IsEmpty() const;
-		inline_small bool f_HasOneMember() const;
+		inline_small bool f_HasOneElement() const;
 		inline_small CNode *f_GetRoot() const;
 		static inline_small CNode *fs_GetRight(CNode *_pObject);
 		static inline_small CNode *fs_GetLeft(CNode *_pObject);
