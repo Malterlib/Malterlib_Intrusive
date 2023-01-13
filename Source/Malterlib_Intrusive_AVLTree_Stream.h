@@ -11,7 +11,7 @@ namespace NMib::NStream
 	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> >
 	{
 	public:
-		static void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
+		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
 		{
 			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TIterator<> Iter(_Data);
 
@@ -34,7 +34,7 @@ namespace NMib::NStream
 			};
 		}
 
-		static void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data)
+		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data)
 		{
 			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TIterator<> Iter(_Data);
 
@@ -57,7 +57,7 @@ namespace NMib::NStream
 			};
 		}
 
-		static void fs_Consume(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &_Data)
+		static constexpr void fs_Consume(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &_Data)
 		{
 			uint64 nItems;
 			fg_ConsumeLenFromStream(_Stream, nItems);
@@ -94,17 +94,17 @@ namespace NMib::NStream
 	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> >
 	{
 	public:
-		static void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
+		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
 		{
 			_Stream << (const NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &)_Data;
 		}
 
-		static void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data)
+		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data)
 		{
 			_Stream << fg_Move((NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &)_Data);
 		}
 
-		static void fs_Consume(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &_Data)
+		static constexpr void fs_Consume(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &_Data)
 		{
 			_Stream >> (NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &)_Data;
 		}
