@@ -100,6 +100,11 @@ namespace NMib::NIntrusive::NPrivate
 			*_pDest = _pSrc;
 		}
 
+		static inline_small void f_AssignInit(CAVLLinkData **_pDest, CAVLLinkData *_pSrc)
+		{
+			*_pDest = _pSrc;
+		}
+
 		static inline_small void f_Assign(CAVLLinkData **_pDest, CAVLLinkData **_pSrc)
 		{
 			*_pDest = *_pSrc;
@@ -248,6 +253,12 @@ namespace NMib::NIntrusive::NPrivate
 			*_Dest = (CAVLLinkAlignedData *)((((mint)*_Dest) & mint(1)) | (mint)_pSrc);
 		}
 
+		static inline_small void f_AssignInit(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
+		{
+			DMibFastCheck(!((mint)_pSrc & mint(1))); // We can only save ptrs that are aligned on 2 bytes
+			*_Dest = _pSrc;
+		}
+
 		static inline_small void f_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData **_pSrc)
 		{
 			*_Dest = (CAVLLinkAlignedData *)((((mint)*_Dest) & mint(1)) | (((mint)*_pSrc) & (~mint(0x1))));
@@ -384,6 +395,12 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			DMibFastCheck(!((mint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
 			*_Dest = (CAVLLinkAlignedRightData *)(((mint)*_Dest & mint(3)) | (mint)_pSrc);
+		}
+
+		static inline_small void f_AssignInit(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
+		{
+			DMibFastCheck(!((mint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
+			*_Dest = _pSrc;
 		}
 
 		static inline_small void f_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData **_pSrc)

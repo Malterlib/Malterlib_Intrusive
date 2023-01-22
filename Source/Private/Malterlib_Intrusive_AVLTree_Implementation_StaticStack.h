@@ -164,6 +164,8 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare)
 	{
+		DMibFastCheck(_pObjectToRemove);
+		
 		CTemporaryStack Stack;
 
 		auto *pStack = Stack.m_Stack;
