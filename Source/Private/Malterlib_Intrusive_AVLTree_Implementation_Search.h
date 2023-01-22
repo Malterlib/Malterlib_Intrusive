@@ -29,6 +29,7 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto Compare = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
+			static_assert(cIsOrderType<decltype(Compare)>);
 #if !defined(DCompiler_MSVC)
 			if constexpr (NTraits::TCIsSame<decltype(Compare), COrdering_Strong>::mc_Value)
 			{
@@ -72,6 +73,7 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 #if !defined(DCompiler_MSVC)
 			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
@@ -131,6 +133,7 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, _Key, *fsp_MemberFromLink(pCurrentSearch));
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			if (CompareResult < 0)
 			{
 				DMibFastCheck(!pBestFit || (fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), *fsp_MemberFromLink(pBestFit)) < 0)); // Tree is damaged
@@ -186,6 +189,7 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 #if !defined(DCompiler_MSVC)
 			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{

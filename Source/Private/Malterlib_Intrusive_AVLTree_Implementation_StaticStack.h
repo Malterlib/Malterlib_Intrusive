@@ -178,6 +178,7 @@ namespace NMib::NIntrusive
 
 			*pStack = pObject;
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove));
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 #if !defined(DCompiler_MSVC) && false
 			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
 			{
@@ -232,6 +233,7 @@ namespace NMib::NIntrusive
 			DMibFastCheck(pObj); // Object not found
 
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), _Key);
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			*pStack = pObject;
 #if !defined(DCompiler_MSVC) && false
 			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
@@ -362,6 +364,7 @@ namespace NMib::NIntrusive
 		while (pObj)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert));
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			*pStack = pObject;
 #if !defined(DCompiler_MSVC) && false
 			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
@@ -448,6 +451,7 @@ namespace NMib::NIntrusive
 		while (pObj)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), _Key);
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			*pStack = pObject;
 #if !defined(DCompiler_MSVC) && false
 			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)

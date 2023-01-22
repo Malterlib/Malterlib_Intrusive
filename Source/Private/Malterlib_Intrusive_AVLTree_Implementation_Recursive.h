@@ -68,6 +68,7 @@ namespace NMib::NIntrusive
 			if (CLink *pObj = CLink::fs_GetPtr(_pObject))
 			{
 				auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj));
+				static_assert(cIsOrderType<decltype(CompareResult)>);
 				if (CompareResult < 0)
 				{
 					if (fspr_Insert(pObj->f_GetLeft(), _pObjectToInsert, _fCompare, _bRet))
@@ -114,6 +115,7 @@ namespace NMib::NIntrusive
 			}
 
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(CLink::fs_GetPtr(_pObject)));
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			if (CompareResult < 0)
 			{
 				if (fspr_Insert(CLink::fs_GetPtr(_pObject)->f_GetLeft(), _pObjectToInsert, _fCompare, _bRet))
@@ -149,6 +151,7 @@ namespace NMib::NIntrusive
 		if (pObj != _pObjectToRemove)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToRemove), *fsp_MemberFromLink(pObj));
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			if (CompareResult < 0)
 			{
 				if (fspr_Remove(pObj->f_GetLeft(), _pObjectToRemove, _fCompare))

@@ -357,6 +357,7 @@ namespace NMib::NIntrusive
 			if (pObj->f_GetSkew() != CLink::EAVLTreeSkew_None)
 				pPathTop = pTree;
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert));
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			if (CompareResult < 0)
 			{
 				pTree = pObj->f_GetRight();

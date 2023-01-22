@@ -1569,7 +1569,7 @@ namespace NMib::NIntrusive
 
 			while (pCurrent != pLink)
 			{
-				if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) > 0)
+				if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) > 0)
 					break;
 				pLast = pCurrent;
 				pCurrent = pCurrent->fp_GetNextNotList();
@@ -1608,7 +1608,7 @@ namespace NMib::NIntrusive
 
 			while (pCurrent != pLink)
 			{
-				if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) >= 0)
+				if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) >= 0)
 					break;
 				pLast = pCurrent;
 				pCurrent = pCurrent->fp_GetNextNotList();
@@ -1795,7 +1795,7 @@ namespace NMib::NIntrusive
 
 			while (pCurrent != pLink)
 			{
-				if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) > 0)
+				if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) > 0)
 					break;
 				pCurrent = pCurrent->fp_GetNextNotList();
 			}
@@ -1996,7 +1996,7 @@ namespace NMib::NIntrusive
 
 						while (NumChecked)
 						{
-							if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *fp_MemberFromLink(pTemp))) >= 0)
+							if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent->f_Upcast()), *fp_MemberFromLink(pTemp))) >= 0)
 								break;
 
 							--NumChecked;
@@ -2070,7 +2070,7 @@ namespace NMib::NIntrusive
 						continue;
 					}
 
-					if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pSecond->fp_GetPrevNoList()), *fp_MemberFromLink(pSecond))) <= 0)
+					if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pSecond->fp_GetPrevNoList()), *fp_MemberFromLink(pSecond))) <= 0)
 					{
 						// Lists already sorted
 						pLast->fp_SetNextNotList(pFirst);
@@ -2091,7 +2091,7 @@ namespace NMib::NIntrusive
 						while (1)
 						{
 							// decide whether m_pNext element of merge comes from pFirst or pSecond
-							if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pFirst), *fp_MemberFromLink(pSecond))) <= 0)
+							if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pFirst), *fp_MemberFromLink(pSecond))) <= 0)
 							{
 								// First element of pFirst is lower (or same); pTemp must come from pFirst.
 								pLast->fp_SetNextNotList(pFirst);

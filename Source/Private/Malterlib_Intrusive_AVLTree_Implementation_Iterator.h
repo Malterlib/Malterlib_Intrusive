@@ -289,6 +289,7 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLinkConst(pCurrentSearch), _Key);
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			if (CompareResult < 0)
 				pCurrentSearch = pCurrentSearch->f_GetRightP();
 			else if (CompareResult > 0)
@@ -334,6 +335,7 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLinkConst(pCurrentSearch), _Key);
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			if (CompareResult < 0)
 				pCurrentSearch = pCurrentSearch->f_GetRightP();
 			else if (CompareResult > 0)
@@ -391,6 +393,7 @@ namespace NMib::NIntrusive
 		while (pCurrentSearch)
 		{
 			auto CompareResult = fsp_Compare(_fCompare, _Key, *fsp_MemberFromLinkConst(pCurrentSearch));
+			static_assert(cIsOrderType<decltype(CompareResult)>);
 			if (CompareResult < 0)
 			{
 				m_pStack[iStack++] = pCurrentSearch;

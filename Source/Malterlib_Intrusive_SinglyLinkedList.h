@@ -500,7 +500,7 @@ namespace NMib::NIntrusive
 			CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
 			if (pCurrent)
 			{
-				while (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent), *_pToInsert)) > 0)
+				while (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent), *_pToInsert)) > 0)
 				{
 					pCurrent = pCurrent->fp_GetNext();
 				}
@@ -813,7 +813,7 @@ namespace NMib::NIntrusive
 
 						while (NumChecked)
 						{
-							if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pCurrent), *fp_MemberFromLink(pTemp))) <= 0)
+							if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent), *fp_MemberFromLink(pTemp))) <= 0)
 								break;
 							--NumChecked;
 							pTempAfter = pTemp;
@@ -885,7 +885,7 @@ namespace NMib::NIntrusive
 					}
 					else
 					{
-						if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pLastFirst), *fp_MemberFromLink(pSecond))) <= 0)
+						if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pLastFirst), *fp_MemberFromLink(pSecond))) <= 0)
 						{
 							// Lists already sorted
 							pLast->fp_SetNext(pFirst);
@@ -904,7 +904,7 @@ namespace NMib::NIntrusive
 							while (1)
 							{
 								// decide whether m_pNext element of merge comes from pFirst or pSecond
-								if (COrdering_Partial(_fCompare(*fp_MemberFromLink(pFirst), *fp_MemberFromLink(pSecond))) <= 0)
+								if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pFirst), *fp_MemberFromLink(pSecond))) <= 0)
 								{
 									// First element of pFirst is lower (or same); pTemp must come from pFirst.
 									pLast->fp_SetNext(pFirst);
