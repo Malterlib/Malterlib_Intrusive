@@ -25,13 +25,13 @@ namespace NMib::NIntrusive
 		{
 		}
 
- 		inline_small void fp_Internal_SetNextList(void *_pNext)
+		inline_small void fp_Internal_SetNextList(void *_pNext)
 		{
 			DMibFastCheck(fp_Internal_IsListLink());
 			m_pNextPtr = ((mint)_pNext | 1);
 		}
 
- 		inline_small void fp_Internal_SetNextInitListLink(void *_pNext)
+		inline_small void fp_Internal_SetNextInitListLink(void *_pNext)
 		{
 			m_pNextPtr = ((mint)_pNext | 1);
 		}

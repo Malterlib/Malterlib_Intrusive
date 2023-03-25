@@ -946,7 +946,7 @@ avlremove(struct avlnode **n, aint key)
 		}
 	}
 	NMib::NMemory::fg_Free(*n);
- 	*n = nullptr;
+	*n = nullptr;
 	return BALANCE;
 }
 
