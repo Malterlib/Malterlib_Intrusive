@@ -3,7 +3,7 @@
 
 Import "../Core/Lib_Malterlib.MTarget"
 
-Property.MalterlibBoostModules =+ ["intrusive", "static_assert", "assert", "move"]
+Property.MalterlibBoostModules =+ ["intrusive", "static_assert", "assert", "move", "preprocessor"]
 {
 	!!MalterlibEnableInternalTests true
 }
