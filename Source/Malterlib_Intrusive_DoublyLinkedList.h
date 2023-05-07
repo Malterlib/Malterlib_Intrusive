@@ -2163,7 +2163,7 @@ namespace NMib::NIntrusive
 		template <typename t_CSortClass>
 		void f_MergeSort()
 		{
-			f_MergeSort<t_CSortClass>((void *)nullptr);
+			f_MergeSort<t_CSortClass>(t_CSortClass());
 		}
 
 		template <typename tf_CCompare>
