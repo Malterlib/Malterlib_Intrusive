@@ -1563,6 +1563,12 @@ namespace NMib::NIntrusive
 			t_CLink *pToLink = fp_LinkFromMember(_pToInsert);
 			pToLink->f_Unlink();
 
+			if (f_IsEmpty() || fg_CheckOrdering(_fCompare(*_pToInsert, *f_GetLast())) > 0)
+			{
+				f_InsertLast(_pToInsert);
+				return;
+			}
+
 			auto pLink = &m_Link;
 			auto *pCurrent = pLink->fp_GetNextList();
 			auto *pLast = pLink;
@@ -1601,6 +1607,12 @@ namespace NMib::NIntrusive
 		{
 			t_CLink *pToLink = fp_LinkFromMember(_pToInsert);
 			pToLink->f_Unlink();
+
+			if (f_IsEmpty() || fg_CheckOrdering(_fCompare(*_pToInsert, *f_GetLast())) > 0)
+			{
+				f_InsertLast(_pToInsert);
+				return;
+			}
 
 			auto *pLink = &m_Link;
 			auto *pCurrent = pLink->fp_GetNextList();
