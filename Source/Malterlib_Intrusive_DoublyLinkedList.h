@@ -2430,6 +2430,11 @@ namespace NMib::NIntrusive
 #endif
 			}
 
+			CIterator f_GetIterator() const
+			{
+				return *this;
+			}
+
 			CIterator& operator = (TCDLinkListAggregate &_List)
 			{
 				auto *pLink = &_List.m_Link;
@@ -2741,6 +2746,11 @@ namespace NMib::NIntrusive
 				static_assert(TCInstantiateValue<&fs_Debug_List>::mc_Value);
 				static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
+			}
+
+			CIteratorConst f_GetIterator() const
+			{
+				return *this;
 			}
 
 			CIteratorConst& operator = (const TCDLinkListAggregate &_List)

@@ -493,6 +493,7 @@ namespace NMib::NIntrusive
 			inline_small TCIterator(const TCAVLTreeAggregate &_Tree);
 			inline_small TCIterator(const TCAVLTreeAggregate *_pTree);
 
+			TCIterator f_GetIterator() const;
 
 			inline_medium void f_Debug_CheckStack();
 

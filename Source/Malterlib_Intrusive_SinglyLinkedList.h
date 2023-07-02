@@ -1126,7 +1126,14 @@ namespace NMib::NIntrusive
 #endif
 			}
 
-			CIterator& operator = (const TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> &_List)
+			CIterator f_GetIterator() const
+			{
+				CIterator Iterator;
+				Iterator.m_pCurrent = m_pCurrent;
+				return Iterator;
+			}
+			
+			CIterator &operator = (const TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> &_List)
 			{
 				m_pCurrent = _List.m_Data.fp_GetFirst().fp_GetNext();
 				return *this;
@@ -1193,7 +1200,14 @@ namespace NMib::NIntrusive
 #endif
 			}
 
-			CIteratorConst& operator = (const TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> &_List)
+			CIteratorConst f_GetIterator() const
+			{
+				CIteratorConst Iterator;
+				Iterator.m_pCurrent = m_pCurrent;
+				return Iterator;
+			}
+
+			CIteratorConst &operator = (const TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> &_List)
 			{
 				m_pCurrent = _List.m_Data.fp_GetFirst().fp_GetNext();
 				return *this;
