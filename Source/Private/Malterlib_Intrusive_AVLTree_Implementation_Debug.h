@@ -91,7 +91,7 @@ namespace NMib::NIntrusive
 				return false;
 		}
 
-		TIterator<> Iter(this);
+		TCIterator<> Iter(this);
 
 		while (Iter)
 		{

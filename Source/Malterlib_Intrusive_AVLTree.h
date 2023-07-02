@@ -471,9 +471,9 @@ namespace NMib::NIntrusive
 
 		template
 		<
-			aint _RecursionDepth = mc_SafeTreeDepth
+			aint t_RecursionDepth = mc_SafeTreeDepth
 		>
-		class TIterator
+		class TCIterator
 		{
 			friend class TCAVLTreeAggregate;
 		public:
@@ -481,17 +481,17 @@ namespace NMib::NIntrusive
 
 		protected:
 			aint m_iStack;
-			const CLink *m_pStack[_RecursionDepth];
+			const CLink *m_pStack[t_RecursionDepth];
 
 #ifdef DMibDebuggerHelpers
 			static TCAVLTreeAggregate *fs_Debug_GetTree();
 #endif
 		public:
 
-			inline_small TIterator();
-			inline_medium TIterator(const TIterator &_Tree);
-			inline_small TIterator(const TCAVLTreeAggregate &_Tree);
-			inline_small TIterator(const TCAVLTreeAggregate *_pTree);
+			inline_small TCIterator();
+			inline_medium TCIterator(const TCIterator &_Tree);
+			inline_small TCIterator(const TCAVLTreeAggregate &_Tree);
+			inline_small TCIterator(const TCAVLTreeAggregate *_pTree);
 
 
 			inline_medium void f_Debug_CheckStack();
@@ -556,8 +556,8 @@ namespace NMib::NIntrusive
 			inline_small void operator --();
 		};
 
-		typedef TIterator<> CIterator;
-		typedef TIterator<> CIteratorConst;
+		typedef TCIterator<> CIterator;
+		typedef TCIterator<> CIteratorConst;
 
 		CIterator f_GetIterator();
 		CIteratorConst f_GetIterator() const;

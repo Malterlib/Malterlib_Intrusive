@@ -20,9 +20,9 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <aint _RecursionDepth>
+	template <aint t_RecursionDepth>
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>*
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TIterator<_RecursionDepth>::fs_Debug_GetTree()
+	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::fs_Debug_GetTree()
 	{
 		return nullptr;
 	}
@@ -141,7 +141,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_medium mint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetLen() const
 	{
-		TIterator<> Iter(this);
+		TCIterator<> Iter(this);
 		mint Len = 0;
 		while (Iter)
 		{
@@ -164,8 +164,8 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTreeAggregate &_Other) const
 	{
-		TIterator<> Iter0 = *this;
-		TIterator<> Iter1 = _Other;
+		TCIterator<> Iter0 = *this;
+		TCIterator<> Iter1 = _Other;
 
 		while (Iter0 && Iter1)
 		{
@@ -184,8 +184,8 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTreeAggregate &_Other) const
 	{
-		TIterator<> Iter0 = *this;
-		TIterator<> Iter1 = _Other;
+		TCIterator<> Iter0 = *this;
+		TCIterator<> Iter1 = _Other;
 
 		using COrdering = decltype(*Iter0 <=> *Iter1);
 

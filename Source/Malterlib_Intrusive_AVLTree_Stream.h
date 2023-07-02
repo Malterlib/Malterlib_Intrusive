@@ -13,7 +13,7 @@ namespace NMib::NStream
 	public:
 		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
 		{
-			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TIterator<> Iter(_Data);
+			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TCIterator<> Iter(_Data);
 
 			mint nItems = 0;
 
@@ -36,7 +36,7 @@ namespace NMib::NStream
 
 		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data)
 		{
-			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TIterator<> Iter(_Data);
+			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TCIterator<> Iter(_Data);
 
 			mint nItems = 0;
 

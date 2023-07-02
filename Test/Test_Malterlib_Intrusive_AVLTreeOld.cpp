@@ -232,7 +232,7 @@ namespace NMib
 				}
 				DMibTest(DMibExpr(bTreesSame));
 				{
-					typedef CMalterlibTree::TIterator<> Iter1;
+					typedef CMalterlibTree::TCIterator<> Iter1;
 					Iter1 it1 = MalterlibTree;
 					auto it2 = BoostTree.begin();
 					auto end2 = BoostTree.end();
@@ -354,7 +354,7 @@ namespace NMib
 				CMalterlibTree MalterlibTree;
 				CBoostTree BoostTree;
 				typedef CBoostTree::const_iterator Iter2;
-				typedef CMalterlibTree::TIterator<> Iter1;
+				typedef CMalterlibTree::TCIterator<> Iter1;
 				for(mint i = 0; i < m_nItems; ++i)
 				{
 					MalterlibTree.f_Insert(&m_DataMalterlib[i]);

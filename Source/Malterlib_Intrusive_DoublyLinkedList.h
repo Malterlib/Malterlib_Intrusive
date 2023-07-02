@@ -2678,11 +2678,6 @@ namespace NMib::NIntrusive
 			}
 		};
 
-		CIterator f_GetIter()
-		{
-			return CIterator(*this);
-		}
-
 		CIterator f_GetIterator()
 		{
 			return CIterator(*this);
@@ -2926,11 +2921,6 @@ namespace NMib::NIntrusive
 				DMibSafeCheck(!_nPlaces, "You tried to access an element outside the list");
 			}
 		};
-
-		CIteratorConst f_GetIter() const
-		{
-			return CIteratorConst(*this);
-		}
 
 		CIteratorConst f_GetIterator() const
 		{
