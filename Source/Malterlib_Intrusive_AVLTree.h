@@ -145,7 +145,7 @@ namespace NMib::NIntrusive
 
 		template <typename tf_CCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
-			-> typename NTraits::TCIsCallableWith< typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>::CReturnType
+			-> NTraits::TCCallableReturnTypeFor< typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>
 			requires (NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>::mc_Value)
 		{
 			return _fCompare(fg_Forward<tf_CNode>(NPrivate::TCImplicitConvert<tf_CNode>(_Node)));
