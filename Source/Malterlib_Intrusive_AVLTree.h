@@ -22,6 +22,21 @@ namespace NMib::NIntrusive
 
 namespace NMib::NIntrusive
 {
+	namespace NPrivate
+	{
+		template <typename t_CInner>
+		struct TCImplicitConvert
+		{
+			TCImplicitConvert(t_CInner &_Inner) : m_Inner(_Inner) 
+			{
+			}
+
+			operator t_CInner &() { return m_Inner; }
+
+			t_CInner &m_Inner;
+		};
+	}
+
 	template
 	<
 		auto t_pLinkMember
@@ -128,25 +143,18 @@ namespace NMib::NIntrusive
 		static inline_small return_not_aliased CNode *fsp_MemberFromLinkConst(const CLink *_pLink);
 		static inline_small void fsp_Remove(void *_pTree, CLink &_Link);
 
-		template <typename t_Inner>
-		struct TCImplicitConvert
-		{
-			t_Inner& m_Inner;
-			TCImplicitConvert(t_Inner& _Inner) : m_Inner(_Inner) {}
-			operator t_Inner& () { return m_Inner; }
-		};
 		template <typename tf_CCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
-			-> typename NTraits::TCIsCallableWith< typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::CReturnType
-			requires (NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::mc_Value)
+			-> typename NTraits::TCIsCallableWith< typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>::CReturnType
+			requires (NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>::mc_Value)
 		{
-			return _fCompare(fg_Forward<tf_CNode>(TCImplicitConvert<tf_CNode>(_Node)));
+			return _fCompare(fg_Forward<tf_CNode>(NPrivate::TCImplicitConvert<tf_CNode>(_Node)));
 		}
 
 		template <typename tf_CCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
 			-> typename NTraits::TCRemoveRValueReference<tf_CNode>::CType
-			requires (!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (TCImplicitConvert<tf_CNode &&>)>::mc_Value)
+			requires (!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>::mc_Value)
 		{
 			return _Node;
 		}
