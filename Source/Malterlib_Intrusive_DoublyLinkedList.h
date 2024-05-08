@@ -3032,6 +3032,25 @@ namespace NMib::NIntrusive
 		}
 	};
 
+#if defined(DCompiler_clang)
+#	define DMibListLinkD_Trans(_Class, _Member) \
+		class CDLinkTranslator##_Member \
+		{\
+		public:\
+			template <typename t_CClass, auto t_pMember = &_Class::_Member> \
+			struct TCOffset \
+			{ \
+				constexpr static mint mc_Offset = []\
+					{\
+						static constexpr t_CClass const *pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
+						return DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pMember) - (uint8 const *)pNode);\
+					}()\
+				;\
+			}; \
+		};
+
+#else
+
 #	define DMibListLinkD_Trans(_Class, _Member) \
 		class CDLinkTranslator##_Member \
 		{\
@@ -3045,6 +3064,9 @@ namespace NMib::NIntrusive
 				};\
 			}; \
 		};
+
+#endif
+
 
 #	define DMibListLinkD_TransType(_Class, _Member) _Class::CDLinkTranslator##_Member
 //						(((uint8*)(&(pClass->_Member)) - (uint8*)(pClass)));

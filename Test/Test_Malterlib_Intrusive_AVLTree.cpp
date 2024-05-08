@@ -4,6 +4,8 @@
 #include <Mib/Test/Test>
 #include <Mib/Intrusive/AVLTree>
 
+#ifndef DCompiler_clang_cl // Bug in class layout when AVL tree and link is in same clas
+
 namespace
 {
 	using namespace NMib::NIntrusive;
@@ -50,6 +52,7 @@ namespace
 				return *this;
 			}
 		};
+
 		struct CTestClass
 		{
 			CData m_Data;
@@ -151,8 +154,7 @@ namespace
 				DMibTest(DMibExpr(Test3.m_Data.m_Valid));
 				DMibTest(DMibExpr(Test4.m_Data.m_Valid));
 
-				typedef TCAVLTree<&CNode::m_Link, CNode::CCompare>::CIterator CIter;
-				for(CIter It = Test.m_Tree;It;++It)
+				for (auto It = Test.m_Tree.f_GetIterator(); It; ++It)
 				{
 					DMibTest(DMibExpr(It->m_Data.m_Valid)) (ETestFlag_Aggregated);
 					CStr data = It->m_Data.m_Data;
@@ -206,4 +208,6 @@ struct CTestClass
 	TCMemberPointerHolder<int, CTestClass, &CTestClass::m_Offf> m_Member;
 	TCStaticOffset<offsetof(CTestClass, m_Offf)> m_StaticOffset;
 };
+#endif
+
 #endif

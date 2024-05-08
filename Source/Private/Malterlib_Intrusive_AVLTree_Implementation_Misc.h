@@ -46,10 +46,12 @@ namespace NMib::NIntrusive
 	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLink(CLink *_pLink)
 	{
-#ifdef DCompiler_MSVC_Workaround
-		mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+#if defined(DCompiler_MSVC)
+		CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
+		smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
 #else
-		static constexpr mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+		static constexpr CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
+		static constexpr smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
 #endif
 		return ((CNode *)(((uint8 *)_pLink) - Offset));
 	}
@@ -58,10 +60,12 @@ namespace NMib::NIntrusive
 	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLinkConst(const CLink *_pLink)
 	{
-#ifdef DCompiler_MSVC_Workaround
-		mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+#if defined(DCompiler_MSVC)
+		CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
+		smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
 #else
-		static constexpr mint Offset = DMibRelaxConstexpr((smint)(&(((CNode *)nullptr)->*t_pLinkMember).m_Link));
+		static constexpr CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
+		static constexpr smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
 #endif
 		return ((CNode *)(((uint8 *)_pLink) - Offset));
 	}

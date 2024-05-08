@@ -1313,6 +1313,25 @@ namespace NMib::NIntrusive
 		}
 	};
 
+#if defined(DCompiler_clang)
+
+#	define DMibListLinkS_Trans(_Class, _Member) \
+		class CSLinkTranslator##_Member \
+		{\
+		public:\
+			template <typename t_CClass, auto t_pMember = &_Class::_Member> \
+			struct TCOffset \
+			{ \
+				constexpr static mint mc_Offset = []\
+					{\
+						static constexpr t_CClass const *pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
+						return DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pMember) - (uint8 const *)pNode);\
+					}()\
+				;\
+			}; \
+		};
+#else
+
 #	define DMibListLinkS_Trans(_Class, _Member) \
 		class CSLinkTranslator##_Member \
 		{\
@@ -1325,8 +1344,9 @@ namespace NMib::NIntrusive
 					mc_Offset = DMibPOffsetOf(t_CClass, _Member)\
 				};\
 			}; \
-		};\
+		};
 
+#endif
 
 	/***************************************************************************************************\
 	|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
