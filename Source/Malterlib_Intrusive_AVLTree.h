@@ -86,7 +86,14 @@ namespace NMib::NIntrusive
 		using CLink = typename CLinkContainer::CLink; // The inner link type containing the storage for links, has to be the first member of CLinkContainer
 
 		// Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
+#ifdef DCompiler_clang_cl
+		enum
+		{
+			mc_SafeTreeDepth = mint(((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1))
+		};
+#else
 		constexpr static mint mc_SafeTreeDepth = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
+#endif
 
 	protected:
 		using CLinkPointer = CLink *; // The pointer type of the inner link type for each left/right link
