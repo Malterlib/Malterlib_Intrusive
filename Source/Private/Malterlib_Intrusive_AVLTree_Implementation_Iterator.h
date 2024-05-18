@@ -455,7 +455,7 @@ namespace NMib::NIntrusive
 		if (pToFind)
 		{
 			f_InitForSearch(&_Tree);
-			f_FindEqualForward(*pToFind);
+			f_FindEqualForward(*pToFind, _fCompare);
 		}
 	}
 
@@ -482,7 +482,7 @@ namespace NMib::NIntrusive
 		if (pToFind)
 		{
 			f_InitForSearch(&_Tree);
-			f_FindEqualForward(*pToFind);
+			f_FindEqualForward(*pToFind, _fCompare);
 		}
 	}
 
@@ -510,7 +510,7 @@ namespace NMib::NIntrusive
 		if (pToFind)
 		{
 			f_InitForSearch(&_Tree);
-			f_FindEqualForward(*pToFind);
+			f_FindEqualForward(*pToFind, _fCompare);
 		}
 	}
 
@@ -534,7 +534,7 @@ namespace NMib::NIntrusive
 		if (pToFind)
 		{
 			f_InitForSearch(&_Tree);
-			f_FindEqualForward(*pToFind);
+			f_FindEqualForward(*pToFind, _fCompare);
 		}
 	}
 
