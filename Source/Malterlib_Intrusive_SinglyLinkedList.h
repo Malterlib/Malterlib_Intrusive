@@ -388,7 +388,7 @@ namespace NMib::NIntrusive
 		void f_Delete(t_CData *_pToDelete)
 		{
 			f_Remove(_pToDelete);
-			delete _pToDelete;
+			fg_DeleteObject(t_CAllocator(), _pToDelete);
 		}
 
 		inline_small t_CData *f_GetFirst()
