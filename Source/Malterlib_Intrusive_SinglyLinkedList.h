@@ -979,7 +979,7 @@ namespace NMib::NIntrusive
 			FBucketGetIndex *m_pSortFunction;
 			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
 			{
-				return ((CBucketCallbackSort *)_pContext)->m_pSortFunction(((CBucketCallbackSort *)_pContext)->m_pContext, _pItem);
+				return ((CBucketCallbackSort *)_pContext)->m_pSortFunction(((CBucketCallbackSort *)_pContext)->m_pContext, _Place, _pItem);
 			}
 		};
 
