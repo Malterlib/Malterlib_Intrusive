@@ -31,7 +31,7 @@ namespace NMib::NIntrusive
 			auto Compare = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
 			static_assert(cIsOrderType<decltype(Compare)>);
 #if !defined(DCompiler_MSVC)
-			if constexpr (NTraits::TCIsSame<decltype(Compare), COrdering_Strong>::mc_Value)
+			if constexpr (NTraits::cIsSame<decltype(Compare), COrdering_Strong>)
 			{
 				if (Compare == 0)// [[unlikely]]
 					return fsp_MemberFromLink(pCurrentSearch);
@@ -75,7 +75,7 @@ namespace NMib::NIntrusive
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
 			static_assert(cIsOrderType<decltype(CompareResult)>);
 #if !defined(DCompiler_MSVC)
-			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
+			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
 				if (CompareResult == 0)// [[unlikely]]
 					return fsp_MemberFromLink(pCurrentSearch);
@@ -191,7 +191,7 @@ namespace NMib::NIntrusive
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pCurrentSearch), _Key);
 			static_assert(cIsOrderType<decltype(CompareResult)>);
 #if !defined(DCompiler_MSVC)
-			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
+			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
 				if (CompareResult == 0)// [[unlikely]]
 					return fsp_MemberFromLink(pCurrentSearch);

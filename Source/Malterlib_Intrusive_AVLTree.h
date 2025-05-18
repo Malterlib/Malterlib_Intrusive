@@ -64,7 +64,7 @@ namespace NMib::NIntrusive
 		auto t_pLinkMember
 		, typename t_CCompare = CSort_Default
 		, typename t_CAllocator = NMib::NMemory::CDefaultAllocator
-		, typename t_COverrideNodeType = typename NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>::CType
+		, typename t_COverrideNodeType = NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>
 	>
 	class TCAVLTreeAggregate
 	{
@@ -82,7 +82,7 @@ namespace NMib::NIntrusive
 		using CAllocator = t_CAllocator;
 		using CMemberPointer = decltype(t_pLinkMember);
 		using CNode = t_COverrideNodeType;
-		using CLinkContainer = typename NTraits::TCRemoveMemberObjectPointer<CMemberPointer>::CType;
+		using CLinkContainer = NTraits::TCRemoveMemberObjectPointer<CMemberPointer>;
 		using CLink = typename CLinkContainer::CLink; // The inner link type containing the storage for links, has to be the first member of CLinkContainer
 
 		// Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
@@ -152,30 +152,30 @@ namespace NMib::NIntrusive
 
 		template <typename tf_CCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
-			-> NTraits::TCCallableReturnTypeFor< typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>
-			requires (NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>::mc_Value)
+			-> NTraits::TCCallableReturnTypeFor<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>
+			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>)
 		{
 			return _fCompare(fg_Forward<tf_CNode>(NPrivate::TCImplicitConvert<tf_CNode>(_Node)));
 		}
 
 		template <typename tf_CCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
-			-> typename NTraits::TCRemoveRValueReference<tf_CNode>::CType
-			requires (!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>::mc_Value)
+			-> NTraits::TCRemoveRValueReference<tf_CNode>
+			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>)
 		{
 			return _Node;
 		}
 
 		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
 		inline_small static auto fsp_DoCompare(tf_CCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			requires (NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (tf_CLeft &&, tf_CRight &&)>::mc_Value)
+			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (tf_CLeft &&, tf_CRight &&)>)
 		{
 			return _fCompare(_Left, _Right);
 		}
 
 		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
 		inline_small static auto fsp_DoCompare(tf_CCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			requires (!NTraits::TCIsCallableWith<typename NTraits::TCRemoveReference<tf_CCompare>::CType, void (tf_CLeft &&, tf_CRight &&)>::mc_Value)
+			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (tf_CLeft &&, tf_CRight &&)>)
 		{
 			return _Left <=> _Right;
 		}
@@ -597,7 +597,7 @@ namespace NMib::NIntrusive
 		auto t_pLinkMember
 		, typename t_CCompare = CSort_Default
 		, typename t_CAllocator = NMib::NMemory::CDefaultAllocator
-		, typename t_COverrideNodeType = typename NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>::CType
+		, typename t_COverrideNodeType = NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>
 	>
 	class TCAVLTree : public TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>
 	{

@@ -182,7 +182,7 @@ namespace NMib::NIntrusive
 			auto CompareResult = fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToRemove));
 			static_assert(cIsOrderType<decltype(CompareResult)>);
 #if !defined(DCompiler_MSVC) && false
-			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
+			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
 				auto Direction = CompareResult < 0 ? 1 : 0;
 				*pLarger = Direction;
@@ -238,7 +238,7 @@ namespace NMib::NIntrusive
 			static_assert(cIsOrderType<decltype(CompareResult)>);
 			*pStack = pObject;
 #if !defined(DCompiler_MSVC) && false
-			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
+			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
 				if (CompareResult == 0)// [[unlikely]]
 				{
@@ -369,7 +369,7 @@ namespace NMib::NIntrusive
 			static_assert(cIsOrderType<decltype(CompareResult)>);
 			*pStack = pObject;
 #if !defined(DCompiler_MSVC) && false
-			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
+			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
 				if (CompareResult == 0)// [[unlikely]]
 				{
@@ -456,7 +456,7 @@ namespace NMib::NIntrusive
 			static_assert(cIsOrderType<decltype(CompareResult)>);
 			*pStack = pObject;
 #if !defined(DCompiler_MSVC) && false
-			if constexpr (NTraits::TCIsSame<decltype(CompareResult), COrdering_Strong>::mc_Value)
+			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
 				if (CompareResult == 0)// [[unlikely]]
 					return fsp_MemberFromLink(pObj);

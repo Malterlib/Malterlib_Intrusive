@@ -107,8 +107,8 @@ namespace NMib
 			mint m_nTests;
 			fp64 m_AllowedDelta;
 
-			typedef typename TCChooseType<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure>::CType CMeasureType;
-			typedef typename TCChooseType<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance>::CType CTestType;
+			typedef TCConditional<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure> CMeasureType;
+			typedef TCConditional<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance> CTestType;
 		public:
 			TCAVLTreeTester(mint _nItems, bool _bRandom)
 			{

@@ -239,12 +239,13 @@ namespace NMib::NIntrusive
 		}
 
 		template <bool tf_bDoDelete>
-		typename TCEnableIf<tf_bDoDelete>::CType fp_AutoDelete()
+		TCEnableIf<tf_bDoDelete> fp_AutoDelete()
 		{
 			f_DeleteAll();
 		}
+		
 		template <bool tf_bDoDelete>
-		typename TCEnableIf<!tf_bDoDelete>::CType fp_AutoDelete()
+		TCEnableIf<!tf_bDoDelete> fp_AutoDelete()
 		{
 		}
 
