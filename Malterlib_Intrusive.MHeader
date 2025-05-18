@@ -43,10 +43,23 @@ Property
 	}
 }
 
+%Group "{Test}/{Malterlib_Intrusive}"
+{
+	Compile
+	{
+		!!CompileDialect "C"
+		Warnings_MissingCommaVariadicParam false
+		{
+			!!Compiler "Clang"
+		}
+	}
+}
+
 Property
 {
 	!!MalterlibEnableInternalTests true
 	
 	MalterlibTests =+ "Malterlib_Intrusive"
 	MalterlibTestFiles_Malterlib_Intrusive: [type(CEntity)] = ["Test/*"->MakeAbsolute()]
+	MalterlibTestExtraGroups_Malterlib_Intrusive: [string] = ["{Test}/{Malterlib_Intrusive}"]
 }
