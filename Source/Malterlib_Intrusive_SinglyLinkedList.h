@@ -184,7 +184,8 @@ namespace NMib::NIntrusive
 	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
 	class TCSLinkListAggregate
 	{
-		typedef typename t_CTranslator::template TCOffset<t_CData> COffset;
+		using COffset = typename t_CTranslator::template TCOffset<t_CData>;
+
 	public:
 		constexpr TCSLinkListAggregate(EAggregateInitialization _Init)
 			: m_Data(_Init)
@@ -972,7 +973,8 @@ namespace NMib::NIntrusive
 			}
 		}
 
-		typedef aint FBucketGetIndex(void *_pContext, aint _Place, void *_pItem);
+		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
+
 		class CBucketCallbackSort
 		{
 		public:
@@ -1101,7 +1103,8 @@ namespace NMib::NIntrusive
 
 		class CIterator
 		{
-			typedef COffset COffset;
+			using COffset = COffset;
+
 		public:
 			CSLinkAggr *m_pCurrent;
 
@@ -1175,7 +1178,8 @@ namespace NMib::NIntrusive
 
 		class CIteratorConst
 		{
-			typedef COffset COffset;
+			using COffset = COffset;
+
 		public:
 			const CSLinkAggr *m_pCurrent;
 

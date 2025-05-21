@@ -22,7 +22,7 @@ namespace
 		struct TCDefaultAccessor
 		{
 			static t_CClass &fs_Get();
-			typedef decltype(fs_Get().m_Link) CLinkContainer;
+			using CLinkContainer = decltype(fs_Get().m_Link);
 			static CLinkContainer &f_GetOffset(t_CClass &_Class)
 			{
 				return _Class.m_Link;
@@ -101,9 +101,9 @@ namespace
 		{
 			DMibTestSuite("AVL")
 			{
+				using CNode = CTestClass;
+				using CMint = CData;
 
-				typedef CTestClass CNode;
-				typedef CData CMint;
 				CTestClass Test("4");
 
 				CTestClass Test1("1");

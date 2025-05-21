@@ -17,7 +17,8 @@ namespace NMib
 {
 	namespace NIntrusive
 	{
-		typedef CCyclesMin CTestTimer;
+		using CTestTimer = CCyclesMin;
+
 		class CMalterlibNode
 		{
 		public:
@@ -95,8 +96,8 @@ namespace NMib
 			}
 		};
 
-		typedef boost::intrusive::avl_set<CBoostNode, boost::intrusive::constant_time_size<0>> CBoostTree;
-		typedef NIntrusive::TCAVLTree<&CMalterlibNode::m_Link, CMalterlibNode::CCompare> CMalterlibTree;
+		using CBoostTree = boost::intrusive::avl_set<CBoostNode, boost::intrusive::constant_time_size<0>>;
+		using CMalterlibTree = NIntrusive::TCAVLTree<&CMalterlibNode::m_Link, CMalterlibNode::CCompare>;
 
 		template <bool t_bMemoryTests>
 		class TCAVLTreeTester
@@ -107,8 +108,9 @@ namespace NMib
 			mint m_nTests;
 			fp64 m_AllowedDelta;
 
-			typedef TCConditional<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure> CMeasureType;
-			typedef TCConditional<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance> CTestType;
+			using CMeasureType = TCConditional<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure>;
+			using CTestType = TCConditional<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance>;
+
 		public:
 			TCAVLTreeTester(mint _nItems, bool _bRandom)
 			{
@@ -232,7 +234,7 @@ namespace NMib
 				}
 				DMibTest(DMibExpr(bTreesSame));
 				{
-					typedef CMalterlibTree::TCIterator<> Iter1;
+					using Iter1 = CMalterlibTree::TCIterator<>;
 					Iter1 it1 = MalterlibTree;
 					auto it2 = BoostTree.begin();
 					auto end2 = BoostTree.end();
@@ -353,8 +355,8 @@ namespace NMib
 			{
 				CMalterlibTree MalterlibTree;
 				CBoostTree BoostTree;
-				typedef CBoostTree::const_iterator Iter2;
-				typedef CMalterlibTree::TCIterator<> Iter1;
+				using Iter2 = CBoostTree::const_iterator;
+				using Iter1 = CMalterlibTree::TCIterator<>;
 				for(mint i = 0; i < m_nItems; ++i)
 				{
 					MalterlibTree.f_Insert(&m_DataMalterlib[i]);

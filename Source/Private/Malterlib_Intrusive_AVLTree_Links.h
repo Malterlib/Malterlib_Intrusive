@@ -9,7 +9,8 @@ namespace NMib::NIntrusive::NPrivate
 {
 	class CAVLLinkData
 	{
-		typedef CAVLLinkData CThis;
+		using CThis = CAVLLinkData;
+
 	public:
 		enum EAVLTreeSkew
 		{
@@ -146,7 +147,7 @@ namespace NMib::NIntrusive::NPrivate
 	class CAVLLinkAlignedData
 	{
 	public:
-		typedef CAVLLinkAlignedData CThis;
+		using CThis = CAVLLinkAlignedData;
 
 		enum EAVLTreeSkew
 		{
@@ -286,7 +287,7 @@ namespace NMib::NIntrusive::NPrivate
 
 	class CAVLLinkAlignedRightData
 	{
-		typedef CAVLLinkAlignedRightData CThis;
+		using CThis = CAVLLinkAlignedRightData;
 	public:
 #ifdef DMibDebug
 		inline_never CAVLLinkAlignedRightData *fp_Debug_GetLeft() const
@@ -430,21 +431,21 @@ namespace NMib::NIntrusive::NPrivate
 	template <EAVLLinkType t_LinkType>
 	struct TCLinkTypeToLink
 	{
-		typedef void CType;
+		using CType = void;
 	};
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_Aligned>
 	{
-		typedef CAVLLinkAlignedData CType;
+		using CType = CAVLLinkAlignedData;
 	};
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_AlignedRight>
 	{
-		typedef CAVLLinkAlignedRightData CType;
+		using CType = CAVLLinkAlignedRightData;
 	};
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_Unaligned>
 	{
-		typedef CAVLLinkData CType;
+		using CType = CAVLLinkData;
 	};
 }

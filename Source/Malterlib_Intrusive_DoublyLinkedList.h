@@ -604,7 +604,7 @@ namespace NMib::NIntrusive
 
 	class CDLinkAggregate final
 	{
-		typedef CDLinkAggregate CThis;
+		using CThis = CDLinkAggregate;
 	public:
 		CDLinkAggregate *m_pNextPtr;
 		CDLinkAggregate *m_pPrevPtr;
@@ -1061,9 +1061,9 @@ namespace NMib::NIntrusive
 	{
 
 	public:
-		typedef t_CLink CLink;
-		typedef t_CTranslator CTranslator;
-		typedef typename CTranslator::template TCOffset<t_CData> COffset;
+		using CLink = t_CLink;
+		using CTranslator = t_CTranslator;
+		using COffset = typename CTranslator::template TCOffset<t_CData>;
 #ifdef DMibDebuggerHelpers
 		static COffset fs_Debug_GetOffset();
 #endif
@@ -2184,7 +2184,7 @@ namespace NMib::NIntrusive
 			f_MergeSort(_fCompare);
 		}
 
-		typedef aint FBucketGetIndex(void *_pContext, aint _Place, void *_pItem);
+		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
 		class CBucketCallbackSort
 		{
 		public:
@@ -2372,7 +2372,7 @@ namespace NMib::NIntrusive
 		class CIterator
 		{
 		public:
-			typedef t_CData CData;
+			using CData = t_CData;
 			t_CLink *m_pCurrent;
 #ifdef DMibDebuggerHelpers
 			static TCDLinkListAggregate *fs_Debug_List();
@@ -3001,8 +3001,8 @@ namespace NMib::NIntrusive
 		TCDLinkList &operator = (TCDLinkList const &) = delete;
 
 	public:
+		using CSuper = TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>;
 
-		typedef TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator> CSuper;
 		bool operator == (const TCDLinkList &_Other) const
 		{
 			return (const CSuper &)*this == (const CSuper &)_Other;

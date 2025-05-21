@@ -42,16 +42,17 @@ public:
 		aint Hula;
 	};
 	
-	typedef DMibListLinkDS_Iter(CDataDouble, m_Link) CIter_CData;
-	typedef DMibListLinkS_Iter(CDataSingle, m_Link) CIterS_CData;
-	
+	using CIter_CData = DMibListLinkDS_Iter(CDataDouble, m_Link);
+	using CIterS_CData = DMibListLinkS_Iter(CDataSingle, m_Link);
+
 	static aint ms_NumCompare;
 	static const aint mc_BucketSize = 11;
 	
 	class CMergeSortClassDouble
 	{
 	public:
-		typedef aint CRet;
+		using CRet = aint;
+
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
 		{
 			return ((CDataDouble *)(_pFirst))->Hula - ((CDataDouble *)(_pSecond))->Hula;
@@ -61,7 +62,8 @@ public:
 	class CMergeSortClassSingle
 	{
 	public:
-		typedef aint CRet;
+		using CRet = aint;
+
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
 		{
 			return ((CDataSingle *)(_pFirst))->Hula - ((CDataSingle *)(_pSecond))->Hula;
@@ -71,7 +73,8 @@ public:
 	class CMergeSortClassNumCompareDouble
 	{
 	public:
-		typedef aint CRet;
+		using CRet = aint;
+
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
 		{
 			++ms_NumCompare;
@@ -82,7 +85,8 @@ public:
 	class CMergeSortClassNumCompareSingle
 	{
 	public:
-		typedef aint CRet;
+		using CRet = aint;
+
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
 		{
 			++ms_NumCompare;
@@ -228,7 +232,8 @@ public:
 	class CMergeSortCDataTest1
 	{
 	public:
-		typedef aint CRet;
+		using CRet = aint;
+
 		static inline_small CRet fs_Compare(void *_pContext, CDataTest1 *_pFirst, CDataTest1 *_pSecond)
 		{
 			return _pFirst->Hula - _pSecond->Hula;

@@ -65,8 +65,8 @@ public:
 	class CCompare
 	{
 	public:
+		using CRet = aint;
 
-		typedef aint CRet;
 		static inline_small CRet fs_Compare(const CTestClass *_pFirst, const CTestClass *_pSecond, void *_pContext)
 		{
 //			DMibTrace("Data1 {} Data2 {}\n", (_pFirst->m_Data) << (_pSecond->m_Data));
@@ -81,8 +81,8 @@ public:
 	class CCompare2
 	{
 	public:
+		using CRet = aint;
 
-		typedef aint CRet;
 		static inline_small CRet fs_Compare(const CTestClass2 *_pFirst, const CTestClass2 *_pSecond, void *_pContext)
 		{
 			return _pFirst->m_Data.f_CmpNoCase(_pSecond->m_Data);

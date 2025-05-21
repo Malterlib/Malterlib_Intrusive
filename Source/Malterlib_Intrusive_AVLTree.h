@@ -572,8 +572,8 @@ namespace NMib::NIntrusive
 			inline_small void operator --();
 		};
 
-		typedef TCIterator<> CIterator;
-		typedef TCIterator<> CIteratorConst;
+		using CIterator = TCIterator<>;
+		using CIteratorConst = TCIterator<>;
 
 		CIterator f_GetIterator();
 		CIteratorConst f_GetIterator() const;
@@ -604,7 +604,8 @@ namespace NMib::NIntrusive
 		TCAVLTree(TCAVLTree const &) = delete;
 		TCAVLTree &operator = (TCAVLTree const &) = delete;
 
-		typedef TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> CSuper;
+		using CSuper = TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>;
+
 	public:
 		TCAVLTree(TCAVLTree &&_Other);
 		TCAVLTree();
@@ -636,7 +637,7 @@ namespace NMib::NIntrusive
 	class TCAVLLinkAggregate
 	{
 	public:
-		typedef t_CLinkData CLink;
+		using CLink = t_CLinkData;
 		using FRemove = void (void *_pTree, t_CLinkData &_Link);
 
 		static constexpr bool mc_bNeedSetTree = false;
