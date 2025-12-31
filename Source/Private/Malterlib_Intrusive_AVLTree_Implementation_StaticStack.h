@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -165,7 +165,7 @@ namespace NMib::NIntrusive
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare)
 	{
 		DMibFastCheck(_pObjectToRemove);
-		
+
 		CTemporaryStack Stack;
 
 		auto *pStack = Stack.m_Stack;
@@ -494,7 +494,7 @@ namespace NMib::NIntrusive
 		auto pCreatedObject = _fOnInsert();
 		if (!pCreatedObject)
 			return nullptr;
-		
+
 		CLink *pObjectToInsert = fsp_LinkFromMember(pCreatedObject);
 
 		if constexpr (CLinkContainer::mc_bNeedSetTree)
@@ -593,33 +593,6 @@ namespace NMib::NIntrusive
 	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualAndRemove(tf_CKey const &_Key) -> CNode *
 	{
 		return fp_FindEqualAndRemove(m_Root, _Key, t_CCompare());
-	}
-
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CToMap, typename tf_CCompare>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Map(tf_CToMap &_ToMap, tf_CCompare &&_fCompare)
-	{
-		return f_FindEqualOrInsert
-			(
-				_ToMap
-				, [&]()
-				{
-					auto Memory = CAllocator::f_AllocSafe(sizeof(CNode), alignof(CNode));
-					auto pData = new(Memory.m_pMemory) CNode(_ToMap);
-					Memory.f_Claim();
-					return pData;
-				}
-				, _fCompare
-			)
-		;
-	}
-
-	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CToMap>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Map(tf_CToMap &_ToMap)
-	{
-		return f_Map(_ToMap, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

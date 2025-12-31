@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -27,7 +27,7 @@ namespace NMib::NIntrusive
 		template <typename t_CInner>
 		struct TCImplicitConvert
 		{
-			TCImplicitConvert(t_CInner &_Inner) : m_Inner(_Inner) 
+			TCImplicitConvert(t_CInner &_Inner) : m_Inner(_Inner)
 			{
 			}
 
@@ -402,11 +402,6 @@ namespace NMib::NIntrusive
 		template <typename tf_CKey, typename tf_FOnInsert>
 		inline_small CNode *f_FindEqualOrInsert(tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert);
 
-		template <typename tf_ToMap, typename tf_CCompare>
-		inline_small CNode *f_Map(tf_ToMap &_ToMap, tf_CCompare &&_fCompare);
-		template <typename tf_ToMap>
-		inline_small CNode *f_Map(tf_ToMap &_ToMap);
-
 		template <typename tf_CCompare>
 		inline_small void f_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
@@ -680,7 +675,7 @@ namespace NMib::NIntrusive
 	private:
 		TCAVLLink(TCAVLLink const &) = delete;
 		TCAVLLink &operator = (TCAVLLink const &) = delete;
-		
+
 	public:
 		TCAVLLink();
 		~TCAVLLink();
