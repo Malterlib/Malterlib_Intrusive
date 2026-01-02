@@ -253,6 +253,13 @@ namespace NMib::NIntrusive
 		template <typename tf_CCompare>
 		static void fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 		static void fp_Removed(CLinkPointer *_pObject, CLink *_pObj, CTemporaryStack &_Stack);
+
+		// No-rebalance removal helpers - used during destructive iteration
+		static inline_medium CLink *fsp_DetachHighest(CLinkPointer &_pObject);
+		static inline_medium CLink *fsp_DetachLowest(CLinkPointer &_pObject);
+		// Returns the replacement node (or nullptr if removed node was a leaf)
+		static CLink *fp_RemovedNoRebalance(CLinkPointer *_pObject, CLink *_pObj);
+
 		template <int tf_Direction>
 		static void fp_RemoveRotate3(CLinkPointer *_pObject);
 		template <int tf_Direction>
@@ -560,6 +567,12 @@ namespace NMib::NIntrusive
 			template <typename tf_CCompare>
 			void f_Remove(TCAVLTreeAggregate &_Tree, tf_CCompare &&_fCompare);
 			void f_Remove(TCAVLTreeAggregate &_Tree);
+
+			// Extract current node without rebalancing, advance to next, and patch the stack
+			// Returns the extracted node. Used during destructive iteration.
+			// This must use the bidirectional algorithm to maintain the full ancestor path.
+			template <bool tf_bReverse>
+			CNode *f_ExtractCurrentNoRebalance(TCAVLTreeAggregate &_Tree);
 
 			inline_small operator CNode *() const;
 			inline_small CNode * operator ->() const;

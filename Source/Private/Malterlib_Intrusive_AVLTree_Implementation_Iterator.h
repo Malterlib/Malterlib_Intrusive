@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #pragma once
@@ -543,6 +543,87 @@ namespace NMib::NIntrusive
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::f_Remove(TCAVLTreeAggregate &_Tree)
 	{
 		f_Remove(_Tree, t_CCompare());
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <aint t_RecursionDepth>
+	template <bool tf_bReverse>
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::f_ExtractCurrentNoRebalance(TCAVLTreeAggregate &_Tree)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
+	{
+		DMibFastCheck(m_iStack >= 0);
+
+		// Get current node to extract and compute parent link pointer
+		CLink *pToExtract = const_cast<CLink *>(m_pStack[m_iStack]);
+
+		CLinkPointer *pParentLink;
+		if (m_iStack == 0)
+			pParentLink = &_Tree.m_Root;
+		else
+		{
+			CLink *pParent = const_cast<CLink *>(m_pStack[m_iStack - 1]);
+			if (pParent->f_GetLeftP() == pToExtract)
+				pParentLink = pParent->f_GetLeft();
+			else
+				pParentLink = pParent->f_GetRight();
+		}
+
+		// Save position before advancing
+		aint iExtractedPos = m_iStack;
+
+		// Advance to next element using bidirectional algorithm (maintains full ancestor path)
+		if constexpr (tf_bReverse)
+			f_PrevBidirectional();
+		else
+			f_NextBidirectional();
+
+		// Do the removal, get the replacement
+		CLink *pReplacement = fp_RemovedNoRebalance(pParentLink, pToExtract);
+
+		// Patch stack if extracted node is still in it (we went down into its subtree)
+		if (iExtractedPos <= m_iStack)
+		{
+			if (pReplacement)
+			{
+				// Check if replacement is also in stack (between iExtractedPos+1 and m_iStack)
+				// This happens when successor replaces the extracted node and successor was an ancestor of current
+				aint iReplacementPos = -1;
+				for (aint i = iExtractedPos + 1; i <= m_iStack; ++i)
+				{
+					if (m_pStack[i] == pReplacement)
+					{
+						iReplacementPos = i;
+						break;
+					}
+				}
+
+				if (iReplacementPos >= 0)
+				{
+					// Collapse: replacement moved from iReplacementPos to iExtractedPos
+					// Remove entries from iExtractedPos+1 to iReplacementPos (the path between them is now gone)
+					aint nToRemove = iReplacementPos - iExtractedPos;
+					m_pStack[iExtractedPos] = pReplacement;
+					for (aint j = iExtractedPos + 1; j <= m_iStack - nToRemove; ++j)
+						m_pStack[j] = m_pStack[j + nToRemove];
+					m_iStack -= nToRemove;
+				}
+				else
+				{
+					// Replacement was not in stack - just update the entry
+					m_pStack[iExtractedPos] = pReplacement;
+				}
+			}
+			else
+			{
+				// Leaf node removed - shift stack entries down
+				for (aint j = iExtractedPos; j < m_iStack; ++j)
+					m_pStack[j] = m_pStack[j + 1];
+				--m_iStack;
+			}
+		}
+		// Else: we went up, extracted node was popped from stack, nothing to patch
+
+		return fsp_MemberFromLink(pToExtract);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

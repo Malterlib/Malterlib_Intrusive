@@ -79,6 +79,98 @@ namespace NMib::NIntrusive
 
 	}
 
+	// No-rebalance version: finds and detaches the highest node in the subtree
+	// Returns the detached node. Does NOT rebalance.
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	inline_medium auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_DetachHighest(CLinkPointer &_pObject)
+		-> CLink *
+	{
+		CLinkPointer *pObject = &_pObject;
+		CLink *pObj = CLink::fs_GetPtr(_pObject);
+
+		// Find rightmost node
+		while (pObj->f_GetRightP())
+		{
+			pObject = pObj->f_GetRight();
+			pObj = CLink::fs_GetPtr(*pObject);
+		}
+
+		// Detach: parent now points to our left child (if any)
+		CLink::f_Assign(pObject, pObj->f_GetLeft());
+
+		return pObj;
+	}
+
+	// No-rebalance version: finds and detaches the lowest node in the subtree
+	// Returns the detached node. Does NOT rebalance.
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	inline_medium auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_DetachLowest(CLinkPointer &_pObject)
+		-> CLink *
+	{
+		CLinkPointer *pObject = &_pObject;
+		CLink *pObj = CLink::fs_GetPtr(_pObject);
+
+		// Find leftmost node
+		while (pObj->f_GetLeftP())
+		{
+			pObject = pObj->f_GetLeft();
+			pObj = CLink::fs_GetPtr(*pObject);
+		}
+
+		// Detach: parent now points to our right child (if any)
+		CLink::f_Assign(pObject, pObj->f_GetRight());
+
+		return pObj;
+	}
+
+	// No-rebalance version of fp_Removed - performs BST removal without rebalancing
+	// Returns the replacement node (or nullptr if removed node was a leaf)
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemovedNoRebalance
+		(
+			CLinkPointer *_pObject
+			, CLink *_pObj
+		)
+		-> CLink *
+	{
+		if (_pObj->f_GetLeftP())
+		{
+			// Has left child - find predecessor (highest in left subtree)
+			CLink *pReplacement = fsp_DetachHighest(*_pObj->f_GetLeft());
+
+			// Remove target from tree
+			pReplacement->f_SetSkew(_pObj->f_GetSkew());
+			_pObj->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
+			// Link predecessor in target's place
+			pReplacement->f_SetLeft(_pObj->f_GetLeft());
+			pReplacement->f_SetRight(_pObj->f_GetRight());
+			CLink::f_Assign(_pObject, pReplacement);
+			return pReplacement;
+		}
+		else if (_pObj->f_GetRightP())
+		{
+			// Has only right child - find successor (lowest in right subtree)
+			CLink *pReplacement = fsp_DetachLowest(*_pObj->f_GetRight());
+
+			// Remove target from tree
+			pReplacement->f_SetSkew(_pObj->f_GetSkew());
+			_pObj->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
+			// Link successor in target's place
+			pReplacement->f_SetLeft(_pObj->f_GetLeft());
+			pReplacement->f_SetRight(_pObj->f_GetRight());
+			CLink::f_Assign(_pObject, pReplacement);
+			return pReplacement;
+		}
+		else
+		{
+			// Leaf node - just remove
+			_pObj->f_SetSkew(CLink::EAVLTreeSkew_NotInTree);
+			CLink::f_Assign(_pObject, (CLink *)nullptr);
+			return nullptr;
+		}
+		// No rebalancing - intentionally skip the balancing loop
+	}
+
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Removed
 		(
@@ -622,5 +714,4 @@ namespace NMib::NIntrusive
 	{
 		f_Remove(_pToRemove, t_CCompare());
 	}
-
 }
