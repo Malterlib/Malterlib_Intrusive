@@ -11,12 +11,12 @@ The Intrusive module provides foundational intrusive data structures that form t
   - Multiple link types: Aligned, AlignedRight, Unaligned, Custom
   - Template-based with customizable comparison and allocation
   - Stack-based and recursive implementations
-  
+
 - **Doubly Linked List** (`CDLinkAggregateListNoPrevPtr`) - Auto-unlinking doubly linked list
   - List head uses single pointer with bit flags for memory efficiency
   - Nodes still use two pointers (next/prev) for full bidirectional traversal
   - Automatic unlinking on destruction
-  
+
 - **Singly Linked List** - Basic forward-only linked list
   - Minimal memory overhead
   - Simple iteration patterns
@@ -142,7 +142,7 @@ node2.fg_Move(&node1);  // node2 takes node1's place in list
 ### Running Module Tests
 ```bash
 # Build tests
-./mib build Tests macOS x86_64 Debug
+MalterlibBuildShowProgress=false ./mib build Tests macOS arm64 Debug
 
 # Run all intrusive tests
 /opt/Deploy/Tests/RunAllTests --paths '["Intrusive/*"]'
