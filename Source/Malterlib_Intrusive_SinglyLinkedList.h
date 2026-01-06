@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 #include <Mib/Core/Core>
@@ -244,7 +244,7 @@ namespace NMib::NIntrusive
 		{
 			f_DeleteAll();
 		}
-		
+
 		template <bool tf_bDoDelete>
 		TCEnableIf<!tf_bDoDelete> fp_AutoDelete()
 		{
@@ -1136,7 +1136,7 @@ namespace NMib::NIntrusive
 				Iterator.m_pCurrent = m_pCurrent;
 				return Iterator;
 			}
-			
+
 			CIterator &operator = (const TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> &_List)
 			{
 				m_pCurrent = _List.m_Data.fp_GetFirst().fp_GetNext();

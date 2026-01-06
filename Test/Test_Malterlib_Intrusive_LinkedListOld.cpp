@@ -1,4 +1,4 @@
-// Copyright © 2015 Hansoft AB 
+// Copyright © 2015 Hansoft AB
 // Distributed under the MIT license, see license text in LICENSE.Malterlib
 
 /*************************************************************************************************\
@@ -11,7 +11,7 @@
 class CTestSort : public CMalterlibTest
 {
 public:
-	
+
 	aint Rand (void)
 	{
 		static aint holdrand = 548;
@@ -24,7 +24,7 @@ public:
 		return(((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
-	bool f_AutomaticTest() 
+	bool f_AutomaticTest()
 	{
 		return true;
 	}
@@ -41,13 +41,13 @@ public:
 		DMibListLinkS_Link(CDataSingle, m_Link);
 		aint Hula;
 	};
-	
+
 	using CIter_CData = DMibListLinkDS_Iter(CDataDouble, m_Link);
 	using CIterS_CData = DMibListLinkS_Iter(CDataSingle, m_Link);
 
 	static aint ms_NumCompare;
 	static const aint mc_BucketSize = 11;
-	
+
 	class CMergeSortClassDouble
 	{
 	public:
@@ -81,7 +81,7 @@ public:
 			return ((CDataDouble *)(_pFirst))->Hula - ((CDataDouble *)(_pSecond))->Hula;
 		}
 	};
-	
+
 	class CMergeSortClassNumCompareSingle
 	{
 	public:
@@ -93,7 +93,7 @@ public:
 			return ((CDataSingle *)(_pFirst))->Hula - ((CDataSingle *)(_pSecond))->Hula;
 		}
 	};
-	
+
 	class CBucketSortClassDouble
 	{
 	public:
@@ -121,7 +121,7 @@ public:
 			return (((CDataDouble *)(_pItem))->Hula >> (_Place * mc_BucketSize)) & ((1 << mc_BucketSize) - 1);
 		}
 	};
-	
+
 	class CBucketSortClassNumCompareSingle
 	{
 	public:
@@ -131,7 +131,7 @@ public:
 			return (((CDataSingle *)(_pItem))->Hula >> (_Place * mc_BucketSize)) & ((1 << mc_BucketSize) - 1);
 		}
 	};
-	
+
 	static const aint mc_TestSorted = 400000;
 	CDataSingle m_DatasSingle[mc_TestSorted];
 	CDataDouble m_DatasDouble[mc_TestSorted];
@@ -145,7 +145,7 @@ public:
 			aint CurrentRand = Rand() * 0x7fff + Rand2();
 			m_DatasSingle[i].Hula = CurrentRand;
 			m_DatasDouble[i].Hula = CurrentRand;
-		}		
+		}
 	}
 
 	void UpdateList()
@@ -155,13 +155,13 @@ public:
 		{
 			m_ListDouble.f_Insert(m_DatasDouble[i]);
 			m_ListSingle.f_Insert(m_DatasSingle[i]);
-		}		
+		}
 	}
 
 	void TraceListDouble()
-	{		
+	{
 		for (CIter_CData Iter(m_ListDouble);Iter;++Iter)
-		{			
+		{
 			DMibTrace("{}\n", Iter->Hula);
 		}
 	}
@@ -169,7 +169,7 @@ public:
 	void TraceListSingle()
 	{
 		for (CIterS_CData Iter(m_ListSingle);Iter;++Iter)
-		{			
+		{
 			DMibTrace("{}\n", Iter->Hula);
 		}
 	}
@@ -207,7 +207,7 @@ public:
 		aint LastInt = 0;
 		for (CIterS_CData Iter(m_ListSingle);Iter;++Iter)
 		{
-			
+
 			++NumInList;
 			if (Iter->Hula < LastInt)
 				return "List did not sort ok";
@@ -296,9 +296,9 @@ public:
 		DMibListLinkDS_Iter(CDataTest1, m_Link) Iterator;
 
 		CDataTest1 TestData[64];
-		
+
 		NMib::NMisc::CRandomShiftRNG Random(0,1,2);
-		
+
 		for (int i = 0; i < 64; ++i)
 		{
 			TestData[i].Hula = Random.f_GetValue<uint32>();
@@ -308,7 +308,7 @@ public:
 		{
 			List.f_Insert(TestData[i]);
 			DMibSafeCheck(List.f_GetLen() == (i + 1), "Mustafa");
-			
+
 			List.f_MergeSort<CMergeSortCDataTest1>();
 			DMibSafeCheck(List.f_GetLen() == (i + 1), "Mustafa");
 		}
@@ -319,7 +319,7 @@ public:
 		|*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*|
 		|_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_|
 		|*|*|*|*|*|*|*||¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯||*|*|*|*|*|*|*|
-		                                          Doubly linked list 
+		                                          Doubly linked list
 		|*|*|*|*|*|*|*||___________________________________________________________________||*|*|*|*|*|*|*|
 		|¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯|
 		|*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*|
@@ -336,7 +336,7 @@ public:
 		UpdateList();
 
 	//	CIter_CData Iter(m_ListDouble);
-		
+
 	/*	int Test112 = Iter[3]->Hula;
 
 		DMibTrace("sizeof(CDataDouble) = {}\n", (Test112));*/
@@ -391,7 +391,7 @@ public:
 			return TestListReturn;
 
 		UpdateList();
-		m_ListDouble.f_MergeSort<CMergeSortClassNumCompareDouble>();		
+		m_ListDouble.f_MergeSort<CMergeSortClassNumCompareDouble>();
 
 		DMibTrace("Merge sort Numcompare random    = {}\n", ms_NumCompare);
 
@@ -492,12 +492,12 @@ public:
 		m_ListDouble.f_BucketSort<CBucketSortClassNumCompareDouble, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 
 		DMibTrace("Bucket sort Numcompare reversed = {}\n", ms_NumCompare);
-	 
+
 		/************************************************************************************************\
 		|*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*|
 		|_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_|
 		|*|*|*|*|*|*|*||¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯||*|*|*|*|*|*|*|
-		                                        Singly linked list 
+		                                        Singly linked list
 		|*|*|*|*|*|*|*||___________________________________________________________________||*|*|*|*|*|*|*|
 		|¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯|
 		|*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*|
@@ -566,7 +566,7 @@ public:
 			return TestListReturn;
 
 		UpdateList();
-		m_ListSingle.f_MergeSort<CMergeSortClassNumCompareSingle>();		
+		m_ListSingle.f_MergeSort<CMergeSortClassNumCompareSingle>();
 
 		DMibTrace("Merge sort Numcompare random    = {}\n", ms_NumCompare);
 
@@ -655,7 +655,7 @@ public:
 		DMibTrace("Bucket sort Numcompare reversed = {}\n", ms_NumCompare);
 
 		return "";
-	}	
+	}
 };
 
 aint CTestSort::ms_NumCompare = 0;
