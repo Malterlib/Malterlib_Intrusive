@@ -142,13 +142,13 @@ node2.fg_Move(&node1);  // node2 takes node1's place in list
 ### Running Module Tests
 ```bash
 # Build tests
-MalterlibBuildShowProgress=false ./mib build Tests macOS arm64 Debug
+MalterlibBuildShowProgress=false ./mib build Tests
 
 # Run all intrusive tests
-/opt/Deploy/Tests/RunAllTests --paths '["Intrusive/*"]'
+/opt/Deploy/Tests/RunAllTests --paths '["Malterlib/Intrusive/*"]'
 
 # Run specific test
-/opt/Deploy/Tests/RunAllTests --paths '["Intrusive/AVLTree"]'
+/opt/Deploy/Tests/RunAllTests --paths '["Malterlib/Intrusive/AVLTree"]'
 ```
 
 ## Important Files
