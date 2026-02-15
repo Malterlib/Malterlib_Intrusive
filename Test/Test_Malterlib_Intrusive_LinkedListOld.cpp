@@ -352,7 +352,7 @@ public:
 				m_ListDouble.f_MergeSort<CMergeSortClassDouble>();
 			}
 
-			DMibTrace("Merge sort random               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Merge sort random               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListDouble()).f_GetLen())
@@ -367,7 +367,7 @@ public:
 				m_ListDouble.f_MergeSort<CMergeSortClassDouble>();
 			}
 
-			DMibTrace("Merge sort sorted               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Merge sort sorted               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListDouble()).f_GetLen())
@@ -384,7 +384,7 @@ public:
 				m_ListDouble.f_MergeSort<CMergeSortClassDouble>();
 			}
 
-			DMibTrace("Merge sort reversed             = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Merge sort reversed             = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListDouble()).f_GetLen())
@@ -430,7 +430,7 @@ public:
 				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
-			DMibTrace("Bucket sort random              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Bucket sort random              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 	/*	DMibTrace("Listafter:\n", 0);
@@ -453,7 +453,7 @@ public:
 				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1<<mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
-			DMibTrace("Bucket sort sorted              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Bucket sort sorted              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListDouble()).f_GetLen())
@@ -470,7 +470,7 @@ public:
 				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
-			DMibTrace("Bucket sort reversed            = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Bucket sort reversed            = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListDouble()).f_GetLen())
@@ -525,7 +525,7 @@ public:
 				m_ListSingle.f_MergeSort<CMergeSortClassSingle>();
 			}
 
-			DMibTrace("Merge sort random               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Merge sort random               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 //		TraceList2();
@@ -542,7 +542,7 @@ public:
 				m_ListSingle.f_MergeSort<CMergeSortClassSingle>();
 			}
 
-			DMibTrace("Merge sort sorted               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Merge sort sorted               = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListSingle()).f_GetLen())
@@ -559,7 +559,7 @@ public:
 				m_ListSingle.f_MergeSort<CMergeSortClassSingle>();
 			}
 
-			DMibTrace("Merge sort reversed             = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Merge sort reversed             = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListSingle()).f_GetLen())
@@ -598,7 +598,7 @@ public:
 				m_ListSingle.f_BucketSort<CBucketSortClassSingle, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
-			DMibTrace("Bucket sort random              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Bucket sort random              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListSingle()).f_GetLen())
@@ -614,7 +614,7 @@ public:
 			}
 
 
-			DMibTrace("Bucket sort sorted              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Bucket sort sorted              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListSingle()).f_GetLen())
@@ -631,7 +631,7 @@ public:
 				m_ListSingle.f_BucketSort<CBucketSortClassSingle, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
-			DMibTrace("Bucket sort reversed            = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime() << (Timer.f_GetTime() * 1000.0));
+			DMibTrace("Bucket sort reversed            = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}
 
 		if ((TestListReturn = TestListSingle()).f_GetLen())

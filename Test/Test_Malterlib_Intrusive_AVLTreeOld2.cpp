@@ -69,7 +69,7 @@ public:
 
 		static inline_small CRet fs_Compare(const CTestClass *_pFirst, const CTestClass *_pSecond, void *_pContext)
 		{
-//			DMibTrace("Data1 {} Data2 {}\n", (_pFirst->m_Data) << (_pSecond->m_Data));
+//			DMibTrace("Data1 {} Data2 {}\n", (_pFirst->m_Data), (_pSecond->m_Data));
 			return _pFirst->m_Data.f_CmpNoCase(_pSecond->m_Data);
 		}
 
@@ -414,9 +414,9 @@ public:
 			}
 
 			if (_bLeft)
-				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("{}.L={}.{}") << (_pParent->m_Data) << (_pObj->m_Data) << (Skew)).f_GetStr() << (12));
+				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("{}.L={}.{}") << (_pParent->m_Data) << (_pObj->m_Data) << (Skew)).f_GetStr(), (12));
 			else
-				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("{}.R={}.{}") << (_pParent->m_Data) << (_pObj->m_Data) << (Skew)).f_GetStr() << (12));
+				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("{}.R={}.{}") << (_pParent->m_Data) << (_pObj->m_Data) << (Skew)).f_GetStr(), (12));
 		}
 		++_CurrentDepth;
 
@@ -990,9 +990,9 @@ public:
 			_bTraced = true;
 
 			if (_bLeft)
-				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("L{}") << (_pObj->m_Data)).f_GetStr() << 4);
+				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("L{}") << (_pObj->m_Data)).f_GetStr(), 4);
 			else
-				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("R{}") << (_pObj->m_Data)).f_GetStr() << 4);
+				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("R{}") << (_pObj->m_Data)).f_GetStr(), 4);
 		}
 		++_CurrentDepth;
 
@@ -1083,15 +1083,15 @@ public:
 		aint Key = 100;
 		pTest = m_TestTree.f_FindEqual(Key);
 		if (pTest)
-			DMibTrace("Equal {} = {}\n", (Key) << (pTest->m_Data));
+			DMibTrace("Equal {} = {}\n", (Key), (pTest->m_Data));
 		Key = 51;
 		pTest = m_TestTree.f_FindLargestLessThanEqual(Key);
 		if (pTest)
-			DMibTrace("f_FindLargestLessThanEqual {} = {}\n", (Key) << (pTest->m_Data));
+			DMibTrace("f_FindLargestLessThanEqual {} = {}\n", (Key), (pTest->m_Data));
 		Key = 51;
 		pTest = m_TestTree.f_FindSmallestGreaterThanEqual(Key);
 		if (pTest)
-			DMibTrace("f_FindSmallestGreaterThanEqual {} = {}\n", (Key) << (pTest->m_Data));
+			DMibTrace("f_FindSmallestGreaterThanEqual {} = {}\n", (Key), (pTest->m_Data));
 
 		for (aint i = 0; i < (DebugTest < mc_TestSorted ? DebugTest : mc_TestSorted); ++i)
 		{

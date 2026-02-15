@@ -174,7 +174,7 @@ namespace NMib
 				if (!_pMalterlibNode)
 					return;
 				fp_TraceTree(CMalterlibTree::fs_GetLeft(_pMalterlibNode), _Depth + 1);
-				DMibTrace("{sj*}{}\r\n", "" << _Depth*3 << _pMalterlibNode->m_Data);
+				DMibTrace("{sj*}{}\r\n", "", _Depth*3, _pMalterlibNode->m_Data);
 				fp_TraceTree(CMalterlibTree::fs_GetRight(_pMalterlibNode), _Depth + 1);
 			}
 
@@ -183,7 +183,7 @@ namespace NMib
 				if (!_pBoostNode)
 					return;
 				fp_TraceTree((CBoostNode *)_pBoostNode->left_, _Depth + 1);
-				DMibTrace("{sj*}{}\r\n", "" << _Depth*3 << _pBoostNode->m_Data);
+				DMibTrace("{sj*}{}\r\n", "", _Depth*3, _pBoostNode->m_Data);
 				fp_TraceTree((CBoostNode *)_pBoostNode->right_, _Depth + 1);
 			}
 

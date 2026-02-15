@@ -373,9 +373,9 @@ public:
 			_bTraced = true;
 
 			if (_bLeft)
-				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("L{}") << (_pObj->d->m_Data)).f_GetStr() << 4);
+				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("L{}") << (_pObj->d->m_Data)).f_GetStr(), 4);
 			else
-				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("R{}") << (_pObj->d->m_Data)).f_GetStr() << 4);
+				DMibTrace("{L*1}", (NMib::NStr::CStr::CFormat("R{}") << (_pObj->d->m_Data)).f_GetStr(), 4);
 		}
 		++_CurrentDepth;
 
