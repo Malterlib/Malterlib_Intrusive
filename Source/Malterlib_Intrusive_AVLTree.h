@@ -89,10 +89,10 @@ namespace NMib::NIntrusive
 #ifdef DCompiler_clang_cl
 		enum
 		{
-			mc_SafeTreeDepth = mint(((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1))
+			mc_SafeTreeDepth = mint(((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>))
 		};
 #else
-		constexpr static mint mc_SafeTreeDepth = ((sizeof(void *) * 12) - DMibGetHighestBitSet(sizeof(CLink)) + 1);
+		constexpr static mint mc_SafeTreeDepth = ((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>);
 #endif
 
 	protected:
