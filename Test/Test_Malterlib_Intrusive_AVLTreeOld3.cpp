@@ -441,9 +441,9 @@ public:
 		f_CheckTree();
 		DMibSafeCheck(!m_TreeRoot, "Must be empty");
 
-		NMib::NTime::CTimer Timer;
+		NMib::NTime::CTimeMeasure Timer;
 		{
-			DMibScopeTimer(Timer);
+			DMibScopeMeasure(Timer);
 			for (aint i = 0; i < mc_TestSorted; ++i)
 			{
 				avlinsert(&m_TreeRoot, &m_ClassList[i]);
@@ -453,7 +453,7 @@ public:
 
 
 		{
-			DMibScopeTimer(Timer);
+			DMibScopeMeasure(Timer);
 			for (aint i = 0; i < mc_TestSorted; ++i)
 			{
 				avlremove(&m_TreeRoot, m_ClassList[i].m_Data);

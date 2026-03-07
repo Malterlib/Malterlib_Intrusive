@@ -344,11 +344,11 @@ public:
 		DMibTrace("sizeof(CDataDouble) = {}\n", (sizeof(CDataDouble)));
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListDouble.f_MergeSort<CMergeSortClassDouble>();
 			}
 
@@ -359,11 +359,11 @@ public:
 			return TestListReturn;
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListDouble.f_MergeSort<CMergeSortClassDouble>();
 			}
 
@@ -376,11 +376,11 @@ public:
 		ReverseList();
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListDouble.f_MergeSort<CMergeSortClassDouble>();
 			}
 
@@ -422,11 +422,11 @@ public:
 		}*/
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
@@ -445,11 +445,11 @@ public:
 			return TestListReturn;
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1<<mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
@@ -462,11 +462,11 @@ public:
 		ReverseList();
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
@@ -517,11 +517,11 @@ public:
 		DMibTrace("sizeof(CDataSingle) = {}\n", (sizeof(CDataSingle)));
 //		TraceList2();
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListSingle.f_MergeSort<CMergeSortClassSingle>();
 			}
 
@@ -534,11 +534,11 @@ public:
 			return TestListReturn;
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListSingle.f_MergeSort<CMergeSortClassSingle>();
 			}
 
@@ -551,11 +551,11 @@ public:
 		ReverseList();
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListSingle.f_MergeSort<CMergeSortClassSingle>();
 			}
 
@@ -590,11 +590,11 @@ public:
 		UpdateList();
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListSingle.f_BucketSort<CBucketSortClassSingle, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
@@ -605,11 +605,11 @@ public:
 			return TestListReturn;
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListSingle.f_BucketSort<CBucketSortClassSingle, 1<<mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
@@ -623,11 +623,11 @@ public:
 		ReverseList();
 
 		{
-			NMib::NTime::CTimerMin Timer;
+			NMib::NTime::CPerfTimeMeasureMin Timer;
 
 			for (aint i = 0; i < NumTests; ++i)
 			{
-				DMibScopeTimerMin(Timer);
+				DMibScopePerfTimeMeasureMin(Timer);
 				m_ListSingle.f_BucketSort<CBucketSortClassSingle, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 

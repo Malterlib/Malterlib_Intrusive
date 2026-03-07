@@ -701,19 +701,19 @@ public:
 		DMibSafeCheck(!m_TestTree2.f_GetRoot(), "Must be empty");
 
 		{
-			NMib::NTime::CTimerMin TimerInsert;
-			NMib::NTime::CTimerMin TimerDelete;
+			NMib::NTime::CPerfTimeMeasureMin TimerInsert;
+			NMib::NTime::CPerfTimeMeasureMin TimerDelete;
 			for (aint i = 0; i < NumTests; ++i)
 			{
 				{
-					DMibScopeTimerMin(TimerInsert);
+					DMibScopePerfTimeMeasureMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.f_Insert(m_ClassList[i]);
 					}
 				}
 				{
-					DMibScopeTimerMin(TimerDelete);
+					DMibScopePerfTimeMeasureMin(TimerDelete);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.f_Remove(m_ClassList[i]);
@@ -726,19 +726,19 @@ public:
 		}
 
 		{
-			NMib::NTime::CTimerMin TimerInsert;
-			NMib::NTime::CTimerMin TimerDelete;
+			NMib::NTime::CPerfTimeMeasureMin TimerInsert;
+			NMib::NTime::CPerfTimeMeasureMin TimerDelete;
 			for (aint i = 0; i < NumTests; ++i)
 			{
 				{
-					DMibScopeTimerMin(TimerInsert);
+					DMibScopePerfTimeMeasureMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.f_InsertLowStack(m_ClassList[i]);
 					}
 				}
 				{
-					DMibScopeTimerMin(TimerDelete);
+					DMibScopePerfTimeMeasureMin(TimerDelete);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.f_RemoveLowStack(m_ClassList[i]);
@@ -751,19 +751,19 @@ public:
 		}
 
 		{
-			NMib::NTime::CTimerMin TimerInsert;
-			NMib::NTime::CTimerMin TimerDelete;
+			NMib::NTime::CPerfTimeMeasureMin TimerInsert;
+			NMib::NTime::CPerfTimeMeasureMin TimerDelete;
 			for (aint i = 0; i < NumTests; ++i)
 			{
 				{
-					DMibScopeTimerMin(TimerInsert);
+					DMibScopePerfTimeMeasureMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.fr_Insert(m_ClassList[i]);
 					}
 				}
 				{
-					DMibScopeTimerMin(TimerDelete);
+					DMibScopePerfTimeMeasureMin(TimerDelete);
 					for (aint i = 0; i < mc_TestSorted; ++i)
 					{
 						m_TestTree.fr_Remove(m_ClassList[i]);
@@ -1142,27 +1142,27 @@ public:
 
 		TraceTree();
 
-		NMib::NTime::CTimerMin TimerInsert;
-		NMib::NTime::CTimerMin TimerFindEqual;
-		NMib::NTime::CTimerMin TimerFindLargestLessThanEqual;
-		NMib::NTime::CTimerMin TimerFindSmallestGreaterThanEqual;
-		NMib::NTime::CTimerMin TimerDelete;
-		NMib::NTime::CTimerMin TimerInsertRecursive;
-		NMib::NTime::CTimerMin TimerDeleteRecursive;
-		NMib::NTime::CTimerMin TimerInsertLowStack;
-		NMib::NTime::CTimerMin TimerDeleteLowStack;
+		NMib::NTime::CPerfTimeMeasureMin TimerInsert;
+		NMib::NTime::CPerfTimeMeasureMin TimerFindEqual;
+		NMib::NTime::CPerfTimeMeasureMin TimerFindLargestLessThanEqual;
+		NMib::NTime::CPerfTimeMeasureMin TimerFindSmallestGreaterThanEqual;
+		NMib::NTime::CPerfTimeMeasureMin TimerDelete;
+		NMib::NTime::CPerfTimeMeasureMin TimerInsertRecursive;
+		NMib::NTime::CPerfTimeMeasureMin TimerDeleteRecursive;
+		NMib::NTime::CPerfTimeMeasureMin TimerInsertLowStack;
+		NMib::NTime::CPerfTimeMeasureMin TimerDeleteLowStack;
 		aint FinalNumber = 0;
 		for (aint i = 0; i < NumTests; ++i)
 		{
 			{
-				DMibScopeTimerMin(TimerInsert);
+				DMibScopePerfTimeMeasureMin(TimerInsert);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.f_Insert(m_ClassList[i]);
 				}
 			}
 			{
-				DMibScopeTimerMin(TimerFindEqual);
+				DMibScopePerfTimeMeasureMin(TimerFindEqual);
 
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
@@ -1174,7 +1174,7 @@ public:
 			if (pTest)
 				FinalNumber += pTest->m_Data;
 			{
-				DMibScopeTimerMin(TimerFindLargestLessThanEqual);
+				DMibScopePerfTimeMeasureMin(TimerFindLargestLessThanEqual);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					aint Key = Rand() % (mc_TestSorted * 2);
@@ -1184,7 +1184,7 @@ public:
 			if (pTest)
 				FinalNumber += pTest->m_Data;
 			{
-				DMibScopeTimerMin(TimerFindSmallestGreaterThanEqual);
+				DMibScopePerfTimeMeasureMin(TimerFindSmallestGreaterThanEqual);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					aint Key = Rand() % (mc_TestSorted * 2);
@@ -1194,35 +1194,35 @@ public:
 			if (pTest)
 				FinalNumber += pTest->m_Data;
 			{
-				DMibScopeTimerMin(TimerDelete);
+				DMibScopePerfTimeMeasureMin(TimerDelete);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.f_Remove(m_ClassList[i]);
 				}
 			}
 			{
-				DMibScopeTimerMin(TimerInsertRecursive);
+				DMibScopePerfTimeMeasureMin(TimerInsertRecursive);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.fr_Insert(m_ClassList[i]);
 				}
 			}
 			{
-				DMibScopeTimerMin(TimerDeleteRecursive);
+				DMibScopePerfTimeMeasureMin(TimerDeleteRecursive);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.fr_Remove(m_ClassList[i]);
 				}
 			}
 			{
-				DMibScopeTimerMin(TimerInsertLowStack);
+				DMibScopePerfTimeMeasureMin(TimerInsertLowStack);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.f_InsertLowStack(m_ClassList[i]);
 				}
 			}
 			{
-				DMibScopeTimerMin(TimerDeleteLowStack);
+				DMibScopePerfTimeMeasureMin(TimerDeleteLowStack);
 				for (aint i = 0; i < mc_TestSorted; ++i)
 				{
 					m_TestTree.f_RemoveLowStack(m_ClassList[i]);

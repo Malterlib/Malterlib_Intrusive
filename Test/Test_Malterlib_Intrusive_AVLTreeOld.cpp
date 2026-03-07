@@ -17,7 +17,7 @@ namespace NMib
 {
 	namespace NIntrusive
 	{
-		using CTestTimer = CCyclesMin;
+		using CTestTimer = CPrefCyclesTimeMeasureMin;
 
 		class CMalterlibNode
 		{
