@@ -409,6 +409,11 @@ namespace NMib::NIntrusive
 		template <typename tf_CKey, typename tf_FOnInsert>
 		inline_small CNode *f_FindEqualOrInsert(tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert);
 
+		template <typename tf_ToMap, typename tf_CCompare>
+		inline_small CNode *f_FindEqualOrNew(tf_ToMap &_ToMap, tf_CCompare &&_fCompare);
+		template <typename tf_ToMap>
+		inline_small CNode *f_FindEqualOrNew(tf_ToMap &_ToMap);
+
 		template <typename tf_CCompare>
 		inline_small void f_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>

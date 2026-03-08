@@ -688,6 +688,33 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CToMap, typename tf_CCompare>
+	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
+	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualOrNew(tf_CToMap &_ToMap, tf_CCompare &&_fCompare)
+	{
+		return f_FindEqualOrInsert
+			(
+				_ToMap
+				, [&]()
+				{
+					auto Memory = CAllocator::f_AllocSafe(sizeof(CNode), alignof(CNode));
+					auto pData = new(Memory.m_pMemory) CNode(_ToMap);
+					Memory.f_Claim();
+					return pData;
+				}
+				, _fCompare
+			)
+		;
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	template <typename tf_CToMap>
+	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualOrNew(tf_CToMap &_ToMap)
+	{
+		return f_FindEqualOrNew(_ToMap, t_CCompare());
+	}
+
+	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare)
 	{
