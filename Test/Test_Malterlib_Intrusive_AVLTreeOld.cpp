@@ -86,11 +86,11 @@ namespace NMib
 				m_Data=rhs.m_Data;
 				return *this;
 			}
-			auto operator <=> (CBoostNode const &_Right) const
+			auto operator <=> (CBoostNode const &_Right) const noexcept
 			{
 				return m_Data <=> _Right.m_Data;
 			}
-			auto operator <=> (int const &_Right) const
+			auto operator <=> (int const &_Right) const noexcept
 			{
 				return m_Data <=> _Right;
 			}

@@ -368,8 +368,8 @@ namespace NMib::NIntrusive
 		static inline_small CNode *fs_GetLeft(CNode *_pObject);
 		inline_medium mint f_GetLen() const;
 		mint f_GetDepth() const;
-		bool operator == (const TCAVLTreeAggregate &_Other) const;
-		auto operator <=> (const TCAVLTreeAggregate &_Other) const;
+		bool operator == (const TCAVLTreeAggregate &_Other) const noexcept(noexcept(fg_GetType<CNode const &>() == fg_GetType<CNode const &>()));
+		auto operator <=> (const TCAVLTreeAggregate &_Other) const noexcept(noexcept(fg_GetType<CNode const &>() <=> fg_GetType<CNode const &>()));
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -625,8 +625,8 @@ namespace NMib::NIntrusive
 		~TCAVLTree();
 		TCAVLTree &operator = (TCAVLTree &&_Other);
 
-		bool operator == (const TCAVLTree &_Other) const;
-		auto operator <=> (const TCAVLTree &_Other) const;
+		bool operator == (const TCAVLTree &_Other) const noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() == fg_GetType<typename CSuper::CNode const &>()));
+		auto operator <=> (const TCAVLTree &_Other) const noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() <=> fg_GetType<typename CSuper::CNode const &>()));
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\

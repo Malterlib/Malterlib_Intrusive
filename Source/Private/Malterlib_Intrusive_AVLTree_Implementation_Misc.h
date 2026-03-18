@@ -166,7 +166,10 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTreeAggregate &_Other) const
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTreeAggregate &_Other) const noexcept
+		(
+			noexcept(fg_GetType<CNode const &>() == fg_GetType<CNode const &>())
+		)
 	{
 		TCIterator<> Iter0 = *this;
 		TCIterator<> Iter1 = _Other;
@@ -186,8 +189,12 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTreeAggregate &_Other) const
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTreeAggregate &_Other) const noexcept
+		(
+			noexcept(fg_GetType<CNode const &>() <=> fg_GetType<CNode const &>())
+		)
 	{
+
 		TCIterator<> Iter0 = *this;
 		TCIterator<> Iter1 = _Other;
 
@@ -217,13 +224,19 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTree &_Other) const
+	bool TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTree &_Other) const noexcept
+		(
+			noexcept(fg_GetType<typename CSuper::CNode const &>() == fg_GetType<typename CSuper::CNode const &>())
+		)
 	{
 		return (const CSuper &)(*this) == (const CSuper &)_Other;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	auto TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTree &_Other) const
+	auto TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTree &_Other) const noexcept
+		(
+			noexcept(fg_GetType<typename CSuper::CNode const &>() <=> fg_GetType<typename CSuper::CNode const &>())
+		)
 	{
 		return (const CSuper &)(*this) <=> (const CSuper &)_Other;
 	}

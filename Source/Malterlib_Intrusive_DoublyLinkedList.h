@@ -2937,7 +2937,7 @@ namespace NMib::NIntrusive
 			return CIteratorConst(*this);
 		}
 
-		bool operator == (const TCDLinkListAggregate &_Other) const
+		bool operator == (const TCDLinkListAggregate &_Other) const noexcept(noexcept(fg_GetType<t_CData const &>() == fg_GetType<t_CData const &>()))
 		{
 			CIteratorConst Iter0 = *this;
 			CIteratorConst Iter1 = _Other;
@@ -3003,7 +3003,7 @@ namespace NMib::NIntrusive
 	public:
 		using CSuper = TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>;
 
-		bool operator == (const TCDLinkList &_Other) const
+		bool operator == (const TCDLinkList &_Other) const noexcept(noexcept((const CSuper &)*this == (const CSuper &)_Other))
 		{
 			return (const CSuper &)*this == (const CSuper &)_Other;
 		}
