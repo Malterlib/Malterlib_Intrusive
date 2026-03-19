@@ -1022,7 +1022,7 @@ public:
 		aint Current = 1;
 		while (Iter)
 		{
-			DMibTrace("0x{nh,sf0,l8} ", ((mint)&Iter->m_Link));
+			DMibTrace("0x{nh,sf0,l8} ", ((umint)&Iter->m_Link));
 			if (!(Current++ & 15))
 				DMibTrace("\n", 0);
 			++Iter;

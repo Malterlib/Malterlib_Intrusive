@@ -71,7 +71,7 @@ The Intrusive module provides foundational intrusive data structures that form t
 // AVL trees guarantee height ≤ 1.44 * log₂(n)
 // For 64-bit address space: max ~2^64 objects
 // Safe depth ensures no stack overflow for maximum possible tree
-constexpr static mint mc_SafeTreeDepth = ((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>;
+constexpr static umint mc_SafeTreeDepth = ((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>;
 ```
 
 ### Doubly Linked List Architecture

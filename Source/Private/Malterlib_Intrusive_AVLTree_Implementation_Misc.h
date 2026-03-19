@@ -143,10 +143,10 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_medium mint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetLen() const
+	inline_medium umint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetLen() const
 	{
 		TCIterator<> Iter(this);
-		mint Len = 0;
+		umint Len = 0;
 		while (Iter)
 		{
 			++Len;
@@ -156,7 +156,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	mint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetDepth() const
+	umint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetDepth() const
 	{
 		auto pRoot = CLink::fs_GetPtr(m_Root);
 		if (!pRoot)

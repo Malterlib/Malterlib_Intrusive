@@ -658,7 +658,7 @@ avlinsert(struct avlnode **n, AVLDATUM d)
 
 	if (!(*n))
 	{
-		mint Size = sizeof(struct avlnode);
+		umint Size = sizeof(struct avlnode);
 		((*n) = (struct avlnode *)NMib::NMemory::fg_Alloc(Size));
 		if (!(*n)) {
 			return ERROR;

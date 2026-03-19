@@ -145,7 +145,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	mint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_GetDepthRecursive(CLink *_pNode) const
+	umint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_GetDepthRecursive(CLink *_pNode) const
 	{
 		auto *pLeft = _pNode->f_GetLeftP();
 		auto *pRight = _pNode->f_GetRightP();

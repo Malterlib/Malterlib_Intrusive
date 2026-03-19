@@ -104,15 +104,15 @@ namespace NMib
 		{
 			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> m_DataMalterlib;
 			TCVector<CBoostNode, NMemory::CAllocator_Virtual> m_DataBoost;
-			mint m_nItems;
-			mint m_nTests;
+			umint m_nItems;
+			umint m_nTests;
 			fp64 m_AllowedDelta;
 
 			using CMeasureType = TCConditional<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure>;
 			using CTestType = TCConditional<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance>;
 
 		public:
-			TCAVLTreeTester(mint _nItems, bool _bRandom)
+			TCAVLTreeTester(umint _nItems, bool _bRandom)
 			{
 				m_nItems = _nItems;
 				m_nTests = fg_Max((100000u / m_nItems), 1u) * 5;
@@ -128,7 +128,7 @@ namespace NMib
 				m_DataBoost.f_SetLen(_nItems);
 				if(!_bRandom)
 				{
-					for (mint i = 0; i < _nItems; ++i)
+					for (umint i = 0; i < _nItems; ++i)
 					{
 						m_DataMalterlib[i].m_Data = i;
 						m_DataBoost[i].m_Data = i;
@@ -138,7 +138,7 @@ namespace NMib
 				{
 					NMisc::CRandomShiftRNG RandomRng;
 					CMalterlibTree MalterlibTree;
-					for(mint i = 0; i < _nItems; ++i)
+					for(umint i = 0; i < _nItems; ++i)
 					{
 						int x = 1 + (RandomRng.f_GetValue<int>() % (10000000-1));
 						while (MalterlibTree.f_FindEqual(x))
@@ -169,7 +169,7 @@ namespace NMib
 				return true;
 			}
 
-			void fp_TraceTree(CMalterlibNode *_pMalterlibNode, mint _Depth)
+			void fp_TraceTree(CMalterlibNode *_pMalterlibNode, umint _Depth)
 			{
 				if (!_pMalterlibNode)
 					return;
@@ -178,7 +178,7 @@ namespace NMib
 				fp_TraceTree(CMalterlibTree::fs_GetRight(_pMalterlibNode), _Depth + 1);
 			}
 
-			void fp_TraceTree(CBoostNode *_pBoostNode, mint _Depth)
+			void fp_TraceTree(CBoostNode *_pBoostNode, umint _Depth)
 			{
 				if (!_pBoostNode)
 					return;
@@ -193,7 +193,7 @@ namespace NMib
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
 				CMalterlibTree MalterlibTree;
-				for (mint i = 0; i < m_nTests; ++i)
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					MalterlibTree.f_Clear();
 					auto Iter = m_DataMalterlib.f_GetIterator();
@@ -206,7 +206,7 @@ namespace NMib
 					}
 				}
 				CBoostTree BoostTree;
-				for (mint i = 0; i < m_nTests; ++i)
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					BoostTree.clear();
 					auto Iter = m_DataBoost.f_GetIterator();
@@ -220,9 +220,9 @@ namespace NMib
 					}
 				}
 
-				CBoostNode *pRoot = (CBoostNode *)(((mint)BoostTree.holder.root.parent_) & ~mint(3));
-				while ((void *)((mint)pRoot->parent_ & ~mint(3)) != (void *)&BoostTree)
-					pRoot = (CBoostNode *)((mint)pRoot->parent_ & ~mint(3));
+				CBoostNode *pRoot = (CBoostNode *)(((umint)BoostTree.holder.root.parent_) & ~umint(3));
+				while ((void *)((umint)pRoot->parent_ & ~umint(3)) != (void *)&BoostTree)
+					pRoot = (CBoostNode *)((umint)pRoot->parent_ & ~umint(3));
 				bool bTreesSame = fp_CheckTree(MalterlibTree.f_GetRoot(), pRoot);
 				bTreesSame = bTreesSame && fp_CheckTree(MalterlibTree.f_GetRoot(), pRoot);
 
@@ -261,9 +261,9 @@ namespace NMib
 
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
-				mint bFoundMalterlib = 0;
-				mint bFoundBoost = 0;
-				for (mint i = 0; i < m_nTests; ++i)
+				umint bFoundMalterlib = 0;
+				umint bFoundBoost = 0;
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					CMalterlibTree MalterlibTree;
 					auto Iter = m_DataMalterlib.f_GetIterator();
@@ -281,7 +281,7 @@ namespace NMib
 						}
 					}
 				}
-				for (mint i = 0; i < m_nTests; ++i)
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					CBoostTree BoostTree;
 					auto Iter = m_DataBoost.f_GetIterator();
@@ -312,10 +312,10 @@ namespace NMib
 			{
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
-				for (mint i = 0; i < m_nTests; ++i)
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					CMalterlibTree MalterlibTree;
-					for (mint i = 0 ; i < m_nItems; ++i)
+					for (umint i = 0 ; i < m_nItems; ++i)
 					{
 						MalterlibTree.f_Insert(m_DataMalterlib[i]);
 					}
@@ -329,10 +329,10 @@ namespace NMib
 					}
 				}
 
-				for (mint i = 0; i < m_nTests; ++i)
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					CBoostTree BoostTree;
-					for (mint i = 0; i < m_nItems; ++i)
+					for (umint i = 0; i < m_nItems; ++i)
 					{
 						BoostTree.insert(m_DataBoost[i]);
 					}
@@ -357,11 +357,11 @@ namespace NMib
 				CBoostTree BoostTree;
 				using Iter2 = CBoostTree::const_iterator;
 				using Iter1 = CMalterlibTree::TCIterator<>;
-				for(mint i = 0; i < m_nItems; ++i)
+				for(umint i = 0; i < m_nItems; ++i)
 				{
 					MalterlibTree.f_Insert(&m_DataMalterlib[i]);
 				}
-				for(mint i = 0; i < m_nItems; ++i)
+				for(umint i = 0; i < m_nItems; ++i)
 				{
 					BoostTree.insert(m_DataBoost[i]);
 				}
@@ -371,7 +371,7 @@ namespace NMib
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
 
-				for (mint i = 0; i < m_nTests; ++i)
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					Iter1 it1 = MalterlibTree;
 					{
@@ -382,7 +382,7 @@ namespace NMib
 						}
 					}
 				}
-				for (mint i = 0; i < m_nTests; ++i)
+				for (umint i = 0; i < m_nTests; ++i)
 				{
 					Iter2 it2 = BoostTree.begin();
 					Iter2 end2 = BoostTree.end();
@@ -410,13 +410,13 @@ namespace NMib
 			void f_Suite(bool _bRandom, bool _bMemoryTests)
 			{
 #ifdef DMibDebug
-				mint End = 16*1024;
+				umint End = 16*1024;
 #else
-				mint End = 512*1024;
+				umint End = 512*1024;
 #endif
 				DMibTestCategory("Insert")
 				{
-					for (mint i = 1; i <= End; i <<= 1)
+					for (umint i = 1; i <= End; i <<= 1)
 					{
 						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
 						{
@@ -429,7 +429,7 @@ namespace NMib
 				};
 				DMibTestCategory("Search")
 				{
-					for (mint i = 4; i <= End; i <<= 1)
+					for (umint i = 4; i <= End; i <<= 1)
 					{
 						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
 						{
@@ -442,7 +442,7 @@ namespace NMib
 				};
 				DMibTestCategory("Remove")
 				{
-					for (mint i = 4; i <= End; i <<= 1)
+					for (umint i = 4; i <= End; i <<= 1)
 					{
 						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
 						{
@@ -455,7 +455,7 @@ namespace NMib
 				};
 				DMibTestCategory("Traverse")
 				{
-					for (mint i = 4; i <= (_bRandom? End << 1 : End << 4); i <<= 1)
+					for (umint i = 4; i <= (_bRandom? End << 1 : End << 4); i <<= 1)
 					{
 						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
 						{

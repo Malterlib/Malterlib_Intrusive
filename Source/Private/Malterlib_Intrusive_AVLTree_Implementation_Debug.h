@@ -13,13 +13,13 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, mint &_Depth)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, umint &_Depth)
 	{
 		CLink *pLeft = _pCurrent->f_GetLeftP();
 		CLink *pRight = _pCurrent->f_GetRightP();
 
-		mint LeftDepth = 0;
-		mint RightDepth = 0;
+		umint LeftDepth = 0;
+		umint RightDepth = 0;
 		if (pLeft)
 		{
 			if
@@ -85,7 +85,7 @@ namespace NMib::NIntrusive
 	{
 		if (CLink::fs_GetPtr(m_Root))
 		{
-			mint Depth = 0;
+			umint Depth = 0;
 			bool bFail = !fpr_CheckTree(CLink::fs_GetPtr(m_Root), _bBreak, _fCompare, Depth);
 			if (bFail)
 				return false;

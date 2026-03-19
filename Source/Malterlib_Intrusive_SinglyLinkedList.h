@@ -891,7 +891,7 @@ namespace NMib::NIntrusive
 						{
 							// Lists already sorted
 							pLast->fp_SetNext(pFirst);
-							while (MergeSizeSecond * (mint)pSecond)
+							while (MergeSizeSecond * (umint)pSecond)
 							{
 								--MergeSizeSecond;
 								pLast = pSecond;
@@ -917,7 +917,7 @@ namespace NMib::NIntrusive
 									{
 										pLast->fp_SetNext(pSecond);
 
-										while (MergeSizeSecond * (mint)pSecond)
+										while (MergeSizeSecond * (umint)pSecond)
 										{
 											--MergeSizeSecond;
 											pLast = pSecond;
@@ -1251,10 +1251,10 @@ namespace NMib::NIntrusive
 			return CIteratorConst(*this);
 		}
 
-		mint f_GetLen() const
+		umint f_GetLen() const
 		{
 			CIteratorConst Iter = *this;
-			mint Len = 0;
+			umint Len = 0;
 
 			while (Iter)
 			{
@@ -1327,7 +1327,7 @@ namespace NMib::NIntrusive
 			template <typename t_CClass, auto t_pMember = &_Class::_Member> \
 			struct TCOffset \
 			{ \
-				constexpr static mint mc_Offset = []\
+				constexpr static umint mc_Offset = []\
 					{\
 						static constexpr t_CClass const *pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
 						return DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pMember) - (uint8 const *)pNode);\

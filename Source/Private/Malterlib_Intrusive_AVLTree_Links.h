@@ -111,7 +111,7 @@ namespace NMib::NIntrusive::NPrivate
 			*_pDest = *_pSrc;
 		}
 
-		inline_small void f_SetSkew(mint _Skew)
+		inline_small void f_SetSkew(umint _Skew)
 		{
 			m_Skew = _Skew;
 		}
@@ -121,7 +121,7 @@ namespace NMib::NIntrusive::NPrivate
 			return _Src;
 		}
 
-		inline_small void f_SetAll(CAVLLinkData *_pLeft, CAVLLinkData *_pRight, mint _Skew)
+		inline_small void f_SetAll(CAVLLinkData *_pLeft, CAVLLinkData *_pRight, umint _Skew)
 		{
 			m_pNext[0] = _pLeft;
 			m_pNext[1] = _pRight;
@@ -192,21 +192,21 @@ namespace NMib::NIntrusive::NPrivate
 
 		inline_small CAVLLinkAlignedData *f_GetRightP() const
 		{
-			return (CAVLLinkAlignedData *)((mint)m_pNext[1] & (~mint(0x1)));
+			return (CAVLLinkAlignedData *)((umint)m_pNext[1] & (~umint(0x1)));
 		}
 		inline_small CAVLLinkAlignedData *f_GetLeftP() const
 		{
-			return (CAVLLinkAlignedData *)((mint)m_pNext[0] & (~mint(0x1)));
+			return (CAVLLinkAlignedData *)((umint)m_pNext[0] & (~umint(0x1)));
 		}
 
 		inline_small CAVLLinkAlignedData *f_GetNextP(aint _iIndex) const
 		{
-			return (CAVLLinkAlignedData *)((mint)m_pNext[_iIndex] & (~mint(0x1)));
+			return (CAVLLinkAlignedData *)((umint)m_pNext[_iIndex] & (~umint(0x1)));
 		}
 
-		inline_small mint f_GetSkew() const
+		inline_small umint f_GetSkew() const
 		{
-			return (((mint)m_pNext[0] & 1) | ((mint)m_pNext[1] & 1) << 1);
+			return (((umint)m_pNext[0] & 1) | ((umint)m_pNext[1] & 1) << 1);
 		}
 
 		inline_small bool f_IsBalanced() const
@@ -217,66 +217,66 @@ namespace NMib::NIntrusive::NPrivate
 
 		static inline_small CAVLLinkAlignedData *fs_GetPtr(CAVLLinkAlignedData const *_Src)
 		{
-			return (CAVLLinkAlignedData *)((mint)_Src & (~mint(0x1)));
+			return (CAVLLinkAlignedData *)((umint)_Src & (~umint(0x1)));
 		}
 
 		inline_small void f_SetRight(CAVLLinkAlignedData *_pRight)
 		{
-			DMibFastCheck((!((mint)_pRight & 1))); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[1] = (CAVLLinkAlignedData *)(((mint)m_pNext[1] & 1) | (mint)_pRight);
+			DMibFastCheck((!((umint)_pRight & 1))); // We can only save ptrs that are aligned on 2 bytes
+			m_pNext[1] = (CAVLLinkAlignedData *)(((umint)m_pNext[1] & 1) | (umint)_pRight);
 		}
 
 		inline_small void f_SetLeft(CAVLLinkAlignedData *_pLeft)
 		{
-			DMibFastCheck(!((mint)_pLeft & 1)); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[0] = (CAVLLinkAlignedData *)(((mint)m_pNext[0] & 1) | (mint)_pLeft);
+			DMibFastCheck(!((umint)_pLeft & 1)); // We can only save ptrs that are aligned on 2 bytes
+			m_pNext[0] = (CAVLLinkAlignedData *)(((umint)m_pNext[0] & 1) | (umint)_pLeft);
 		}
 
 		inline_small void fp_SetNext(int _iIndex, CAVLLinkAlignedData *_pPtr)
 		{
-			DMibFastCheck(!((mint)_pPtr & 1)); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[_iIndex] = (CAVLLinkAlignedData *)(((mint)m_pNext[_iIndex] & 1) | (mint)_pPtr);
+			DMibFastCheck(!((umint)_pPtr & 1)); // We can only save ptrs that are aligned on 2 bytes
+			m_pNext[_iIndex] = (CAVLLinkAlignedData *)(((umint)m_pNext[_iIndex] & 1) | (umint)_pPtr);
 		}
 
 		inline_small void f_SetRight(CAVLLinkAlignedData **_pRight)
 		{
-			m_pNext[1] = (CAVLLinkAlignedData *)(((mint)m_pNext[1] & mint(1)) | ((mint)*_pRight & (~mint(0x1))));
+			m_pNext[1] = (CAVLLinkAlignedData *)(((umint)m_pNext[1] & umint(1)) | ((umint)*_pRight & (~umint(0x1))));
 		}
 
 		inline_small void f_SetLeft(CAVLLinkAlignedData **_pLeft)
 		{
-			m_pNext[0] = (CAVLLinkAlignedData *)(((mint)m_pNext[0] & mint(1)) | ((mint)*_pLeft & (~mint(0x1))));
+			m_pNext[0] = (CAVLLinkAlignedData *)(((umint)m_pNext[0] & umint(1)) | ((umint)*_pLeft & (~umint(0x1))));
 		}
 
 		static inline_small void f_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
 		{
-			DMibFastCheck(!((mint)_pSrc & mint(1))); // We can only save ptrs that are aligned on 2 bytes
-			*_Dest = (CAVLLinkAlignedData *)((((mint)*_Dest) & mint(1)) | (mint)_pSrc);
+			DMibFastCheck(!((umint)_pSrc & umint(1))); // We can only save ptrs that are aligned on 2 bytes
+			*_Dest = (CAVLLinkAlignedData *)((((umint)*_Dest) & umint(1)) | (umint)_pSrc);
 		}
 
 		static inline_small void f_AssignInit(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
 		{
-			DMibFastCheck(!((mint)_pSrc & mint(1))); // We can only save ptrs that are aligned on 2 bytes
+			DMibFastCheck(!((umint)_pSrc & umint(1))); // We can only save ptrs that are aligned on 2 bytes
 			*_Dest = _pSrc;
 		}
 
 		static inline_small void f_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData **_pSrc)
 		{
-			*_Dest = (CAVLLinkAlignedData *)((((mint)*_Dest) & mint(1)) | (((mint)*_pSrc) & (~mint(0x1))));
+			*_Dest = (CAVLLinkAlignedData *)((((umint)*_Dest) & umint(1)) | (((umint)*_pSrc) & (~umint(0x1))));
 		}
 
-		inline_small void f_SetSkew(mint _Skew)
+		inline_small void f_SetSkew(umint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[0] = (CAVLLinkAlignedData *)(((mint)m_pNext[0]&(~1)) | (_Skew & 1));
-			m_pNext[1] = (CAVLLinkAlignedData *)(((mint)m_pNext[1]&(~1)) | (_Skew >> 1));
+			m_pNext[0] = (CAVLLinkAlignedData *)(((umint)m_pNext[0]&(~1)) | (_Skew & 1));
+			m_pNext[1] = (CAVLLinkAlignedData *)(((umint)m_pNext[1]&(~1)) | (_Skew >> 1));
 		}
 
-		inline_small void f_SetAll(CAVLLinkAlignedData *_pLeft, CAVLLinkAlignedData *_pRight, mint _Skew)
+		inline_small void f_SetAll(CAVLLinkAlignedData *_pLeft, CAVLLinkAlignedData *_pRight, umint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[0] = (CAVLLinkAlignedData *)((mint)_pLeft | (_Skew & 1));
-			m_pNext[1] = (CAVLLinkAlignedData *)((mint)_pRight | (_Skew >> 1));
+			m_pNext[0] = (CAVLLinkAlignedData *)((umint)_pLeft | (_Skew & 1));
+			m_pNext[1] = (CAVLLinkAlignedData *)((umint)_pRight | (_Skew >> 1));
 		}
 		inline_small void f_Clear()
 		{
@@ -337,7 +337,7 @@ namespace NMib::NIntrusive::NPrivate
 
 		inline_small CAVLLinkAlignedRightData *f_GetRightP() const
 		{
-			return (CAVLLinkAlignedRightData *)((mint)m_pNext[1] & (~mint(0x3)));
+			return (CAVLLinkAlignedRightData *)((umint)m_pNext[1] & (~umint(0x3)));
 		}
 		inline_small CAVLLinkAlignedRightData *f_GetLeftP() const
 		{
@@ -346,12 +346,12 @@ namespace NMib::NIntrusive::NPrivate
 
 		inline_small CAVLLinkAlignedRightData *f_GetNextP(aint _iIndex) const
 		{
-			return (CAVLLinkAlignedRightData *)((mint)m_pNext[_iIndex] & (~mint(0x3)));
+			return (CAVLLinkAlignedRightData *)((umint)m_pNext[_iIndex] & (~umint(0x3)));
 		}
 
-		inline_small mint f_GetSkew() const
+		inline_small umint f_GetSkew() const
 		{
-			return ((mint)m_pNext[1] & mint(3));
+			return ((umint)m_pNext[1] & umint(3));
 		}
 
 		inline_small bool f_IsBalanced() const
@@ -362,13 +362,13 @@ namespace NMib::NIntrusive::NPrivate
 
 		static inline_small CAVLLinkAlignedRightData *fs_GetPtr(CAVLLinkAlignedRightData *_Src)
 		{
-			return (CAVLLinkAlignedRightData *)((mint)_Src & (~mint(0x3)));
+			return (CAVLLinkAlignedRightData *)((umint)_Src & (~umint(0x3)));
 		}
 
 		inline_small void f_SetRight(CAVLLinkAlignedRightData *_pRight)
 		{
-			DMibFastCheck((!((mint)_pRight & 3))); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[1] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[1] & mint(3)) | (mint)_pRight);
+			DMibFastCheck((!((umint)_pRight & 3))); // We can only save ptrs that are aligned on 2 bytes
+			m_pNext[1] = (CAVLLinkAlignedRightData *)(((umint)m_pNext[1] & umint(3)) | (umint)_pRight);
 		}
 
 		inline_small void f_SetLeft(CAVLLinkAlignedRightData *_pLeft)
@@ -378,53 +378,53 @@ namespace NMib::NIntrusive::NPrivate
 
 		inline_small void fp_SetNext(int _iIndex, CAVLLinkAlignedRightData *_pPtr)
 		{
-			DMibFastCheck(!((mint)_pPtr & 3)); // We can only save ptrs that are aligned on 2 bytes
-			m_pNext[_iIndex] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[_iIndex] & mint(3)) | (mint)_pPtr);
+			DMibFastCheck(!((umint)_pPtr & 3)); // We can only save ptrs that are aligned on 2 bytes
+			m_pNext[_iIndex] = (CAVLLinkAlignedRightData *)(((umint)m_pNext[_iIndex] & umint(3)) | (umint)_pPtr);
 		}
 
 		inline_small void f_SetRight(CAVLLinkAlignedRightData **_pRight)
 		{
-			m_pNext[1] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[1] & mint(3)) | ((mint)*_pRight & (~mint(0x3))));
+			m_pNext[1] = (CAVLLinkAlignedRightData *)(((umint)m_pNext[1] & umint(3)) | ((umint)*_pRight & (~umint(0x3))));
 		}
 
 		inline_small void f_SetLeft(CAVLLinkAlignedRightData **_pLeft)
 		{
-			m_pNext[0] = (CAVLLinkAlignedRightData *)((mint)*_pLeft & (~mint(0x3)));
+			m_pNext[0] = (CAVLLinkAlignedRightData *)((umint)*_pLeft & (~umint(0x3)));
 		}
 
 		static inline_small void f_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
 		{
-			DMibFastCheck(!((mint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
-			*_Dest = (CAVLLinkAlignedRightData *)(((mint)*_Dest & mint(3)) | (mint)_pSrc);
+			DMibFastCheck(!((umint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
+			*_Dest = (CAVLLinkAlignedRightData *)(((umint)*_Dest & umint(3)) | (umint)_pSrc);
 		}
 
 		static inline_small void f_AssignInit(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
 		{
-			DMibFastCheck(!((mint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
+			DMibFastCheck(!((umint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
 			*_Dest = _pSrc;
 		}
 
 		static inline_small void f_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData **_pSrc)
 		{
-			*_Dest = (CAVLLinkAlignedRightData *)(((mint)*_Dest & mint(3)) | ((mint)*_pSrc & (~mint(0x3))));
+			*_Dest = (CAVLLinkAlignedRightData *)(((umint)*_Dest & umint(3)) | ((umint)*_pSrc & (~umint(0x3))));
 		}
 
-		inline_small void f_SetSkew(mint _Skew)
+		inline_small void f_SetSkew(umint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[1] = (CAVLLinkAlignedRightData *)(((mint)m_pNext[1]&(~mint(3))) | (_Skew));
+			m_pNext[1] = (CAVLLinkAlignedRightData *)(((umint)m_pNext[1]&(~umint(3))) | (_Skew));
 		}
 
-		inline_small void f_SetAll(CAVLLinkAlignedRightData *_pLeft, CAVLLinkAlignedRightData *_pRight, mint _Skew)
+		inline_small void f_SetAll(CAVLLinkAlignedRightData *_pLeft, CAVLLinkAlignedRightData *_pRight, umint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
 			m_pNext[0] = _pLeft;
-			m_pNext[1] = (CAVLLinkAlignedRightData *)((mint)_pRight | (_Skew));
+			m_pNext[1] = (CAVLLinkAlignedRightData *)((umint)_pRight | (_Skew));
 		}
 		inline_small void f_Clear()
 		{
 			m_pNext[0] = nullptr;
-			m_pNext[1] = (CAVLLinkAlignedRightData *)mint(EAVLTreeSkew_None);
+			m_pNext[1] = (CAVLLinkAlignedRightData *)umint(EAVLTreeSkew_None);
 		}
 	};
 

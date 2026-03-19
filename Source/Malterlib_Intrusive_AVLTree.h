@@ -89,10 +89,10 @@ namespace NMib::NIntrusive
 #ifdef DCompiler_clang_cl
 		enum
 		{
-			mc_SafeTreeDepth = mint(((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>))
+			mc_SafeTreeDepth = umint(((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>))
 		};
 #else
-		constexpr static mint mc_SafeTreeDepth = ((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>);
+		constexpr static umint mc_SafeTreeDepth = ((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>);
 #endif
 
 	protected:
@@ -136,7 +136,7 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		bool fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, mint &_Depth);
+		bool fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, umint &_Depth);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -211,7 +211,7 @@ namespace NMib::NIntrusive
 		template <typename tf_CTree, typename tf_FCreateNode>
 		CLink *fp_MoveTreeRecursive(typename tf_CTree::CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
 
-		mint fp_GetDepthRecursive(CLink *_pNode) const;
+		umint fp_GetDepthRecursive(CLink *_pNode) const;
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -366,8 +366,8 @@ namespace NMib::NIntrusive
 		inline_small CNode *f_GetRoot() const;
 		static inline_small CNode *fs_GetRight(CNode *_pObject);
 		static inline_small CNode *fs_GetLeft(CNode *_pObject);
-		inline_medium mint f_GetLen() const;
-		mint f_GetDepth() const;
+		inline_medium umint f_GetLen() const;
+		umint f_GetDepth() const;
 		bool operator == (const TCAVLTreeAggregate &_Other) const noexcept(noexcept(fg_GetType<CNode const &>() == fg_GetType<CNode const &>()));
 		auto operator <=> (const TCAVLTreeAggregate &_Other) const noexcept(noexcept(fg_GetType<CNode const &>() <=> fg_GetType<CNode const &>()));
 
@@ -519,7 +519,7 @@ namespace NMib::NIntrusive
 
 			inline_medium void f_Debug_CheckStack();
 
-			inline_medium mint f_GetLen() const;
+			inline_medium umint f_GetLen() const;
 
 			void f_Clear();
 

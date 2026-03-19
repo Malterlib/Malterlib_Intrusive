@@ -256,12 +256,12 @@ public:
 
 		NMib::NStr::CStr Stringen = "ntahoeu";
 
-		for (mint i = 0; i < 32768; ++i)
+		for (umint i = 0; i < 32768; ++i)
 		{
 			Testing.f_Insert(Stringen);
 		}
 
-		for (mint i = 0; i < 18000; i += 256)
+		for (umint i = 0; i < 18000; i += 256)
 		{
 			Testing.f_Remove(0, 256);
 		}

@@ -15,7 +15,7 @@ namespace NMib::NStream
 		{
 			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TCIterator<> Iter(_Data);
 
-			mint nItems = 0;
+			umint nItems = 0;
 
 			while (Iter)
 			{
@@ -38,7 +38,7 @@ namespace NMib::NStream
 		{
 			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TCIterator<> Iter(_Data);
 
-			mint nItems = 0;
+			umint nItems = 0;
 
 			while (Iter)
 			{

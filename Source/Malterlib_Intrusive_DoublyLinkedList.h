@@ -15,7 +15,7 @@ namespace NMib::NIntrusive
 	struct CDLinkAggregateListNoPrevPtrList
 	{
 		using CThis = CDLinkAggregateListNoPrevPtrList;
-		mint m_pNextPtr;
+		umint m_pNextPtr;
 
 		constexpr CDLinkAggregateListNoPrevPtrList(EAggregateInitialization _Init)
 			: m_pNextPtr{0}
@@ -28,12 +28,12 @@ namespace NMib::NIntrusive
 		inline_small void fp_Internal_SetNextList(void *_pNext)
 		{
 			DMibFastCheck(fp_Internal_IsListLink());
-			m_pNextPtr = ((mint)_pNext | 1);
+			m_pNextPtr = ((umint)_pNext | 1);
 		}
 
 		inline_small void fp_Internal_SetNextInitListLink(void *_pNext)
 		{
-			m_pNextPtr = ((mint)_pNext | 1);
+			m_pNextPtr = ((umint)_pNext | 1);
 		}
 
 		inline_small bool fp_Internal_IsListLink() const
@@ -115,7 +115,7 @@ namespace NMib::NIntrusive
 		// The first item has a prev pointer that points to the last item in the list
 		// The List header has a bit of the next pointer set to 1 to specify that it's the header
 
-		mint m_pPrevPtr;
+		umint m_pPrevPtr;
 
 		constexpr CDLinkAggregateListNoPrevPtr(EAggregateInitialization _Init)
 			: CDLinkAggregateListNoPrevPtrList{_Init}
@@ -137,12 +137,12 @@ namespace NMib::NIntrusive
 
 		inline_small void fp_Internal_SetPrev(void *_pPrev)
 		{
-			m_pPrevPtr = (mint)_pPrev;
+			m_pPrevPtr = (umint)_pPrev;
 		}
 
 		inline_small void fp_Internal_SetPrevInit(void *_pPrev)
 		{
-			m_pPrevPtr = (mint)_pPrev;
+			m_pPrevPtr = (umint)_pPrev;
 		}
 
 		inline_small void *fp_Internal_GetPrev() const
@@ -153,12 +153,12 @@ namespace NMib::NIntrusive
 		inline_small void fp_Internal_SetNextNotList(void *_pNext)
 		{
 			DMibFastCheck(!this->fp_Internal_IsListLink());
-			m_pNextPtr = (mint)_pNext;
+			m_pNextPtr = (umint)_pNext;
 		}
 
 		inline_small void fp_Internal_SetNextInit(void *_pNext)
 		{
-			m_pNextPtr = (mint)_pNext;
+			m_pNextPtr = (umint)_pNext;
 		}
 
 		inline_small void fp_SetNextNotList(CDLinkAggregateListNoPrevPtrList *_pNext)
@@ -702,15 +702,15 @@ namespace NMib::NIntrusive
 		}
 		inline_small void fp_SetPrev(CDLinkAggregate *_pPrev)
 		{
-			m_pPrevPtr = (CDLinkAggregate *)(((mint)(CDLinkAggregate *)m_pPrevPtr & 1) | (mint)_pPrev);
+			m_pPrevPtr = (CDLinkAggregate *)(((umint)(CDLinkAggregate *)m_pPrevPtr & 1) | (umint)_pPrev);
 		}
 		inline_small void fp_SetPrevNotList(CDLinkAggregate *_pPrev)
 		{
-			m_pPrevPtr = (CDLinkAggregate *)(((mint)(CDLinkAggregate *)m_pPrevPtr & 1) | (mint)_pPrev);
+			m_pPrevPtr = (CDLinkAggregate *)(((umint)(CDLinkAggregate *)m_pPrevPtr & 1) | (umint)_pPrev);
 		}
 		inline_small void fp_SetPrevList(CDLinkAggregate *_pPrev)
 		{
-			m_pPrevPtr = (CDLinkAggregate *)(((mint)(CDLinkAggregate *)m_pPrevPtr & 1) | (mint)_pPrev);
+			m_pPrevPtr = (CDLinkAggregate *)(((umint)(CDLinkAggregate *)m_pPrevPtr & 1) | (umint)_pPrev);
 		}
 		inline_small void fp_SetPrevInit(CDLinkAggregate *_pPrev)
 		{
@@ -718,12 +718,12 @@ namespace NMib::NIntrusive
 		}
 		inline_small void fp_SetPrevInitListLink(CDLinkAggregate *_pPrev)
 		{
-			m_pPrevPtr = (CDLinkAggregate *)((mint)_pPrev | 1);
+			m_pPrevPtr = (CDLinkAggregate *)((umint)_pPrev | 1);
 		}
 
 		inline_small bool fp_IsListLink() const
 		{
-			return ((mint)(CDLinkAggregate *)m_pPrevPtr & 1);
+			return ((umint)(CDLinkAggregate *)m_pPrevPtr & 1);
 		}
 
 		inline_small const CDLinkAggregate *fp_GetNext() const
@@ -743,19 +743,19 @@ namespace NMib::NIntrusive
 
 		inline_small const CDLinkAggregate *fp_GetPrev() const
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 		inline_small const CDLinkAggregate *fp_GetPrevList() const
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 		inline_small const CDLinkAggregate *fp_GetPrevNotList() const
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 		inline_small const CDLinkAggregate *fp_GetPrevNoList() const
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 
 		inline_small CDLinkAggregate *fp_GetNext()
@@ -775,19 +775,19 @@ namespace NMib::NIntrusive
 
 		inline_small CDLinkAggregate *fp_GetPrev()
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 		inline_small CDLinkAggregate *fp_GetPrevNotList()
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 		inline_small CDLinkAggregate *fp_GetPrevNoList()
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 		inline_small CDLinkAggregate *fp_GetPrevList()
 		{
-			return (CDLinkAggregate *)((mint)(CDLinkAggregate *)m_pPrevPtr & (~1));
+			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
 		}
 
 		inline_small void fp_TransferList(CDLinkAggregate *_pFirst, CDLinkAggregate *_pLast)
@@ -1114,7 +1114,7 @@ namespace NMib::NIntrusive
 			static_assert(TCInstantiateValue<&fs_Debug_GetOffset>::mc_Value);
 #endif
 #ifdef DMibDebug
-			if ((mint)this & 1)
+			if ((umint)this & 1)
 				DMibPDebugBreak; // We must be aligned
 #endif
 
@@ -1385,10 +1385,10 @@ namespace NMib::NIntrusive
 			return pLink->fp_GetNextList() == pLink;
 		}
 
-		mint f_GetLen() const
+		umint f_GetLen() const
 		{
 			CIteratorConst Iter(*this);
-			mint Num = 0;
+			umint Num = 0;
 			while (Iter)
 			{
 				++Num;
@@ -2569,12 +2569,12 @@ namespace NMib::NIntrusive
 				return nullptr;
 			}
 
-			mint f_GetLen() const
+			umint f_GetLen() const
 			{
 				if (m_pCurrent)
 				{
 					t_CLinkInList *pCurrent = m_pCurrent;
-					mint Len = 0;
+					umint Len = 0;
 					while (!pCurrent->fp_IsListLink())
 					{
 						++Len;
@@ -2812,12 +2812,12 @@ namespace NMib::NIntrusive
 				return f_GetCurrent();
 			}
 
-			mint f_GetLen() const
+			umint f_GetLen() const
 			{
 				if (m_pCurrent)
 				{
 					t_CLinkInList *pCurrent = m_pCurrent;
-					mint Len = 0;
+					umint Len = 0;
 					while (!pCurrent->fp_IsListLink())
 					{
 						++Len;
@@ -3040,7 +3040,7 @@ namespace NMib::NIntrusive
 			template <typename t_CClass, auto t_pMember = &_Class::_Member> \
 			struct TCOffset \
 			{ \
-				constexpr static mint mc_Offset = []\
+				constexpr static umint mc_Offset = []\
 					{\
 						static constexpr t_CClass const *pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
 						return DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pMember) - (uint8 const *)pNode);\

@@ -172,7 +172,7 @@ namespace
 
 struct CTest0
 {
-	mint m_Data;
+	umint m_Data;
 private:
 	void f_Test()
 	{
