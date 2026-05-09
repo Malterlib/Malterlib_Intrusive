@@ -403,14 +403,17 @@ namespace NMib::NIntrusive
 		return *this;
 	}
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCAVLTree()
+	constexpr TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCAVLTree()
+		: CSuper(DAggregateInit)
 	{
-		CSuper::f_Construct();
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::~TCAVLTree()
+	constexpr TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::~TCAVLTree()
 	{
-		CSuper::f_Destruct();
+		if_not_consteval
+		{
+			CSuper::f_Destruct();
+		}
 	}
 }

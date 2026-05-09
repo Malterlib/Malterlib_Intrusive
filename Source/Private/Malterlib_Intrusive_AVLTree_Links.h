@@ -116,7 +116,7 @@ namespace NMib::NIntrusive::NPrivate
 			m_Skew = _Skew;
 		}
 
-		static inline_small CAVLLinkData *fs_GetPtr(CAVLLinkData *_Src)
+		constexpr static inline_small CAVLLinkData *fs_GetPtr(CAVLLinkData *_Src)
 		{
 			return _Src;
 		}
@@ -215,7 +215,7 @@ namespace NMib::NIntrusive::NPrivate
 		}
 
 
-		static inline_small CAVLLinkAlignedData *fs_GetPtr(CAVLLinkAlignedData const *_Src)
+		constexpr static inline_small CAVLLinkAlignedData *fs_GetPtr(CAVLLinkAlignedData const *_Src)
 		{
 			return (CAVLLinkAlignedData *)((umint)_Src & (~umint(0x1)));
 		}
@@ -360,7 +360,7 @@ namespace NMib::NIntrusive::NPrivate
 		}
 
 
-		static inline_small CAVLLinkAlignedRightData *fs_GetPtr(CAVLLinkAlignedRightData *_Src)
+		constexpr static inline_small CAVLLinkAlignedRightData *fs_GetPtr(CAVLLinkAlignedRightData *_Src)
 		{
 			return (CAVLLinkAlignedRightData *)((umint)_Src & (~umint(0x3)));
 		}

@@ -361,7 +361,7 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		static inline_small CNode *fs_MemberFromLink(CLink *_pLink);
-		inline_small bool f_IsEmpty() const;
+		constexpr inline_small bool f_IsEmpty() const;
 		inline_small bool f_HasOneElement() const;
 		inline_small CNode *f_GetRoot() const;
 		static inline_small CNode *fs_GetRight(CNode *_pObject);
@@ -621,8 +621,8 @@ namespace NMib::NIntrusive
 
 	public:
 		TCAVLTree(TCAVLTree &&_Other);
-		TCAVLTree();
-		~TCAVLTree();
+		constexpr TCAVLTree();
+		constexpr ~TCAVLTree();
 		TCAVLTree &operator = (TCAVLTree &&_Other);
 
 		bool operator == (const TCAVLTree &_Other) const noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() == fg_GetType<typename CSuper::CNode const &>()));
