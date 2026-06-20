@@ -205,7 +205,6 @@ MalterlibBuildShowProgress=false ./mib build Tests
 - Consider using lock-free variants for concurrent scenarios
 
 ### Debugging Support
-- `DMibDebuggerHelpers` enables enhanced debugger visualization
 - Validation methods check tree balance and link integrity
 - Test files include comprehensive correctness checks
 - Old test files (Test_*Old*.cpp) retained for regression testing

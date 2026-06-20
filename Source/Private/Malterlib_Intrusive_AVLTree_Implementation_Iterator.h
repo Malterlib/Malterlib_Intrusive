@@ -17,9 +17,6 @@ namespace NMib::NIntrusive
 	{
 		// Reset iterator
 		m_iStack = -1;
-#ifdef DMibDebuggerHelpers
-		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
-#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -34,9 +31,6 @@ namespace NMib::NIntrusive
 	inline_medium TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::TCIterator(const TCIterator &_Tree)
 	{
 		m_iStack = _Tree.m_iStack;
-#ifdef DMibDebuggerHelpers
-		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
-#endif
 
 		for (aint i = 0; i <= m_iStack; ++i)
 			m_pStack[i] = _Tree.m_pStack[i];
@@ -47,9 +41,6 @@ namespace NMib::NIntrusive
 	inline_small TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::TCIterator(const TCAVLTreeAggregate &_Tree)
 	{
 		f_StartForward(&_Tree);
-#ifdef DMibDebuggerHelpers
-		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
-#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -57,9 +48,6 @@ namespace NMib::NIntrusive
 	inline_small TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::TCIterator(const TCAVLTreeAggregate *_pTree)
 	{
 		f_StartForward(_pTree);
-#ifdef DMibDebuggerHelpers
-		static_assert(TCInstantiateValue<&fs_Debug_GetTree>::mc_Value);
-#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

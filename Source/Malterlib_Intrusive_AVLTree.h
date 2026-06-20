@@ -98,9 +98,6 @@ namespace NMib::NIntrusive
 	protected:
 		using CLinkPointer = CLink *; // The pointer type of the inner link type for each left/right link
 
-#ifdef DMibDebuggerHelpers
-		static CNode *fs_Debug_GetNode();
-#endif
 		struct CTemporaryStack
 		{
 			CLinkPointer *m_Stack[mc_SafeTreeDepth];
@@ -116,16 +113,8 @@ namespace NMib::NIntrusive
 		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init)
 			: m_Root{nullptr}
 		{
-#ifdef DMibDebuggerHelpers
-			static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);
-#endif
 		}
-		TCAVLTreeAggregate()
-		{
-#ifdef DMibDebuggerHelpers
-			static_assert(TCInstantiateValue<&fs_Debug_GetNode>::mc_Value);
-#endif
-		}
+		TCAVLTreeAggregate() = default;
 
 	protected:
 
@@ -505,9 +494,6 @@ namespace NMib::NIntrusive
 			aint m_iStack;
 			const CLink *m_pStack[t_RecursionDepth];
 
-#ifdef DMibDebuggerHelpers
-			static TCAVLTreeAggregate *fs_Debug_GetTree();
-#endif
 		public:
 
 			inline_small TCIterator();
