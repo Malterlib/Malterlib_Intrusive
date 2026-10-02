@@ -12,22 +12,22 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LinkFromMember(CNode *_pMember)
+	return_not_aliased inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LinkFromMember(CNode *_pMember)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
 	{
 		return &((_pMember->*t_pLinkMember).m_Link);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LinkFromMemberConst(const CNode *_pMember)
+	return_not_aliased inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_LinkFromMemberConst(CNode const *_pMember)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
 	{
 		return &((_pMember->*t_pLinkMember).m_Link);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLink(CLink *_pLink)
+	return_not_aliased inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLink(CLink *_pLink)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 #if defined(DCompiler_MSVC)
 		CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
@@ -40,8 +40,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	return_not_aliased inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLinkConst(const CLink *_pLink)
+	return_not_aliased inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_MemberFromLinkConst(CLink const *_pLink)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 #if defined(DCompiler_MSVC)
 		CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
@@ -67,8 +67,8 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fs_MemberFromLink(CLink *_pLink)
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fs_MemberFromLink(CLink *_pLink)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		return fsp_MemberFromLink(_pLink);
 	}
@@ -82,7 +82,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_HasOneElement() const
 	{
-		CLink * pObject = CLink::fs_GetPtr(m_Root);
+		CLink *pObject = CLink::fs_GetPtr(m_Root);
 		if (pObject)
 		{
 			if (!pObject->f_GetLeftP() && !pObject->f_GetRightP())
@@ -92,8 +92,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetRoot() const
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetRoot() const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		if (CLink::fs_GetPtr(m_Root))
 			return fsp_MemberFromLink(CLink::fs_GetPtr(m_Root));
@@ -102,10 +102,10 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fs_GetRight(CNode *_pObject)
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fs_GetRight(CNode *_pObject)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
-		CLink * pObject = fsp_LinkFromMember(_pObject);
+		CLink *pObject = fsp_LinkFromMember(_pObject);
 
 		if (pObject->f_GetRightP())
 			return fsp_MemberFromLink(pObject->f_GetRightP());
@@ -114,10 +114,10 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fs_GetLeft(CNode *_pObject)
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fs_GetLeft(CNode *_pObject)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
-		CLink * pObject = fsp_LinkFromMember(_pObject);
+		CLink *pObject = fsp_LinkFromMember(_pObject);
 
 		if (pObject->f_GetLeftP())
 			return fsp_MemberFromLink(pObject->f_GetLeftP());
@@ -149,10 +149,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTreeAggregate &_Other) const noexcept
-		(
-			noexcept(fg_GetType<CNode const &>() == fg_GetType<CNode const &>())
-		)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (TCAVLTreeAggregate const &_Other) const
+		noexcept(noexcept(fg_GetType<CNode const &>() == fg_GetType<CNode const &>()))
 	{
 		TCIterator<> Iter0 = *this;
 		TCIterator<> Iter1 = _Other;
@@ -172,12 +170,9 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTreeAggregate &_Other) const noexcept
-		(
-			noexcept(fg_GetType<CNode const &>() <=> fg_GetType<CNode const &>())
-		)
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (TCAVLTreeAggregate const &_Other) const
+		noexcept(noexcept(fg_GetType<CNode const &>() <=> fg_GetType<CNode const &>()))
 	{
-
 		TCIterator<> Iter0 = *this;
 		TCIterator<> Iter1 = _Other;
 
@@ -207,20 +202,16 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (const TCAVLTree &_Other) const noexcept
-		(
-			noexcept(fg_GetType<typename CSuper::CNode const &>() == fg_GetType<typename CSuper::CNode const &>())
-		)
+	bool TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator == (TCAVLTree const &_Other) const
+		noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() == fg_GetType<typename CSuper::CNode const &>()))
 	{
-		return (const CSuper &)(*this) == (const CSuper &)_Other;
+		return (CSuper const &)(*this) == (CSuper const &)_Other;
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	auto TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (const TCAVLTree &_Other) const noexcept
-		(
-			noexcept(fg_GetType<typename CSuper::CNode const &>() <=> fg_GetType<typename CSuper::CNode const &>())
-		)
+	auto TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (TCAVLTree const &_Other) const
+		noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() <=> fg_GetType<typename CSuper::CNode const &>()))
 	{
-		return (const CSuper &)(*this) <=> (const CSuper &)_Other;
+		return (CSuper const &)(*this) <=> (CSuper const &)_Other;
 	}
 }

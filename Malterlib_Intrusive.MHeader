@@ -28,7 +28,6 @@ Property.MalterlibBoostModules =+ ["intrusive", "static_assert", "assert", "move
 	}
 }
 
-
 Property
 {
 	MalterlibLibrary_Intrusive: bool = MalterlibLibrary_All
@@ -58,7 +57,7 @@ Property
 Property
 {
 	!!MalterlibEnableInternalTests true
-	
+
 	MalterlibTests =+ "Malterlib_Intrusive"
 	MalterlibTestFiles_Malterlib_Intrusive: [type(CEntity)] = ["Test/*"->MakeAbsolute()]
 	MalterlibTestExtraGroups_Malterlib_Intrusive: [string] = ["{Test}/{Malterlib_Intrusive}"]

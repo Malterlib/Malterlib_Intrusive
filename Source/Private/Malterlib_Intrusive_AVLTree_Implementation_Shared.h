@@ -161,7 +161,7 @@ namespace NMib::NIntrusive
 
 		case CLink::EAVLTreeSkew_Right:
 			{
-				CLink * pRight = pObj->f_GetRightP();
+				CLink *pRight = pObj->f_GetRightP();
 				if (pRight->f_GetSkew() == CLink::EAVLTreeSkew_Right)
 				{
 					pObj->f_SetSkew(CLink::EAVLTreeSkew_None);
@@ -218,7 +218,7 @@ namespace NMib::NIntrusive
 
 		case CLink::EAVLTreeSkew_Left:
 			{
-				CLink * pLeft = pObj->f_GetLeftP();
+				CLink *pLeft = pObj->f_GetLeftP();
 				if (pLeft->f_GetSkew() == CLink::EAVLTreeSkew_Left)
 				{
 					pObj->f_SetSkew(CLink::EAVLTreeSkew_None);
@@ -227,7 +227,7 @@ namespace NMib::NIntrusive
 				}
 				else
 				{
-					CLink * pRight = pLeft->f_GetRightP();
+					CLink *pRight = pLeft->f_GetRightP();
 					aint Skew = pRight->f_GetSkew();
 					pRight->f_SetSkew(CLink::EAVLTreeSkew_None);
 					switch (Skew)
