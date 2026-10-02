@@ -23,15 +23,13 @@ namespace NMib::NIntrusive
 		if (pLeft)
 		{
 			if
-				(
-					fsp_Compare(_fCompare, *fsp_MemberFromLink(_pCurrent), *fsp_MemberFromLink(pLeft)) < 0
-					|| fsp_Compare(_fCompare, *fsp_MemberFromLink(pLeft), *fsp_MemberFromLink(_pCurrent)) > 0
-				)
+			(
+				fsp_Compare(_fCompare, *fsp_MemberFromLink(_pCurrent), *fsp_MemberFromLink(pLeft)) < 0
+				|| fsp_Compare(_fCompare, *fsp_MemberFromLink(pLeft), *fsp_MemberFromLink(_pCurrent)) > 0
+			)
 			{
 				if (_bBreak)
-				{
 					DMibPDebugBreak;
-				}
 				return false;
 			}
 			if (!fpr_CheckTree(pLeft, _bBreak, _fCompare, LeftDepth))
@@ -40,15 +38,13 @@ namespace NMib::NIntrusive
 		if (pRight)
 		{
 			if
-				(
-					fsp_Compare(_fCompare, *fsp_MemberFromLink(pRight), *fsp_MemberFromLink(_pCurrent)) < 0
-					|| fsp_Compare(_fCompare, *fsp_MemberFromLink(_pCurrent), *fsp_MemberFromLink(pRight)) > 0
-				)
+			(
+				fsp_Compare(_fCompare, *fsp_MemberFromLink(pRight), *fsp_MemberFromLink(_pCurrent)) < 0
+				|| fsp_Compare(_fCompare, *fsp_MemberFromLink(_pCurrent), *fsp_MemberFromLink(pRight)) > 0
+			)
 			{
 				if (_bBreak)
-				{
 					DMibPDebugBreak;
-				}
 				return false;
 			}
 			if (!fpr_CheckTree(pRight, _bBreak, _fCompare, RightDepth))
@@ -57,9 +53,7 @@ namespace NMib::NIntrusive
 		if (fg_Max(LeftDepth, RightDepth) - fg_Min(LeftDepth, RightDepth) > 1)
 		{
 			if (_bBreak)
-			{
 				DMibPDebugBreak;
-			}
 			return false;
 		}
 		_Depth += fg_Max(LeftDepth, RightDepth);
@@ -98,9 +92,7 @@ namespace NMib::NIntrusive
 			if (Iter.m_pStack[Iter.m_iStack]->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree)
 			{
 				if (_bBreak)
-				{
 					DMibPDebugBreak;
-				}
 				return false;
 			}
 

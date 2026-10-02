@@ -11,15 +11,16 @@ namespace NMib::NIntrusive
 	class TCTreeCompare_Default
 	{
 	public:
-
 		inline_small auto operator () (t_CData const &_Left, t_CData const &_Right) const
 		{
 			return _Left <=> _Right;
 		}
+
 		inline_small auto operator () (t_CData const &_Left, t_CKey const &_Right) const
 		{
 			return _Left <=> _Right;
 		}
+
 		inline_small auto operator () (t_CKey const &_Left, t_CData const &_Right) const
 		{
 			return _Left <=> _Right;
@@ -34,10 +35,12 @@ namespace NMib::NIntrusive
 		{
 			return NStr::fg_StrCmp((t_CKey)_Left, (t_CKey)_Right) <=> 0;
 		}
+
 		inline_small COrdering_Strong operator () (t_CData const &_Left, t_CKey const &_Right) const
 		{
 			return NStr::fg_StrCmp((t_CKey)_Left, _Right) <=> 0;
 		}
+
 		inline_small COrdering_Strong operator () (t_CKey const &_Left, t_CData const &_Right) const
 		{
 			return NStr::fg_StrCmp(_Left, (t_CKey)_Right) <=> 0;
@@ -50,15 +53,17 @@ namespace NMib::NIntrusive
 	public:
 		inline_small COrdering_Weak operator () (t_CData const &_Left, t_CData const &_Right) const
 		{
-			return NStr::fg_StrCmpNoCase((const t_CKey *)_Left, (const t_CKey *)_Right) <=> 0;
+			return NStr::fg_StrCmpNoCase((t_CKey const *)_Left, (t_CKey const *)_Right) <=> 0;
 		}
+
 		inline_small COrdering_Weak operator () (t_CData const &_Left, t_CKey const &_Right) const
 		{
-			return NStr::fg_StrCmpNoCase((const t_CKey *)_Left, _Right) <=> 0;
+			return NStr::fg_StrCmpNoCase((t_CKey const *)_Left, _Right) <=> 0;
 		}
+
 		inline_small COrdering_Weak operator () (t_CKey const &_Left, t_CData const &_Right) const
 		{
-			return NStr::fg_StrCmpNoCase(_Left, (const t_CKey *)_Right) <=> 0;
+			return NStr::fg_StrCmpNoCase(_Left, (t_CKey const *)_Right) <=> 0;
 		}
 	};
 }

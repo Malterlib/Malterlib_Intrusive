@@ -12,16 +12,14 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceLowest(CLink* &_pLowestObject, CLinkPointer &_pObject)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject)
 	{
 		CLink *pObject = CLink::fs_GetPtr(_pObject);
 
 		if (pObject->f_GetLeftP())
 		{
 			if (fsp_BalanceLowest(_pLowestObject, *pObject->f_GetLeft()))
-			{
 				return fsp_LeftShrunk(_pObject);
-			}
 			else
 				return false;
 		}
@@ -36,16 +34,14 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceHighest(CLink* &_pHighestObject, CLinkPointer &_pObject)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject)
 	{
 		CLink *pObject = CLink::fs_GetPtr(_pObject);
 
 		if (pObject->f_GetRightP())
 		{
 			if (fsp_BalanceHighest(_pHighestObject, *pObject->f_GetRight()))
-			{
 				return fsp_RightShrunk(_pObject);
-			}
 			else
 				return false;
 		}
@@ -72,16 +68,12 @@ namespace NMib::NIntrusive
 				if (CompareResult < 0)
 				{
 					if (fspr_Insert(pObj->f_GetLeft(), _pObjectToInsert, _fCompare, _bRet))
-					{
 						return fsp_LeftGrown(_pObject);
-					}
 				}
 				else if (CompareResult > 0)
 				{
 					if (fspr_Insert(pObj->f_GetRight(), _pObjectToInsert, _fCompare, _bRet))
-					{
 						return fsp_RightGrown(_pObject);
-					}
 				}
 				else
 				{
@@ -102,7 +94,6 @@ namespace NMib::NIntrusive
 		}
 		else
 		{
-
 			if (!CLink::fs_GetPtr(_pObject))
 			{
 				DMibFastCheck(_pObjectToInsert); // You cannot insert a null object
@@ -119,16 +110,12 @@ namespace NMib::NIntrusive
 			if (CompareResult < 0)
 			{
 				if (fspr_Insert(CLink::fs_GetPtr(_pObject)->f_GetLeft(), _pObjectToInsert, _fCompare, _bRet))
-				{
 					return fsp_LeftGrown_Inl(_pObject);
-				}
 			}
 			else if (CompareResult > 0)
 			{
 				if (fspr_Insert(CLink::fs_GetPtr(_pObject)->f_GetRight(), _pObjectToInsert, _fCompare, _bRet))
-				{
 					return fsp_RightGrown_Inl(_pObject);
-				}
 			}
 			else
 			{
@@ -144,7 +131,7 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare)
 	{
-		CLink* pObj = CLink::fs_GetPtr(_pObject);
+		CLink *pObj = CLink::fs_GetPtr(_pObject);
 
 		DMibFastCheck(pObj); // Object was not found in tree
 
@@ -155,24 +142,20 @@ namespace NMib::NIntrusive
 			if (CompareResult < 0)
 			{
 				if (fspr_Remove(pObj->f_GetLeft(), _pObjectToRemove, _fCompare))
-				{
 					return fsp_LeftShrunk(_pObject);
-				}
 				return false;
 			}
 			else if (CompareResult > 0)
 			{
 				if (fspr_Remove(pObj->f_GetRight(), _pObjectToRemove, _fCompare))
-				{
 					return fsp_RightShrunk(_pObject);
-				}
 				return false;
 			}
 		}
 
 		if (pObj->f_GetLeftP())
 		{
-			CLink* pHighestObject;
+			CLink *pHighestObject;
 			bool bLeftShrunk = fsp_BalanceHighest(pHighestObject, *pObj->f_GetLeft());
 
 			// Remove target from tree
@@ -185,16 +168,14 @@ namespace NMib::NIntrusive
 			CLink::f_Assign(&_pObject, pHighestObject);
 
 			if (bLeftShrunk)
-			{
 				return fsp_LeftShrunk(_pObject);
-			}
 			else
 				return false;
 		}
 
 		if (pObj->f_GetRightP())
 		{
-			CLink* pLowestObject;
+			CLink *pLowestObject;
 
 			bool bRightShrunk = fsp_BalanceLowest(pLowestObject, *pObj->f_GetRight());
 
@@ -207,9 +188,7 @@ namespace NMib::NIntrusive
 			CLink::f_Assign(&_pObject, pLowestObject);
 
 			if (bRightShrunk)
-			{
 				return fsp_RightShrunk(_pObject);
-			}
 			else
 				return false;
 		}
@@ -231,8 +210,7 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Insert(CNode *_pToInsert, tf_CCompare &&_fCompare)
 	{
-
-		CLink * pToInsert = fsp_LinkFromMember(_pToInsert);
+		CLink *pToInsert = fsp_LinkFromMember(_pToInsert);
 		if constexpr (CLinkContainer::mc_bNeedSetTree)
 			((CLinkContainer *)pToInsert)->f_SetTree(this, &TCAVLTreeAggregate::fsp_Remove);
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
@@ -265,7 +243,7 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fr_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare)
 	{
-		CLink * pToRemove = fsp_LinkFromMember(_pToRemove);
+		CLink *pToRemove = fsp_LinkFromMember(_pToRemove);
 
 		fspr_Remove(m_Root, pToRemove, _fCompare);
 	}

@@ -20,10 +20,10 @@ namespace NMib::NIntrusive
 	template <EAVLLinkType t_LinkType, typename t_CLinkData>
 	inline_small void TCAVLLinkAggregate<t_LinkType, t_CLinkData>::f_Destruct()
 	{
-#		if DMibEnableSafeCheck > 0
+#if DMibEnableSafeCheck > 0
 		aint Skew = m_Link.f_GetSkew();
 		DMibFastCheck(Skew == t_CLinkData::EAVLTreeSkew_NotInTree); // You have to remove the link from the tree yourself.
-#			endif
+#endif
 	}
 
 	template <EAVLLinkType t_LinkType, typename t_CLinkData>

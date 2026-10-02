@@ -12,8 +12,7 @@ namespace
 	class CAVLTree_Tests : public NMib::NTest::CTest
 	{
 	public:
-
-		template <typename t_CLinkType, typename t_CData, t_CLinkType (t_CData::*t_pMemberPointer)>
+		template <typename t_CLinkType, typename t_CData, t_CLinkType (t_CData:: *t_pMemberPointer)>
 		struct TCMemberPointerHolder
 		{
 		};
@@ -28,21 +27,43 @@ namespace
 				return _Class.m_Link;
 			}
 		};
+
 		struct CData
 		{
 			CStr m_Data;
 			bool m_Valid;
-			CData() : m_Data(), m_Valid(false) {}
-			~CData() { m_Valid = false; }
-			CData(CStr const& _Data) : m_Data(_Data), m_Valid(true) {}
-			CData(CData const &_Other) : m_Data(_Other.m_Data), m_Valid(_Other.m_Valid) {}
+			CData()
+				: m_Data()
+				, m_Valid(false)
+			{
+			}
+
+			~CData()
+			{
+				m_Valid = false;
+			}
+
+			CData(CStr const &_Data)
+				: m_Data(_Data)
+				, m_Valid(true)
+			{
+			}
+
+			CData(CData const &_Other)
+				: m_Data(_Other.m_Data)
+				, m_Valid(_Other.m_Valid)
+			{
+			}
+
 		public:
-			CData(CData &&_Other) : m_Data(_Other.m_Data), m_Valid(_Other.m_Valid)
+			CData(CData &&_Other)
+				: m_Data(_Other.m_Data)
+				, m_Valid(_Other.m_Valid)
 			{
 				_Other.m_Valid = false;
 			}
 
-			CData& operator = (CData &&_Other)
+			CData &operator = (CData &&_Other)
 			{
 				m_Data = _Other.m_Data;
 				m_Valid = _Other.m_Valid;
@@ -54,11 +75,12 @@ namespace
 		struct CTestClass
 		{
 			CData m_Data;
-			CTestClass(CStr const& _Data)
+			CTestClass(CStr const &_Data)
 				: m_Data(_Data)
 			{
 			}
-			CTestClass(CData const& _Data)
+
+			CTestClass(CData const &_Data)
 				: m_Data(_Data)
 			{
 			}
@@ -66,27 +88,40 @@ namespace
 			class CCompare
 			{
 				bool m_Valid;
+
 			public:
-				CCompare() : m_Valid(true) {}
-				CCompare(CCompare &&_Other) : m_Valid(true)
+				CCompare()
+					: m_Valid(true)
+				{
+				}
+
+				CCompare(CCompare &&_Other)
+					: m_Valid(true)
 				{
 					_Other.m_Valid = false;
 				}
-				~CCompare() { m_Valid = false; }
-				CCompare& operator = (CCompare &&_Other)
+
+				~CCompare()
+				{
+					m_Valid = false;
+				}
+
+				CCompare &operator = (CCompare &&_Other)
 				{
 					m_Valid = _Other.m_Valid;
 					_Other.m_Valid = false;
 					return *this;
 				}
+
 				CData const &operator () (CTestClass const &_Node) const
 				{
 					return _Node.m_Data;
 				}
+
 				inline_small NMib::COrdering_Partial operator () (CData const &_Left, CData const &_Right) const
 				{
-					DMibTest(DMibExpr(_Left.m_Valid)) (ETestFlag_Aggregated);
-					DMibTest(DMibExpr(_Right.m_Valid)) (ETestFlag_Aggregated);
+					DMibTest(DMibExpr(_Left.m_Valid))(ETestFlag_Aggregated);
+					DMibTest(DMibExpr(_Right.m_Valid))(ETestFlag_Aggregated);
 
 					return fg_StrCmpNoCase(_Left.m_Data, _Right.m_Data) <=> 0;
 				}
@@ -111,20 +146,22 @@ namespace
 				CTestClass Test3("3");
 				CTestClass Test4("7");
 
-				auto Insert = [&] (CNode &_Test, CStr const &_Path)
-				{
-					DMibTestPath(_Path);
-					DMibTest(DMibExpr(!Test.m_Tree.f_FindEqual((_Test.m_Data))));
-					Test.m_Tree.f_Insert(_Test);
-					DMibTest(DMibExpr(!!Test.m_Tree.f_FindEqual((_Test.m_Data))));
-				};
-				auto Insert2 = [&] (CNode &&_Test, CStr const &_Path)
-				{
-					DMibTestPath(_Path);
-					DMibTest(DMibExpr(!Test.m_Tree.f_FindEqual((_Test.m_Data))));
-					Test.m_Tree.f_Insert(_Test);
-					DMibTest(DMibExpr(!!Test.m_Tree.f_FindEqual((_Test.m_Data))));
-				};
+				auto Insert = [&](CNode &_Test, CStr const &_Path)
+					{
+						DMibTestPath(_Path);
+						DMibTest(DMibExpr(!Test.m_Tree.f_FindEqual((_Test.m_Data))));
+						Test.m_Tree.f_Insert(_Test);
+						DMibTest(DMibExpr(!!Test.m_Tree.f_FindEqual((_Test.m_Data))));
+					}
+				;
+				auto Insert2 = [&](CNode &&_Test, CStr const &_Path)
+					{
+						DMibTestPath(_Path);
+						DMibTest(DMibExpr(!Test.m_Tree.f_FindEqual((_Test.m_Data))));
+						Test.m_Tree.f_Insert(_Test);
+						DMibTest(DMibExpr(!!Test.m_Tree.f_FindEqual((_Test.m_Data))));
+					}
+				;
 				Insert(Test1, "Test1");
 				Insert(Test2, "Test2");
 				Insert(Test3, "Test3");
@@ -152,10 +189,9 @@ namespace
 
 				for (auto It = Test.m_Tree.f_GetIterator(); It; ++It)
 				{
-					DMibTest(DMibExpr(It->m_Data.m_Valid)) (ETestFlag_Aggregated);
+					DMibTest(DMibExpr(It->m_Data.m_Valid))(ETestFlag_Aggregated);
 					CStr data = It->m_Data.m_Data;
 				}
-
 
 	/*			Test.m_Tree.f_Remove(Test1);
 				Test.m_Tree.f_Remove(Test2);
@@ -165,7 +201,7 @@ namespace
 		}
 	};
 
-	[[maybe_unused]] constinit TCAVLTreeAggregate<&CAVLTree_Tests::CTestClass::m_Link, CAVLTree_Tests::CTestClass::CCompare> g_Tree = { DAggregateInit };
+	[[maybe_unused]] constinit TCAVLTreeAggregate<&CAVLTree_Tests::CTestClass::m_Link, CAVLTree_Tests::CTestClass::CCompare> g_Tree = {DAggregateInit};
 
 	DMibTestRegister(CAVLTree_Tests, Malterlib::Intrusive);
 }
@@ -173,6 +209,7 @@ namespace
 struct CTest0
 {
 	umint m_Data;
+
 private:
 	void f_Test()
 	{
@@ -182,7 +219,7 @@ private:
 CTest0 g_Test = {0};
 
 #if 0
-template <typename t_CLinkType, typename t_CData, t_CLinkType (t_CData::*t_pMemberPointer)>
+template <typename t_CLinkType, typename t_CData, t_CLinkType (t_CData:: *t_pMemberPointer)>
 struct TCMemberPointerHolder
 {
 };

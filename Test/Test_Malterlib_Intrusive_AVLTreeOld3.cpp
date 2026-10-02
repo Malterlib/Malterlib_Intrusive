@@ -13,26 +13,26 @@
  */
 
 #ifndef AVLTREE_H
-#define AVLTREE_H
+#	define AVLTREE_H
 
-#define DMibAllowCodeStandardViolations 1
+#	define DMibAllowCodeStandardViolations 1
 
-#ifndef AVLDATUM
-#define AVLDATUM class CTestTreeClass *
-#endif
+#	ifndef AVLDATUM
+#		define AVLDATUM class CTestTreeClass *
+#	endif
 
-#ifndef AVLKEY
-#define AVLKEY(x) (x->m_Data)
-#endif
+#	ifndef AVLKEY
+#		define AVLKEY(x) (x->m_Data)
+#	endif
 
 /*
  *  Which of a given node's subtrees is higher?
  */
 enum AVLSKEW
 {
-	NONE,
-	LEFT,
-	RIGHT
+	NONE
+	, LEFT
+	, RIGHT
 };
 
 /*
@@ -40,9 +40,9 @@ enum AVLSKEW
  */
 enum AVLRES
 {
-	ERROR = 0,
-	OK,
-	BALANCE,
+	ERROR = 0
+	, OK
+	, BALANCE
 };
 
 /*
@@ -133,9 +133,7 @@ avlremove(struct avlnode **n, aint key);
  *
  *    nullptr        The item could not be found.
  */
-AVLDATUM *
-avlaccess(struct avlnode *n, aint key);
-
+AVLDATUM *avlaccess(struct avlnode *n, aint key);
 
 /*
  *  Function to be called by the tree traversal functions.
@@ -177,58 +175,55 @@ typedef void AVLWORKER(struct avlnode *n, aint param, aint depth);
  *               Most of the time, you will want to call avldepthfirst
  *               with a "depth" value of zero.
  */
-void
-avldepthfirst(struct avlnode *n, AVLWORKER *f, aint param, aint depth);
+void avldepthfirst(struct avlnode *n, AVLWORKER *f, aint param, aint depth);
 
 /*
  *  avlbreadthfirst: breadth-first tree traversal.
  *
  *  See avldepthfirst for details.
  */
-void
-avlbreadthfirst(struct avlnode *n, AVLWORKER *f, aint param);
+void avlbreadthfirst(struct avlnode *n, AVLWORKER *f, aint param);
 
 #endif
-
 
 class CTestTreeClass
 {
 public:
-
 	CTestTreeClass()
 	{
 	}
+
 	~CTestTreeClass()
 	{
 	}
+
 	aint m_Data;
 };
+
 class CTestTreeRef : public CMalterlibTest
 {
 public:
-
 	bool f_AutomaticTest()
 	{
 		return true;
 	}
 
-	aint Rand (void)
+	aint Rand(void)
 	{
 		static aint holdrand = 548;
-		return(((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
+		return (((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
-	static const aint mc_TestSorted = TreeTestNum;
+	static aint const mc_TestSorted = TreeTestNum;
 
 	CTestTreeClass m_ClassList[mc_TestSorted];
 
 	void RandomizeList()
 	{
 		for (aint i = 0; i < mc_TestSorted; ++i)
-		{
 			m_ClassList[i].m_Data = i * 2;
-		}
 	}
+
 	avlnode *m_TreeRoot;
 
 	void TreeGetMaxDepth(avlnode *_pObj, aint &_MaxDepth, aint &_CurrentDepth)
@@ -238,7 +233,7 @@ public:
 		avlnode *pRight = _pObj->right;
 		avlnode *pLeft = _pObj->left;
 
-		if (!pRight &&!pLeft)
+		if (!pRight && !pLeft)
 		{
 			if (_CurrentDepth > _MaxDepth)
 				_MaxDepth = _CurrentDepth;
@@ -248,7 +243,6 @@ public:
 			TreeGetMaxDepth(pLeft, _MaxDepth, _CurrentDepth);
 		if (pRight)
 			TreeGetMaxDepth(pRight, _MaxDepth, _CurrentDepth);
-
 
 		--_CurrentDepth;
 	}
@@ -260,11 +254,10 @@ public:
 		avlnode *pRight = _pObj->right;
 		avlnode *pLeft = _pObj->left;
 
-		if (!pRight &&!pLeft)
+		if (!pRight && !pLeft)
 		{
 			if (_CurrentDepth < _MinDepth)
 				_MinDepth = _CurrentDepth;
-
 		}
 
 		if (pLeft)
@@ -274,7 +267,6 @@ public:
 
 		--_CurrentDepth;
 	}
-
 
 	aint GetTreeLargest(avlnode *_pObj)
 	{
@@ -307,7 +299,6 @@ public:
 		avlnode *pRight = _pObj->right;
 		avlnode *pLeft = _pObj->left;
 
-
 		if (pLeft)
 		{
 			aint Smallest;
@@ -337,33 +328,26 @@ public:
 		{
 			aint CurrentDepth = 0;
 			TreeGetMaxDepth(pRight, LeftMaxDepth, CurrentDepth);
-			DMibSafeCheck(_pObj->d->m_Data > GetTreeLargest(pLeft),"Tree is not binary");
+			DMibSafeCheck(_pObj->d->m_Data > GetTreeLargest(pLeft), "Tree is not binary");
 			f_CheckTree(pLeft);
 		}
 		if (pRight)
 		{
 			aint CurrentDepth = 0;
 			TreeGetMaxDepth(pRight, RightMaxDepth, CurrentDepth);
-			DMibSafeCheck(_pObj->d->m_Data < GetTreeSmallest(pRight),"Tree is not binary");
+			DMibSafeCheck(_pObj->d->m_Data < GetTreeSmallest(pRight), "Tree is not binary");
 			f_CheckTree(pRight);
 		}
 		if (LeftMaxDepth > RightMaxDepth)
-		{
 			DMibSafeCheck((LeftMaxDepth - RightMaxDepth) <= 1, "Tree has lost its AVL Property");
-		}
 		else
-		{
 			DMibSafeCheck((RightMaxDepth - LeftMaxDepth) <= 1, "Tree has lost its AVL Property");
-		}
-
 	}
 
 	void f_CheckTree()
 	{
 		if (m_TreeRoot)
-		{
 			f_CheckTree(m_TreeRoot);
-		}
 	}
 
 	void TraceTree(avlnode *_pObj, aint _Depth, aint &_CurrentDepth, bool &_bTraced, bool _bLeft, aint _MaxDepth)
@@ -383,14 +367,10 @@ public:
 		avlnode *pLeft = _pObj->left;
 
 		if (pLeft)
-		{
 			TraceTree(pLeft, _Depth, _CurrentDepth, _bTraced, true, _MaxDepth);
-		}
 
 		if (pRight)
-		{
 			TraceTree(pRight, _Depth, _CurrentDepth, _bTraced, false, _MaxDepth);
-		}
 		--_CurrentDepth;
 	}
 
@@ -408,9 +388,7 @@ public:
 			aint CurrentDepth = 0;
 			TraceTree(m_TreeRoot, i, CurrentDepth, Traced, false, MaxDepth);
 			if (Traced)
-			{
 				DMibTrace("\n", 0);
-			}
 		}
 	}
 
@@ -431,7 +409,6 @@ public:
 
 		f_CheckTree();
 
-
 		for (aint i = 0; i < (DebugTest < mc_TestSorted ? DebugTest : mc_TestSorted); ++i)
 		{
 			avlremove(&m_TreeRoot, m_ClassList[i].m_Data);
@@ -445,22 +422,16 @@ public:
 		{
 			DMibScopeMeasure(Timer);
 			for (aint i = 0; i < mc_TestSorted; ++i)
-			{
 				avlinsert(&m_TreeRoot, &m_ClassList[i]);
-			}
 		}
 		DMibTrace("Performance for AVLTree insert = {0} inserts per second\n", fp64(mc_TestSorted) / Timer.f_GetTime());
-
 
 		{
 			DMibScopeMeasure(Timer);
 			for (aint i = 0; i < mc_TestSorted; ++i)
-			{
 				avlremove(&m_TreeRoot, m_ClassList[i].m_Data);
-			}
 		}
 		DMibTrace("Performance for AVLTree remove = {0} removes per second\n", fp64(mc_TestSorted) / Timer.f_GetTime());
-
 
 //		for (aint i = 1; i < mc_TestSorted; i+=2)
 //		{
@@ -469,9 +440,7 @@ public:
 //		}
 
 		return "";
-
 	}
-
 };
 
 DMibRuntimeClass(CMalterlibTest, CTestTreeRef);
@@ -487,8 +456,7 @@ DMibRuntimeClass(CMalterlibTest, CTestTreeRef);
  *
  *    n           Address of a pointer to a node
  */
-void
-avlrotleft(struct avlnode **n)
+void avlrotleft(struct avlnode **n)
 {
 	struct avlnode *tmp = *n;
 
@@ -504,8 +472,7 @@ avlrotleft(struct avlnode **n)
  *
  *    n           Address of a pointer to a node
  */
-void
-avlrotright(struct avlnode **n)
+void avlrotright(struct avlnode **n)
 {
 	struct avlnode *tmp = *n;
 
@@ -538,14 +505,18 @@ avlrotright(struct avlnode **n)
 enum AVLRES
 avlleftgrown(struct avlnode **n)
 {
-	switch ((*n)->skew) {
+	switch ((*n)->skew)
+	{
 	case LEFT:
-		if ((*n)->left->skew == LEFT) {
+		if ((*n)->left->skew == LEFT)
+		{
 			(*n)->skew = (*n)->left->skew = NONE;
 			avlrotright(n);
 		}
-		else {
-			switch ((*n)->left->right->skew) {
+		else
+		{
+			switch ((*n)->left->right->skew)
+			{
 			case LEFT:
 				(*n)->skew = RIGHT;
 				(*n)->left->skew = NONE;
@@ -584,18 +555,22 @@ avlleftgrown(struct avlnode **n)
 enum AVLRES
 avlrightgrown(struct avlnode **n)
 {
-	switch ((*n)->skew) {
+	switch ((*n)->skew)
+	{
 	case LEFT:
 		(*n)->skew = NONE;
 		return OK;
 
 	case RIGHT:
-		if ((*n)->right->skew == RIGHT) {
+		if ((*n)->right->skew == RIGHT)
+		{
 			(*n)->skew = (*n)->right->skew = NONE;
 			avlrotleft(n);
 		}
-		else {
-			switch ((*n)->right->left->skew) {
+		else
+		{
+			switch ((*n)->right->left->skew)
+			{
 			case RIGHT:
 				(*n)->skew = LEFT;
 				(*n)->right->skew = NONE;
@@ -660,25 +635,24 @@ avlinsert(struct avlnode **n, AVLDATUM d)
 	{
 		umint Size = sizeof(struct avlnode);
 		((*n) = (struct avlnode *)NMib::NMemory::fg_Alloc(Size));
-		if (!(*n)) {
+		if (!(*n))
 			return ERROR;
-		}
 		(*n)->left = (*n)->right = nullptr;
 		(*n)->d = d;
 		(*n)->skew = NONE;
 		return BALANCE;
 	}
 
-	if (AVLKEY(d) < AVLKEY((*n)->d)) {
-		if ((tmp = avlinsert(& (*n)->left, d)) == BALANCE) {
+	if (AVLKEY(d) < AVLKEY((*n)->d))
+	{
+		if ((tmp = avlinsert(& (*n)->left, d)) == BALANCE)
 			return avlleftgrown(n);
-		}
 		return tmp;
 	}
-	if (AVLKEY(d) > AVLKEY((*n)->d)) {
-		if ((tmp = avlinsert(& (*n)->right, d)) == BALANCE) {
+	if (AVLKEY(d) > AVLKEY((*n)->d))
+	{
+		if ((tmp = avlinsert(& (*n)->right, d)) == BALANCE)
 			return avlrightgrown(n);
-		}
 		return tmp;
 	}
 	return ERROR;
@@ -707,25 +681,30 @@ avlinsert(struct avlnode **n, AVLDATUM d)
 enum AVLRES
 avlleftshrunk(struct avlnode **n)
 {
-	switch ((*n)->skew) {
+	switch ((*n)->skew)
+	{
 	case LEFT:
 		(*n)->skew = NONE;
 		return BALANCE;
 
 	case RIGHT:
-		if ((*n)->right->skew == RIGHT) {
+		if ((*n)->right->skew == RIGHT)
+		{
 			(*n)->skew = (*n)->right->skew = NONE;
 			avlrotleft(n);
 			return BALANCE;
 		}
-		else if ((*n)->right->skew == NONE) {
+		else if ((*n)->right->skew == NONE)
+		{
 			(*n)->skew = RIGHT;
 			(*n)->right->skew = LEFT;
 			avlrotleft(n);
 			return OK;
 		}
-		else {
-			switch ((*n)->right->left->skew) {
+		else
+		{
+			switch ((*n)->right->left->skew)
+			{
 			case LEFT:
 				(*n)->skew = NONE;
 				(*n)->right->skew = RIGHT;
@@ -760,25 +739,30 @@ avlleftshrunk(struct avlnode **n)
 enum AVLRES
 avlrightshrunk(struct avlnode **n)
 {
-	switch ((*n)->skew) {
+	switch ((*n)->skew)
+	{
 	case RIGHT:
 		(*n)->skew = NONE;
 		return BALANCE;
 
 	case LEFT:
-		if ((*n)->left->skew == LEFT) {
+		if ((*n)->left->skew == LEFT)
+		{
 			(*n)->skew = (*n)->left->skew = NONE;
 			avlrotright(n);
 			return BALANCE;
 		}
-		else if ((*n)->left->skew == NONE) {
+		else if ((*n)->left->skew == NONE)
+		{
 			(*n)->skew = LEFT;
 			(*n)->left->skew = RIGHT;
 			avlrotright(n);
 			return OK;
 		}
-		else {
-			switch ((*n)->left->right->skew) {
+		else
+		{
+			switch ((*n)->left->right->skew)
+			{
 			case LEFT:
 				(*n)->skew = RIGHT;
 				(*n)->left->skew = NONE;
@@ -826,26 +810,22 @@ avlrightshrunk(struct avlnode **n)
  *                the subtree provided was empty.
  *
  */
-aint
-avlfindhighest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
+auto avlfindhighest(struct avlnode *target, struct avlnode **n, enum AVLRES *res) -> aint
 {
 	struct avlnode *tmp;
 
-
 	*res = BALANCE;
-	if (!(*n)) {
+	if (!(*n))
 		return 0;
-	}
-	if ((*n)->right) {
-		if (!avlfindhighest(target, &(*n)->right, res)) {
+	if ((*n)->right)
+	{
+		if (!avlfindhighest(target, &(*n)->right, res))
 			return 0;
-		}
-		if (*res == BALANCE) {
+		if (*res == BALANCE)
 			*res = avlrightshrunk(n);
-		}
 		return 1;
 	}
-	target->d  = (*n)->d;
+	target->d = (*n)->d;
 	tmp = *n;
 	*n = (*n)->left;
 	NMib::NMemory::fg_Free(tmp);
@@ -857,22 +837,19 @@ avlfindhighest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
  *
  *  See avlfindhighest for the details.
  */
-aint
-avlfindlowest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
+auto avlfindlowest(struct avlnode *target, struct avlnode **n, enum AVLRES *res) -> aint
 {
 	struct avlnode *tmp;
 
 	*res = BALANCE;
-	if (!(*n)) {
+	if (!(*n))
 		return 0;
-	}
-	if ((*n)->left) {
-		if (!avlfindlowest(target, &(*n)->left, res)) {
+	if ((*n)->left)
+	{
+		if (!avlfindlowest(target, &(*n)->left, res))
 			return 0;
-		}
-		if (*res == BALANCE) {
-			*res =  avlleftshrunk(n);
-		}
+		if (*res == BALANCE)
+			*res = avlleftshrunk(n);
 		return 1;
 	}
 	target->d = (*n)->d;
@@ -914,34 +891,35 @@ avlremove(struct avlnode **n, aint key)
 {
 	enum AVLRES tmp = BALANCE;
 
-	if (!(*n)) {
+	if (!(*n))
 		return ERROR;
-	}
-	if (key < AVLKEY((*n)->d)) {
-		if ((tmp = avlremove(& (*n)->left, key)) == BALANCE) {
+	if (key < AVLKEY((*n)->d))
+	{
+		if ((tmp = avlremove(& (*n)->left, key)) == BALANCE)
 			return avlleftshrunk(n);
-		}
 		return tmp;
 	}
-	if (key > AVLKEY((*n)->d)) {
-		if ((tmp = avlremove(& (*n)->right, key)) == BALANCE) {
+	if (key > AVLKEY((*n)->d))
+	{
+		if ((tmp = avlremove(& (*n)->right, key)) == BALANCE)
 			return avlrightshrunk(n);
-		}
 		return tmp;
 	}
-	if ((*n)->left) {
-		if (avlfindhighest(*n, &((*n)->left), &tmp)) {
-			if (tmp == BALANCE) {
+	if ((*n)->left)
+	{
+		if (avlfindhighest(*n, &((*n)->left), &tmp))
+		{
+			if (tmp == BALANCE)
 				tmp = avlleftshrunk(n);
-			}
 			return tmp;
 		}
 	}
-	if ((*n)->right) {
-		if (avlfindlowest(*n, &((*n)->right), &tmp)) {
-			if (tmp == BALANCE) {
+	if ((*n)->right)
+	{
+		if (avlfindlowest(*n, &((*n)->right), &tmp))
+		{
+			if (tmp == BALANCE)
 				tmp = avlrightshrunk(n);
-			}
 			return tmp;
 		}
 	}
@@ -966,19 +944,15 @@ avlremove(struct avlnode **n, aint key)
  *
  *    nullptr        The item could not be found.
  */
-AVLDATUM *
-avlaccess(struct avlnode *n, aint key)
+AVLDATUM *avlaccess(struct avlnode *n, aint key)
 {
-        if (!n) {
-                return nullptr;
-        }
-        if (key < AVLKEY((n)->d)) {
-                return avlaccess(n->left, key);
-        }
-        if (key > AVLKEY((n)->d)) {
-                return avlaccess(n->right, key);
-        }
-        return &(n->d);
+	if (!n)
+		return nullptr;
+	if (key < AVLKEY((n)->d))
+		return avlaccess(n->left, key);
+	if (key > AVLKEY((n)->d))
+		return avlaccess(n->right, key);
+	return &(n->d);
 }
 
 /*
@@ -1003,13 +977,13 @@ avlaccess(struct avlnode *n, aint key)
  *               Most of the time, you will want to call avldepthfirst
  *               with a "depth" value of zero.
  */
-void
-avldepthfirst(struct avlnode *n, AVLWORKER *f, aint param, aint depth)
+void avldepthfirst(struct avlnode *n, AVLWORKER *f, aint param, aint depth)
 {
-	if (!n) return;
+	if (!n)
+		return;
 	avldepthfirst(n->left, f, param, depth + 1);
 	(*f)(n, param, depth);
-	avldepthfirst(n->right, f, param, depth +1);
+	avldepthfirst(n->right, f, param, depth + 1);
 }
 
 #endif

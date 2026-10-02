@@ -8,7 +8,7 @@
 namespace NMib::NStream
 {
 	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> >
+	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>
 	{
 	public:
 		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
@@ -65,7 +65,7 @@ namespace NMib::NStream
 
 			using CNode = typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode;
 
-			while(nItems)
+			while (nItems)
 			{
 				auto Memory = t_CAllocator::f_AllocSafe(sizeof(CNode), alignof(CNode));
 				CNode *pNewItem = new(Memory.m_pMemory) CNode();
@@ -79,9 +79,7 @@ namespace NMib::NStream
 
 				_Stream.f_Consume(*pNewItem);
 				if (!_Data.f_Insert(pNewItem))
-				{
 					DMibError("AVLTree stream contained a duplicate key");
-				}
 				else
 					Cleanup.f_Clear();
 
@@ -91,12 +89,12 @@ namespace NMib::NStream
 	};
 
 	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> >
+	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>
 	{
 	public:
 		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
 		{
-			_Stream << (const NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &)_Data;
+			_Stream << (NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &)_Data;
 		}
 
 		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data)

@@ -13,14 +13,14 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	inline_medium typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLinkPointer *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveRebalance
+	inline_medium auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveRebalance
 		(
 			CLinkPointer *_pTop
 			, CLinkPointer *_pTarget
 			, CLink *_pObjectToRemove
 			, tf_CCompare &&_fCompare
 		)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLinkPointer *
 	{
 		// each node from treep down towards target, but
 		// excluding the last, will have a subtree grow
@@ -57,22 +57,21 @@ namespace NMib::NIntrusive
 				if (!pObj->f_GetLeftP())
 					break;
 				if (pObj->f_IsBalanced())
-						pObj->f_SetSkew(1);
-					else if (pObj->f_GetSkew() == 0)
+					pObj->f_SetSkew(1);
+				else if (pObj->f_GetSkew() == 0)
 					pObj->f_SetSkew(CLink::EAVLTreeSkew_None);
 				else
 				{
-						if (pObj->f_GetRightP()->f_GetSkew() == 0)
-							fp_RemoveRotate3<0>(pObject);
+					if (pObj->f_GetRightP()->f_GetSkew() == 0)
+						fp_RemoveRotate3<0>(pObject);
 					else
-							fp_RemoveRotate2<0>(pObject);
+						fp_RemoveRotate2<0>(pObject);
 					if (pObj == pTarget)
-							_pTarget = CLink::fs_GetPtr(*pObject)->f_GetLeft();
+						_pTarget = CLink::fs_GetPtr(*pObject)->f_GetLeft();
 				}
-					pObject = &pObj->f_GetLeft();
+				pObject = &pObj->f_GetLeft();
 				pObj = CLink::fs_GetPtr(*pObject);
 			}
-
 		}
 
 		return _pTarget;
@@ -80,8 +79,8 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <int t_Direction>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate2(CLinkPointer *_pTop)
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate2(CLinkPointer *_pTop)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
 	{
 		CLink *pBP;
 		CLink *pCP;
@@ -89,15 +88,14 @@ namespace NMib::NIntrusive
 
 		pBP = CLink::fs_GetPtr(*_pTop);
 		pDP = pBP->f_GetNextP(t_Direction);
-		pCP = pDP->f_GetNextP(1-t_Direction);
+		pCP = pDP->f_GetNextP(1 - t_Direction);
 		CLink::f_Assign(_pTop, pDP);
-		pDP->fp_SetNext(1-t_Direction, pBP);
+		pDP->fp_SetNext(1 - t_Direction, pBP);
 		pBP->fp_SetNext(t_Direction, pCP);
 		pBP->f_SetSkew(CLink::EAVLTreeSkew_None);
 		pDP->f_SetSkew(CLink::EAVLTreeSkew_None);
 		return pDP->f_GetNextP(t_Direction);
 	}
-
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate3Short(CLinkPointer *_pTop, int _Direction)
@@ -110,17 +108,17 @@ namespace NMib::NIntrusive
 
 		pBP = CLink::fs_GetPtr(*_pTop);
 		pFP = pBP->f_GetNextP(_Direction);
-		pDP = pFP->f_GetNextP(1-_Direction);
+		pDP = pFP->f_GetNextP(1 - _Direction);
 
-		pCP = pDP->f_GetNextP(1-_Direction);
+		pCP = pDP->f_GetNextP(1 - _Direction);
 		pEP = pDP->f_GetNextP(_Direction);
 
 		CLink::f_Assign(_pTop, pDP);
 
-		pDP->fp_SetNext(1-_Direction, pBP);
+		pDP->fp_SetNext(1 - _Direction, pBP);
 		pDP->fp_SetNext(_Direction, pFP);
 		pBP->fp_SetNext(_Direction, pCP);
-		pFP->fp_SetNext(1-_Direction, pEP);
+		pFP->fp_SetNext(1 - _Direction, pEP);
 
 		pDP->f_SetSkew(CLink::EAVLTreeSkew_None);
 		pBP->f_SetSkew(CLink::EAVLTreeSkew_None);
@@ -128,8 +126,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third)
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third)
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
 	{
 		CLink *pBP;
 		CLink *pCP;
@@ -139,17 +137,17 @@ namespace NMib::NIntrusive
 
 		pBP = CLink::fs_GetPtr(*_pTop);
 		pFP = pBP->f_GetNextP(_Direction);
-		pDP = pFP->f_GetNextP(1-_Direction);
+		pDP = pFP->f_GetNextP(1 - _Direction);
 
-		pCP = pDP->f_GetNextP(1-_Direction);
+		pCP = pDP->f_GetNextP(1 - _Direction);
 		pEP = pDP->f_GetNextP(_Direction);
 
 		CLink::f_Assign(_pTop, pDP);
 
-		pDP->fp_SetNext(1-_Direction, pBP);
+		pDP->fp_SetNext(1 - _Direction, pBP);
 		pDP->fp_SetNext(_Direction, pFP);
 		pBP->fp_SetNext(_Direction, pCP);
-		pFP->fp_SetNext(1-_Direction, pEP);
+		pFP->fp_SetNext(1 - _Direction, pEP);
 
 		pDP->f_SetSkew(CLink::EAVLTreeSkew_None);
 
@@ -158,9 +156,9 @@ namespace NMib::NIntrusive
 
 		if (_Third == _Direction)
 		{
-			pBP->f_SetSkew(1-_Direction);
+			pBP->f_SetSkew(1 - _Direction);
 			pFP->f_SetSkew(CLink::EAVLTreeSkew_None);
-			return pFP->f_GetNextP(1-_Direction);
+			return pFP->f_GetNextP(1 - _Direction);
 		}
 		else
 		{
@@ -193,7 +191,7 @@ namespace NMib::NIntrusive
 					break;
 				}
 				if (pObj->f_IsBalanced() || (pObj->f_GetSkew() == 0 && pObj->f_GetLeftP()->f_IsBalanced()))
-				pPathTop = pObject;
+					pPathTop = pObject;
 				pObject = &pObj->f_GetRight();
 			}
 			else
@@ -216,7 +214,7 @@ namespace NMib::NIntrusive
 
 		CLink *pObjDel = CLink::fs_GetPtr(*pTarget);
 		CLink::f_Assign(pTarget, pObj);
-		CLink::f_Assign(pObject, pObj->f_GetNextP(1-Dir));
+		CLink::f_Assign(pObject, pObj->f_GetNextP(1 - Dir));
 
 		pObj->f_SetLeft(pObjDel->f_GetLeft());
 		pObj->f_SetRight(pObjDel->f_GetRight());
@@ -268,9 +266,7 @@ namespace NMib::NIntrusive
 	{
 		CLink *pObj = pPath;
 		if (pObj == _pObjectToInsert)
-		{
 			fp_Rotate3Short(_pTop, _Direction);
-		}
 		else
 		{
 			if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)) < 0)
@@ -307,9 +303,7 @@ namespace NMib::NIntrusive
 			{
 				pObj = pObj->f_GetRightP();
 				if (fsp_Compare(_fCompare, *fsp_MemberFromLink(pObj), *fsp_MemberFromLink(_pObjectToInsert)) < 0)
-				{
 					pObj = fp_Rotate2<1>(_pTop);
-				}
 				else
 				{
 					fp_RebalanceCase3LowStack(1, pObj->f_GetLeftP(), _pTop, _pObjectToInsert, _fCompare);
@@ -328,12 +322,10 @@ namespace NMib::NIntrusive
 			{
 				pObj = pObj->f_GetLeftP();
 				if (fsp_Compare(_fCompare, *fsp_MemberFromLink(_pObjectToInsert), *fsp_MemberFromLink(pObj)) < 0)
-				{
 					pObj = fp_Rotate2<0>(_pTop);
-				}
 				else
 				{
-					fp_RebalanceCase3LowStack(0,pObj->f_GetRightP(), _pTop, _pObjectToInsert, _fCompare);
+					fp_RebalanceCase3LowStack(0, pObj->f_GetRightP(), _pTop, _pObjectToInsert, _fCompare);
 					return;
 				}
 			}
@@ -390,7 +382,7 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertLowStack(CNode *_pToInsert, tf_CCompare &&_fCompare)
 	{
-		CLink * pToInsert = fsp_LinkFromMember(_pToInsert);
+		CLink *pToInsert = fsp_LinkFromMember(_pToInsert);
 		if constexpr (CLinkContainer::mc_bNeedSetTree)
 			((CLinkContainer *)pToInsert)->f_SetTree(this, &TCAVLTreeAggregate::fsp_Remove);
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
@@ -402,17 +394,16 @@ namespace NMib::NIntrusive
 	template <typename tf_CCompare>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveLowStack(CNode *_pToRemove, tf_CCompare &&_fCompare)
 	{
-		CLink * pToRemove = fsp_LinkFromMember(_pToRemove);
+		CLink *pToRemove = fsp_LinkFromMember(_pToRemove);
 
 		DMibFastCheck(pToRemove->f_GetSkew() != CLink::EAVLTreeSkew_NotInTree); // Must be in tree already
 
 		fp_RemoveLowStack(m_Root, pToRemove, _fCompare);
-#			ifdef DMibEnableSafeCheck
-			// Remove tree ptr in debug
-			if constexpr (CLinkContainer::mc_bNeedSetTree)
-				((CLinkContainer *)pToRemove)->f_SetTree(nullptr, nullptr);
-#			endif
-
+#ifdef DMibEnableSafeCheck
+		// Remove tree ptr in debug
+		if constexpr (CLinkContainer::mc_bNeedSetTree)
+			((CLinkContainer *)pToRemove)->f_SetTree(nullptr, nullptr);
+#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

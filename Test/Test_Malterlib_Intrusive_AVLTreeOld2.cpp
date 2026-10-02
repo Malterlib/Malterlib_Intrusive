@@ -20,9 +20,9 @@ public:
 	}
 
 	aint holdrand;
-	aint Rand (void)
+	aint Rand(void)
 	{
-		return(((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
+		return (((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
 	bool f_AutomaticTest()
@@ -30,17 +30,16 @@ public:
 		return true;
 	}
 
-
 	class CCompare;
 	class CCompare2;
-#if 0
+#	if 0
 	class CTestClass
 	{
 	public:
-
 		CTestClass()
 		{
 		}
+
 		~CTestClass()
 		{
 		}
@@ -51,10 +50,10 @@ public:
 	class CTestClass2
 	{
 	public:
-
 		CTestClass2()
 		{
 		}
+
 		~CTestClass2()
 		{
 		}
@@ -67,28 +66,29 @@ public:
 	public:
 		using CRet = aint;
 
-		static inline_small CRet fs_Compare(const CTestClass *_pFirst, const CTestClass *_pSecond, void *_pContext)
+		static inline_small CRet fs_Compare(CTestClass const *_pFirst, CTestClass const *_pSecond, void *_pContext)
 		{
 //			DMibTrace("Data1 {} Data2 {}\n", (_pFirst->m_Data), (_pSecond->m_Data));
 			return _pFirst->m_Data.f_CmpNoCase(_pSecond->m_Data);
 		}
 
-		static inline_small CRet fs_Compare(const CTestClass *_pTestClass, const NMib::NStr::CStr &_Key, void *_pContext)
+		static inline_small CRet fs_Compare(CTestClass const *_pTestClass, NMib::NStr::CStr const &_Key, void *_pContext)
 		{
 			return _pTestClass->m_Data.f_CmpNoCase(_Key);
 		}
 	};
+
 	class CCompare2
 	{
 	public:
 		using CRet = aint;
 
-		static inline_small CRet fs_Compare(const CTestClass2 *_pFirst, const CTestClass2 *_pSecond, void *_pContext)
+		static inline_small CRet fs_Compare(CTestClass2 const *_pFirst, CTestClass2 const *_pSecond, void *_pContext)
 		{
 			return _pFirst->m_Data.f_CmpNoCase(_pSecond->m_Data);
 		}
 
-		static inline_small CRet fs_Compare(const CTestClass2 *_pTestClass, const NMib::NStr::CStr &_Key, void *_pContext)
+		static inline_small CRet fs_Compare(CTestClass2 const *_pTestClass, NMib::NStr::CStr const &_Key, void *_pContext)
 		{
 			return _pTestClass->m_Data.f_CmpNoCase(_Key);
 		}
@@ -97,37 +97,37 @@ public:
 	DMibTreeAVL2_Tree(CTestClass2, m_Link, CCompare2) m_TestTree2;
 	void RandomizeList()
 	{
-#ifdef TreeMixedList
-		for (aint i = 0; i < mc_TestSorted; i+=2)
+#		ifdef TreeMixedList
+		for (aint i = 0; i < mc_TestSorted; i += 2)
 		{
-			m_ClassList[i].m_Data = i/2;
-			m_ClassList2[i].m_Data = i/2;
+			m_ClassList[i].m_Data = i / 2;
+			m_ClassList2[i].m_Data = i / 2;
 		}
-		for (aint i = 1; i < mc_TestSorted; i+=2)
+		for (aint i = 1; i < mc_TestSorted; i += 2)
 		{
-			m_ClassList[i].m_Data = i/2+mc_TestSorted/2;
-			m_ClassList2[i].m_Data = i/2+mc_TestSorted/2;
+			m_ClassList[i].m_Data = i / 2 + mc_TestSorted / 2;
+			m_ClassList2[i].m_Data = i / 2 + mc_TestSorted / 2;
 		}
-#else
+#		else
 		for (aint i = 0; i < mc_TestSorted; ++i)
 		{
 			m_ClassList[i].m_Data = (NMib::NStr::CStr::CFormat("staohnkthoansekhaosntuehsaontekhsnaothkstnaoheknstoahuetnaohksntoahentsuuhaontkho{sj10,sf0}") << i).f_GetStr();
 			m_ClassList2[i].m_Data = m_ClassList[i].m_Data;
 		}
-#endif
-
+#		endif
 	}
-#else
+#	else
 	class CTestClass
 	{
 	public:
-
 		CTestClass()
 		{
 		}
+
 		~CTestClass()
 		{
 		}
+
 		TCAVLLink<EAVLLinkType_Unaligned> m_Link;
 		aint m_Data;
 	};
@@ -135,13 +135,14 @@ public:
 	class CTestClass2
 	{
 	public:
-
 		CTestClass2()
 		{
 		}
+
 		~CTestClass2()
 		{
 		}
+
 		TCAVLLink<EAVLLinkType_Unaligned> m_Link;
 		aint m_Data;
 	};
@@ -154,6 +155,7 @@ public:
 			return _Node.m_Data;
 		}
 	};
+
 	class CCompare2
 	{
 	public:
@@ -168,45 +170,41 @@ public:
 
 	void RandomizeList()
 	{
-#ifdef TreeMixedList
-		for (aint i = 0; i < mc_TestSorted; i+=2)
+#		ifdef TreeMixedList
+		for (aint i = 0; i < mc_TestSorted; i += 2)
 		{
-			m_ClassList[i].m_Data = i/2;
-			m_ClassList2[i].m_Data = i/2;
+			m_ClassList[i].m_Data = i / 2;
+			m_ClassList2[i].m_Data = i / 2;
 		}
-		for (aint i = 1; i < mc_TestSorted; i+=2)
+		for (aint i = 1; i < mc_TestSorted; i += 2)
 		{
-			m_ClassList[i].m_Data = i/2+mc_TestSorted/2;
-			m_ClassList2[i].m_Data = i/2+mc_TestSorted/2;
+			m_ClassList[i].m_Data = i / 2 + mc_TestSorted / 2;
+			m_ClassList2[i].m_Data = i / 2 + mc_TestSorted / 2;
 		}
-#else
+#		else
 		for (aint i = 0; i < mc_TestSorted; ++i)
 		{
 			m_ClassList[i].m_Data = i;
 			m_ClassList2[i].m_Data = m_ClassList[i].m_Data;
 		}
-#endif
-
+#		endif
 	}
-#endif
+#	endif
 
-
-	static const aint mc_TestSorted = TreeTestNum;
+	static aint const mc_TestSorted = TreeTestNum;
 
 	CTestClass m_ClassList[mc_TestSorted];
 	CTestClass2 m_ClassList2[mc_TestSorted];
-
 
 	template <typename t_CTree, typename t_CTestClass>
 	static void TreeGetMaxDepth(t_CTree &_Tree, t_CTestClass *_pObj, aint &_MaxDepth, aint &_CurrentDepth)
 	{
 		++_CurrentDepth;
 
-
 		t_CTestClass *pRight = _Tree.fs_GetRight(_pObj);
 		t_CTestClass *pLeft = _Tree.fs_GetLeft(_pObj);
 
-		if (!pRight &&!pLeft)
+		if (!pRight && !pLeft)
 		{
 			if (_CurrentDepth > _MaxDepth)
 				_MaxDepth = _CurrentDepth;
@@ -216,7 +214,6 @@ public:
 			TreeGetMaxDepth(_Tree, pLeft, _MaxDepth, _CurrentDepth);
 		if (pRight)
 			TreeGetMaxDepth(_Tree, pRight, _MaxDepth, _CurrentDepth);
-
 
 		--_CurrentDepth;
 	}
@@ -229,11 +226,10 @@ public:
 		t_CTestClass *pRight = _Tree.fs_GetRight(_pObj);
 		t_CTestClass *pLeft = _Tree.fs_GetLeft(_pObj);
 
-		if (!pRight &&!pLeft)
+		if (!pRight && !pLeft)
 		{
 			if (_CurrentDepth < _MinDepth)
 				_MinDepth = _CurrentDepth;
-
 		}
 
 		if (pLeft)
@@ -243,7 +239,6 @@ public:
 
 		--_CurrentDepth;
 	}
-
 
 	template <typename t_CTree, typename t_CTestClass>
 	static t_CTestClass *GetTreeLargest(t_CTree &_Tree, t_CTestClass *_pObj)
@@ -319,14 +314,9 @@ public:
 			f_CheckTree(_Tree, pRight);
 		}
 		if (LeftMaxDepth > RightMaxDepth)
-		{
 			DMibSafeCheck((LeftMaxDepth - RightMaxDepth) <= 1, "Tree has lost its AVL Property");
-		}
 		else
-		{
 			DMibSafeCheck((RightMaxDepth - LeftMaxDepth) <= 1, "Tree has lost its AVL Property");
-		}
-
 	}
 
 	template <typename t_CTree0, typename t_CTree1, typename t_CTestClass0, typename t_CTestClass1>
@@ -342,30 +332,21 @@ public:
 			return false;
 
 		int Skew0 = _pObj0->m_Link.m_Link.f_GetSkew();
-		switch(Skew0)
+		switch (Skew0)
 		{
-		case t_CTree0::CLink::EAVLTreeSkew_None:
-				Skew0 = 0; break;
-		case t_CTree0::CLink::EAVLTreeSkew_Right:
-				Skew0 = 1; break;
-		case t_CTree0::CLink::EAVLTreeSkew_Left:
-				Skew0 = -1; break;
-		default:
-			Skew0 = -2;break;
+		case t_CTree0::CLink::EAVLTreeSkew_None: Skew0 = 0; break;
+		case t_CTree0::CLink::EAVLTreeSkew_Right: Skew0 = 1; break;
+		case t_CTree0::CLink::EAVLTreeSkew_Left: Skew0 = -1; break;
+		default: Skew0 = -2; break;
 		}
 		int Skew1 = _pObj1->m_Link.m_Link.f_GetSkew();
-		switch(Skew1)
+		switch (Skew1)
 		{
-		case t_CTree1::CLink::EAVLTreeSkew_None:
-				Skew1 = 0; break;
-		case t_CTree1::CLink::EAVLTreeSkew_Right:
-				Skew1 = 1; break;
-		case t_CTree1::CLink::EAVLTreeSkew_Left:
-				Skew1 = -1; break;
-		default:
-			Skew1 = -2;break;
+		case t_CTree1::CLink::EAVLTreeSkew_None: Skew1 = 0; break;
+		case t_CTree1::CLink::EAVLTreeSkew_Right: Skew1 = 1; break;
+		case t_CTree1::CLink::EAVLTreeSkew_Left: Skew1 = -1; break;
+		default: Skew1 = -2; break;
 		}
-
 
 		if (Skew0 != Skew1)
 			return false;
@@ -380,20 +361,15 @@ public:
 		if (!TreesSame(_Tree0, _Tree1, pLeft0, pLeft1))
 			return false;
 		return true;
-
-
 	}
 
 	template <typename t_CTree>
 	static void f_CheckTree(t_CTree &_Tree)
 	{
-
 		_Tree.f_CheckTree(true);
 
 		if (_Tree.f_GetRoot())
-		{
 			f_CheckTree(_Tree, _Tree.f_GetRoot());
-		}
 	}
 
 	template <typename t_CTree, typename t_CTestClass>
@@ -403,14 +379,11 @@ public:
 		{
 			_bTraced = true;
 			int Skew = _pObj->m_Link.m_Link.f_GetSkew();
-			switch(Skew)
+			switch (Skew)
 			{
-			case t_CTree::CLink::EAVLTreeSkew_None:
-					Skew = 0; break;
-			case t_CTree::CLink::EAVLTreeSkew_Right:
-					Skew = 1; break;
-			case t_CTree::CLink::EAVLTreeSkew_Left:
-					Skew = -1; break;
+			case t_CTree::CLink::EAVLTreeSkew_None: Skew = 0; break;
+			case t_CTree::CLink::EAVLTreeSkew_Right: Skew = 1; break;
+			case t_CTree::CLink::EAVLTreeSkew_Left: Skew = -1; break;
 			}
 
 			if (_bLeft)
@@ -424,14 +397,10 @@ public:
 		t_CTestClass *pLeft = _Tree.fs_GetLeft(_pObj);
 
 		if (pLeft)
-		{
 			TraceTree(_Tree, _pObj, pLeft, _Depth, _CurrentDepth, _bTraced, true, _MaxDepth);
-		}
 
 		if (pRight)
-		{
 			TraceTree(_Tree, _pObj, pRight, _Depth, _CurrentDepth, _bTraced, false, _MaxDepth);
-		}
 		--_CurrentDepth;
 	}
 
@@ -450,9 +419,7 @@ public:
 			aint CurrentDepth = 0;
 			TraceTree(_Tree, _Tree.f_GetRoot(), _Tree.f_GetRoot(), i, CurrentDepth, Traced, false, MaxDepth);
 			if (Traced)
-			{
 				DMibTrace("\n", 0);
-			}
 		}
 	}
 
@@ -465,11 +432,11 @@ public:
 
 		aint DebugTest = TreeDebugNum;
 
-#ifdef DMibDebug
+#	ifdef DMibDebug
 		aint NumTests = 1;
-#else
+#	else
 		aint NumTests = TreeNumTests;
-#endif
+#	endif
 
 		{
 			// Ceck validity of tree code
@@ -696,7 +663,6 @@ public:
 			f_CheckTree(m_TestTree2);
 		}
 
-
 		DMibSafeCheck(!m_TestTree.f_GetRoot(), "Must be empty");
 		DMibSafeCheck(!m_TestTree2.f_GetRoot(), "Must be empty");
 
@@ -708,16 +674,12 @@ public:
 				{
 					DMibScopePerfTimeMeasureMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
-					{
 						m_TestTree.f_Insert(m_ClassList[i]);
-					}
 				}
 				{
 					DMibScopePerfTimeMeasureMin(TimerDelete);
 					for (aint i = 0; i < mc_TestSorted; ++i)
-					{
 						m_TestTree.f_Remove(m_ClassList[i]);
-					}
 				}
 			}
 
@@ -733,16 +695,12 @@ public:
 				{
 					DMibScopePerfTimeMeasureMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
-					{
 						m_TestTree.f_InsertLowStack(m_ClassList[i]);
-					}
 				}
 				{
 					DMibScopePerfTimeMeasureMin(TimerDelete);
 					for (aint i = 0; i < mc_TestSorted; ++i)
-					{
 						m_TestTree.f_RemoveLowStack(m_ClassList[i]);
-					}
 				}
 			}
 
@@ -758,23 +716,18 @@ public:
 				{
 					DMibScopePerfTimeMeasureMin(TimerInsert);
 					for (aint i = 0; i < mc_TestSorted; ++i)
-					{
 						m_TestTree.fr_Insert(m_ClassList[i]);
-					}
 				}
 				{
 					DMibScopePerfTimeMeasureMin(TimerDelete);
 					for (aint i = 0; i < mc_TestSorted; ++i)
-					{
 						m_TestTree.fr_Remove(m_ClassList[i]);
-					}
 				}
 			}
 
 			DMibTrace("Performance for AVLTree fr_Insert = {0} inserts per second\n", fp64(mc_TestSorted) / TimerInsert.f_GetTime());
 			DMibTrace("Performance for AVLTree fr_Remove = {0} removes per second\n", fp64(mc_TestSorted) / TimerDelete.f_GetTime());
 		}
-
 
 //		for (aint i = 1; i < mc_TestSorted; i+=2)
 //		{
@@ -783,32 +736,30 @@ public:
 //		}
 
 		return "";
-
 	}
-
 };
 
 class CTestTreeAligned : public CMalterlibTest
 {
 public:
-
-	aint Rand (void)
+	aint Rand(void)
 	{
 		static aint holdrand = 548;
-		return(((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
+		return (((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
 	class CCompare;
 	class CTestClass
 	{
 	public:
-
 		CTestClass()
 		{
 		}
+
 		~CTestClass()
 		{
 		}
+
 		NMib::NIntrusive::TCAVLLink<> m_Link;
 		aint m_Data;
 	};
@@ -816,45 +767,39 @@ public:
 	class CCompare
 	{
 	public:
-		inline_small const aint &operator ()(CTestClass const &_Node) const
+		inline_small aint const &operator () (CTestClass const &_Node) const
 		{
 			return _Node.m_Data;
 		}
 	};
 
-	static const aint mc_TestSorted = TreeTestNum;
+	static aint const mc_TestSorted = TreeTestNum;
 
 	CTestClass m_ClassList[mc_TestSorted];
 
 	void RandomizeList()
 	{
-#ifdef TreeMixedList
-		for (aint i = 0; i < mc_TestSorted; i+=2)
-		{
-			m_ClassList[i].m_Data = i/2;
-		}
-		for (aint i = 1; i < mc_TestSorted; i+=2)
-		{
-			m_ClassList[i].m_Data = i/2+mc_TestSorted/2;
-		}
-#else
+#	ifdef TreeMixedList
+		for (aint i = 0; i < mc_TestSorted; i += 2)
+			m_ClassList[i].m_Data = i / 2;
+		for (aint i = 1; i < mc_TestSorted; i += 2)
+			m_ClassList[i].m_Data = i / 2 + mc_TestSorted / 2;
+#	else
 		for (aint i = 0; i < mc_TestSorted; ++i)
-		{
-			m_ClassList[i].m_Data = i*2;
-		}
-#endif
+			m_ClassList[i].m_Data = i * 2;
+#	endif
 	}
+
 	NMib::NIntrusive::TCAVLTree<&CTestClass::m_Link, CCompare> m_TestTree;
 
 	void TreeGetMaxDepth(CTestClass *_pObj, aint &_MaxDepth, aint &_CurrentDepth)
 	{
 		++_CurrentDepth;
 
-
 		CTestClass *pRight = m_TestTree.fs_GetRight(_pObj);
 		CTestClass *pLeft = m_TestTree.fs_GetLeft(_pObj);
 
-		if (!pRight &&!pLeft)
+		if (!pRight && !pLeft)
 		{
 			if (_CurrentDepth > _MaxDepth)
 				_MaxDepth = _CurrentDepth;
@@ -864,7 +809,6 @@ public:
 			TreeGetMaxDepth(pLeft, _MaxDepth, _CurrentDepth);
 		if (pRight)
 			TreeGetMaxDepth(pRight, _MaxDepth, _CurrentDepth);
-
 
 		--_CurrentDepth;
 	}
@@ -876,11 +820,10 @@ public:
 		CTestClass *pRight = m_TestTree.fs_GetRight(_pObj);
 		CTestClass *pLeft = m_TestTree.fs_GetLeft(_pObj);
 
-		if (!pRight &&!pLeft)
+		if (!pRight && !pLeft)
 		{
 			if (_CurrentDepth < _MinDepth)
 				_MinDepth = _CurrentDepth;
-
 		}
 
 		if (pLeft)
@@ -890,7 +833,6 @@ public:
 
 		--_CurrentDepth;
 	}
-
 
 	aint GetTreeLargest(CTestClass *_pObj)
 	{
@@ -952,25 +894,20 @@ public:
 		{
 			aint CurrentDepth = 0;
 			TreeGetMaxDepth(pRight, LeftMaxDepth, CurrentDepth);
-			DMibSafeCheck(_pObj->m_Data > GetTreeLargest(pLeft),"Tree is not binary");
+			DMibSafeCheck(_pObj->m_Data > GetTreeLargest(pLeft), "Tree is not binary");
 			f_CheckTree(pLeft);
 		}
 		if (pRight)
 		{
 			aint CurrentDepth = 0;
 			TreeGetMaxDepth(pRight, RightMaxDepth, CurrentDepth);
-			DMibSafeCheck(_pObj->m_Data < GetTreeSmallest(pRight),"Tree is not binary");
+			DMibSafeCheck(_pObj->m_Data < GetTreeSmallest(pRight), "Tree is not binary");
 			f_CheckTree(pRight);
 		}
 		if (LeftMaxDepth > RightMaxDepth)
-		{
 			DMibSafeCheck((LeftMaxDepth - RightMaxDepth) <= 1, "Tree has lost its AVL Property");
-		}
 		else
-		{
 			DMibSafeCheck((RightMaxDepth - LeftMaxDepth) <= 1, "Tree has lost its AVL Property");
-		}
-
 	}
 
 	void f_CheckTree()
@@ -978,9 +915,7 @@ public:
 		m_TestTree.f_CheckTree(true);
 
 		if (m_TestTree.f_GetRoot())
-		{
 			f_CheckTree(m_TestTree.f_GetRoot());
-		}
 	}
 
 	void TraceTree(CTestClass *_pObj, aint _Depth, aint &_CurrentDepth, bool &_bTraced, bool _bLeft, aint _MaxDepth)
@@ -1000,14 +935,10 @@ public:
 		CTestClass *pLeft = m_TestTree.fs_GetLeft(_pObj);
 
 		if (pLeft)
-		{
 			TraceTree(pLeft, _Depth, _CurrentDepth, _bTraced, true, _MaxDepth);
-		}
 
 		if (pRight)
-		{
 			TraceTree(pRight, _Depth, _CurrentDepth, _bTraced, false, _MaxDepth);
-		}
 		--_CurrentDepth;
 	}
 
@@ -1039,11 +970,11 @@ public:
 
 		aint DebugTest = TreeDebugNum;
 
-#ifdef DMibDebug
+#	ifdef DMibDebug
 		aint NumTests = 1;
-#else
+#	else
 		aint NumTests = TreeNumTests;
-#endif
+#	endif
 
 		// Ceck validity of tree code
 		for (aint i = 0; i < (DebugTest < mc_TestSorted ? DebugTest : mc_TestSorted); ++i)
@@ -1104,14 +1035,13 @@ public:
 
 		for (aint j = 0; j < 10; ++j)
 		{
-			for (aint i = 0; i < mc_TestSorted*2; ++i)
+			for (aint i = 0; i < mc_TestSorted * 2; ++i)
 			{
-				aint Index = Rand()%mc_TestSorted;
+				aint Index = Rand() % mc_TestSorted;
 				if (m_ClassList[Index].m_Link.f_IsInTree())
 					m_TestTree.f_Remove(m_ClassList[Index]);
 				else
 					m_TestTree.f_Insert(m_ClassList[Index]);
-
 			}
 
 			for (aint u = 0; u < mc_TestSorted; ++u)
@@ -1120,17 +1050,13 @@ public:
 				{
 					CTestClass *pFind = m_TestTree.f_FindEqual(m_ClassList[u].m_Data);
 					if (!pFind)
-					{
 						DMibSafeCheck(0, "Must find in tree");
-					}
 				}
 				else
 				{
 					CTestClass *pFind = m_TestTree.f_FindEqual(m_ClassList[u].m_Data);
 					if (pFind)
-					{
 						DMibSafeCheck(0, "Must not be in tree");
-					}
 				}
 			}
 			for (aint i = 0; i < mc_TestSorted; ++i)
@@ -1157,9 +1083,7 @@ public:
 			{
 				DMibScopePerfTimeMeasureMin(TimerInsert);
 				for (aint i = 0; i < mc_TestSorted; ++i)
-				{
 					m_TestTree.f_Insert(m_ClassList[i]);
-				}
 			}
 			{
 				DMibScopePerfTimeMeasureMin(TimerFindEqual);
@@ -1169,7 +1093,6 @@ public:
 					aint Key = Rand() % (mc_TestSorted * 2);
 					pTest = m_TestTree.f_FindEqual(Key);
 				}
-
 			}
 			if (pTest)
 				FinalNumber += pTest->m_Data;
@@ -1196,37 +1119,27 @@ public:
 			{
 				DMibScopePerfTimeMeasureMin(TimerDelete);
 				for (aint i = 0; i < mc_TestSorted; ++i)
-				{
 					m_TestTree.f_Remove(m_ClassList[i]);
-				}
 			}
 			{
 				DMibScopePerfTimeMeasureMin(TimerInsertRecursive);
 				for (aint i = 0; i < mc_TestSorted; ++i)
-				{
 					m_TestTree.fr_Insert(m_ClassList[i]);
-				}
 			}
 			{
 				DMibScopePerfTimeMeasureMin(TimerDeleteRecursive);
 				for (aint i = 0; i < mc_TestSorted; ++i)
-				{
 					m_TestTree.fr_Remove(m_ClassList[i]);
-				}
 			}
 			{
 				DMibScopePerfTimeMeasureMin(TimerInsertLowStack);
 				for (aint i = 0; i < mc_TestSorted; ++i)
-				{
 					m_TestTree.f_InsertLowStack(m_ClassList[i]);
-				}
 			}
 			{
 				DMibScopePerfTimeMeasureMin(TimerDeleteLowStack);
 				for (aint i = 0; i < mc_TestSorted; ++i)
-				{
 					m_TestTree.f_RemoveLowStack(m_ClassList[i]);
-				}
 			}
 		}
 
@@ -1242,7 +1155,6 @@ public:
 		DMibTrace("Performance for AVLTreeAligned f_FindLargestLessThanEqual = {0} finds  per second\n", fp64(mc_TestSorted) / TimerFindLargestLessThanEqual.f_GetTime());
 		DMibTrace("Performance for AVLTreeAligned f_FindSmallestGreaterThanEqual = {0} finds per second\n", fp64(mc_TestSorted) / TimerFindSmallestGreaterThanEqual.f_GetTime());
 
-
 //		for (aint i = 1; i < mc_TestSorted; i+=2)
 //		{
 //			m_TestTree.f_Remove(m_ClassList[i]);
@@ -1250,9 +1162,7 @@ public:
 //		}
 
 		return "";
-
 	}
-
 };
 
 DMibRuntimeClass(CMalterlibTest, CTestTree);

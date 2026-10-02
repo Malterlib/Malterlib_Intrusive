@@ -13,18 +13,18 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqual(const tf_CKey &_Key) const
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqual(tf_CKey const &_Key) const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		return f_FindEqual(_Key, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey, typename tf_CCompare>
-	inline_medium typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqual(const tf_CKey &_Key, tf_CCompare &&_fCompare) const
+	inline_medium auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqual(tf_CKey const &_Key, tf_CCompare &&_fCompare) const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
-		CLink* pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
 
 		while (pCurrentSearch)
 		{
@@ -33,7 +33,7 @@ namespace NMib::NIntrusive
 #if !defined(DCompiler_MSVC)
 			if constexpr (NTraits::cIsSame<decltype(Compare), COrdering_Strong>)
 			{
-				if (Compare == 0)// [[unlikely]]
+				if (Compare == 0) // [[unlikely]]
 					return fsp_MemberFromLink(pCurrentSearch);
 				else
 					pCurrentSearch = pCurrentSearch->f_GetNextP((Compare > 0 ? 0 : 1));
@@ -55,20 +55,20 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqual(const tf_CKey &_Key) const
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqual(tf_CKey const &_Key) const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		return f_FindSmallestGreaterThanEqual(_Key, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey, typename tf_CCompare>
-	inline_large typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqual(const tf_CKey &_Key, tf_CCompare &&_fCompare) const
+	inline_large auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqual(tf_CKey const &_Key, tf_CCompare &&_fCompare) const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		CLink *pBestFit = nullptr;
 
-		CLink* pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
 
 		while (pCurrentSearch)
 		{
@@ -77,7 +77,7 @@ namespace NMib::NIntrusive
 #if !defined(DCompiler_MSVC)
 			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
-				if (CompareResult == 0)// [[unlikely]]
+				if (CompareResult == 0) // [[unlikely]]
 					return fsp_MemberFromLink(pCurrentSearch);
 				else if (CompareResult < 0)
 					pCurrentSearch = pCurrentSearch->f_GetNextP(1);
@@ -109,26 +109,27 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqualAndPrev(const tf_CKey &_Key, CNode* &_pPrev) const
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqualAndPrev(tf_CKey const &_Key, CNode * &_pPrev) const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		return f_FindSmallestGreaterThanEqualAndPrev(_Key, _pPrev, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey, typename tf_CCompare>
-	inline_large typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqualAndPrev
+	inline_large auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallestGreaterThanEqualAndPrev
 		(
-			const tf_CKey &_Key
-			, CNode* &_pPrev
+			tf_CKey const &_Key
+			, CNode * &_pPrev
 			, tf_CCompare &&_fCompare
-		) const
+		)
+		const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		CLink *pBestFit = nullptr;
 		CLink *pPrev = nullptr;
 
-		CLink* pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
 
 		while (pCurrentSearch)
 		{
@@ -171,20 +172,20 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey>
-	inline_small typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindLargestLessThanEqual(const tf_CKey &_Key) const
+	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindLargestLessThanEqual(tf_CKey const &_Key) const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		return f_FindLargestLessThanEqual(_Key, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey, typename tf_CCompare>
-	inline_large typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
-	TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindLargestLessThanEqual(const tf_CKey &_Key, tf_CCompare &&_fCompare) const
+	inline_large auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindLargestLessThanEqual(tf_CKey const &_Key, tf_CCompare &&_fCompare) const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		CLink *pBestFit = nullptr;
 
-		CLink* pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
 
 		while (pCurrentSearch)
 		{
@@ -193,7 +194,7 @@ namespace NMib::NIntrusive
 #if !defined(DCompiler_MSVC)
 			if constexpr (NTraits::cIsSame<decltype(CompareResult), COrdering_Strong>)
 			{
-				if (CompareResult == 0)// [[unlikely]]
+				if (CompareResult == 0) // [[unlikely]]
 					return fsp_MemberFromLink(pCurrentSearch);
 				else if (CompareResult < 0)
 				{
@@ -224,7 +225,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallest() const
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallest() const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		CLink *pBestFit = CLink::fs_GetPtr(m_Root);
 
@@ -245,7 +247,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindLargest() const
+	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindLargest() const
+		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
 		CLink *pBestFit = CLink::fs_GetPtr(m_Root);
 

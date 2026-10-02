@@ -11,17 +11,16 @@
 class CTestSort : public CMalterlibTest
 {
 public:
-
-	aint Rand (void)
+	aint Rand(void)
 	{
 		static aint holdrand = 548;
-		return(((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
+		return (((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
-	aint Rand2 (void)
+	aint Rand2(void)
 	{
 		static aint holdrand = 12164;
-		return(((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
+		return (((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
 	bool f_AutomaticTest()
@@ -35,6 +34,7 @@ public:
 		DMibListLinkDS_Link(CDataDouble, m_Link);
 		aint Hula;
 	};
+
 	class CDataSingle
 	{
 	public:
@@ -46,7 +46,7 @@ public:
 	using CIterS_CData = DMibListLinkS_Iter(CDataSingle, m_Link);
 
 	static aint ms_NumCompare;
-	static const aint mc_BucketSize = 11;
+	static aint const mc_BucketSize = 11;
 
 	class CMergeSortClassDouble
 	{
@@ -132,7 +132,7 @@ public:
 		}
 	};
 
-	static const aint mc_TestSorted = 400000;
+	static aint const mc_TestSorted = 400000;
 	CDataSingle m_DatasSingle[mc_TestSorted];
 	CDataDouble m_DatasDouble[mc_TestSorted];
 	DMibListLinkS_List(CDataSingle, m_Link) m_ListSingle;
@@ -160,18 +160,14 @@ public:
 
 	void TraceListDouble()
 	{
-		for (CIter_CData Iter(m_ListDouble);Iter;++Iter)
-		{
+		for (CIter_CData Iter(m_ListDouble); Iter; ++Iter)
 			DMibTrace("{}\n", Iter->Hula);
-		}
 	}
 
 	void TraceListSingle()
 	{
-		for (CIterS_CData Iter(m_ListSingle);Iter;++Iter)
-		{
+		for (CIterS_CData Iter(m_ListSingle); Iter; ++Iter)
 			DMibTrace("{}\n", Iter->Hula);
-		}
 	}
 
 	void ReverseList()
@@ -184,7 +180,7 @@ public:
 	{
 		aint NumInList = 0;
 		aint LastInt = 0;
-		for (CIter_CData Iter(m_ListDouble);Iter;++Iter)
+		for (CIter_CData Iter(m_ListDouble); Iter; ++Iter)
 		{
 			++NumInList;
 			if (Iter->Hula < LastInt)
@@ -194,9 +190,7 @@ public:
 		}
 
 		if (NumInList != mc_TestSorted)
-		{
 			return "List has lost members";
-		}
 
 		return "";
 	}
@@ -205,9 +199,8 @@ public:
 	{
 		aint NumInList = 0;
 		aint LastInt = 0;
-		for (CIterS_CData Iter(m_ListSingle);Iter;++Iter)
+		for (CIterS_CData Iter(m_ListSingle); Iter; ++Iter)
 		{
-
 			++NumInList;
 			if (Iter->Hula < LastInt)
 				return "List did not sort ok";
@@ -216,9 +209,7 @@ public:
 		}
 
 		if (NumInList != mc_TestSorted)
-		{
 			return "List has lost members";
-		}
 
 		return "";
 	}
@@ -229,6 +220,7 @@ public:
 		DMibListLinkDS_Link(CDataTest1, m_Link);
 		aint Hula;
 	};
+
 	class CMergeSortCDataTest1
 	{
 	public:
@@ -240,7 +232,6 @@ public:
 		}
 	};
 
-
 	class CTestAutoPtr
 	{
 	public:
@@ -251,20 +242,15 @@ public:
 
 	NMib::NStr::CStr Certify(CTestInterface &_Interface)
 	{
-
 		NMib::NContainer::TCVector<NMib::NStr::CStr> Testing;
 
 		NMib::NStr::CStr Stringen = "ntahoeu";
 
 		for (umint i = 0; i < 32768; ++i)
-		{
 			Testing.f_Insert(Stringen);
-		}
 
 		for (umint i = 0; i < 18000; i += 256)
-		{
 			Testing.f_Remove(0, 256);
-		}
 
 		NMib::NStorage::TCAutoClearPtr<CTestAutoPtr> pTest;
 
@@ -277,9 +263,9 @@ public:
 		DMibSafeCheck(!pTest, "Should not be assigned");
 
 #ifdef DMibDebug
-		static const aint NumTests = 1;
+		static aint const NumTests = 1;
 #else
-		static const aint NumTests = 4;
+		static aint const NumTests = 4;
 #endif
 		NMib::NStr::CStr TestListReturn;
 
@@ -297,12 +283,10 @@ public:
 
 		CDataTest1 TestData[64];
 
-		NMib::NMisc::CRandomShiftRNG Random(0,1,2);
+		NMib::NMisc::CRandomShiftRNG Random(0, 1, 2);
 
 		for (int i = 0; i < 64; ++i)
-		{
 			TestData[i].Hula = Random.f_GetValue<uint32>();
-		}
 
 		for (int i = 0; i < 64; ++i)
 		{
@@ -440,7 +424,6 @@ public:
 			DMibTrace("0x{nh,l4,sf0}\n", (Iter->Hula));
 		}*/
 
-
 		if ((TestListReturn = TestListDouble()).f_GetLen())
 			return TestListReturn;
 
@@ -450,7 +433,7 @@ public:
 			for (aint i = 0; i < NumTests; ++i)
 			{
 				DMibScopePerfTimeMeasureMin(Timer);
-				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1<<mc_BucketSize>((31 / mc_BucketSize) + 1);
+				m_ListDouble.f_BucketSort<CBucketSortClassDouble, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
 
 			DMibTrace("Bucket sort sorted              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
@@ -502,7 +485,6 @@ public:
 		|¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯*¯|
 		|*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*|
 		\************************************************************************************************/
-
 
 		/*************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -610,9 +592,8 @@ public:
 			for (aint i = 0; i < NumTests; ++i)
 			{
 				DMibScopePerfTimeMeasureMin(Timer);
-				m_ListSingle.f_BucketSort<CBucketSortClassSingle, 1<<mc_BucketSize>((31 / mc_BucketSize) + 1);
+				m_ListSingle.f_BucketSort<CBucketSortClassSingle, 1 << mc_BucketSize>((31 / mc_BucketSize) + 1);
 			}
-
 
 			DMibTrace("Bucket sort sorted              = {0} elements per second ({1} ms)\n", fp64(mc_TestSorted) / Timer.f_GetTime(), (Timer.f_GetTime() * 1000.0));
 		}

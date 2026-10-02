@@ -14,11 +14,12 @@ namespace NMib::NIntrusive::NPrivate
 	public:
 		enum EAVLTreeSkew
 		{
-			 EAVLTreeSkew_None		= 2
-			,EAVLTreeSkew_Left		= 0
-			,EAVLTreeSkew_Right		= 1
-			,EAVLTreeSkew_NotInTree	= 3
+			EAVLTreeSkew_None        = 2
+			, EAVLTreeSkew_Left      = 0
+			, EAVLTreeSkew_Right     = 1
+			, EAVLTreeSkew_NotInTree = 3
 		};
+
 		CAVLLinkData *m_pNext[2];
 		aint m_Skew;
 
@@ -36,6 +37,7 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			return &m_pNext[1];
 		}
+
 		inline_small CAVLLinkData **f_GetLeft()
 		{
 			return &m_pNext[0];
@@ -50,6 +52,7 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			return m_pNext[1];
 		}
+
 		inline_small CAVLLinkData *f_GetLeftP() const
 		{
 			return m_pNext[0];
@@ -69,7 +72,6 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			return m_Skew == EAVLTreeSkew_None;
 		}
-
 
 		inline_small void f_SetRight(CAVLLinkData *_pRight)
 		{
@@ -116,7 +118,7 @@ namespace NMib::NIntrusive::NPrivate
 			m_Skew = _Skew;
 		}
 
-		constexpr static inline_small CAVLLinkData *fs_GetPtr(CAVLLinkData *_Src)
+		static constexpr inline_small CAVLLinkData *fs_GetPtr(CAVLLinkData *_Src)
 		{
 			return _Src;
 		}
@@ -134,7 +136,6 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[1] = 0;
 			m_Skew = EAVLTreeSkew_None;
 		}
-
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -151,10 +152,10 @@ namespace NMib::NIntrusive::NPrivate
 
 		enum EAVLTreeSkew
 		{
-			 EAVLTreeSkew_None		= 2
-			,EAVLTreeSkew_Left		= 0
-			,EAVLTreeSkew_Right		= 1
-			,EAVLTreeSkew_NotInTree	= 3
+			EAVLTreeSkew_None        = 2
+			, EAVLTreeSkew_Left      = 0
+			, EAVLTreeSkew_Right     = 1
+			, EAVLTreeSkew_NotInTree = 3
 		};
 
 #ifndef DCompiler_MSVC
@@ -164,7 +165,7 @@ namespace NMib::NIntrusive::NPrivate
 		}
 #endif
 
-		CAVLLinkAlignedData * m_pNext[2];
+		CAVLLinkAlignedData *m_pNext[2];
 
 		static inline_small bool fs_GetPtrIsFast()
 		{
@@ -180,6 +181,7 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			return &m_pNext[1];
 		}
+
 		inline_small CAVLLinkAlignedData **f_GetLeft()
 		{
 			return &m_pNext[0];
@@ -194,6 +196,7 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			return (CAVLLinkAlignedData *)((umint)m_pNext[1] & (~umint(0x1)));
 		}
+
 		inline_small CAVLLinkAlignedData *f_GetLeftP() const
 		{
 			return (CAVLLinkAlignedData *)((umint)m_pNext[0] & (~umint(0x1)));
@@ -214,8 +217,7 @@ namespace NMib::NIntrusive::NPrivate
 			return f_GetSkew() == EAVLTreeSkew_None;
 		}
 
-
-		constexpr static inline_small CAVLLinkAlignedData *fs_GetPtr(CAVLLinkAlignedData const *_Src)
+		static constexpr inline_small CAVLLinkAlignedData *fs_GetPtr(CAVLLinkAlignedData const *_Src)
 		{
 			return (CAVLLinkAlignedData *)((umint)_Src & (~umint(0x1)));
 		}
@@ -268,8 +270,8 @@ namespace NMib::NIntrusive::NPrivate
 		inline_small void f_SetSkew(umint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[0] = (CAVLLinkAlignedData *)(((umint)m_pNext[0]&(~1)) | (_Skew & 1));
-			m_pNext[1] = (CAVLLinkAlignedData *)(((umint)m_pNext[1]&(~1)) | (_Skew >> 1));
+			m_pNext[0] = (CAVLLinkAlignedData *)(((umint)m_pNext[0] & (~1)) | (_Skew & 1));
+			m_pNext[1] = (CAVLLinkAlignedData *)(((umint)m_pNext[1] & (~1)) | (_Skew >> 1));
 		}
 
 		inline_small void f_SetAll(CAVLLinkAlignedData *_pLeft, CAVLLinkAlignedData *_pRight, umint _Skew)
@@ -278,6 +280,7 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = (CAVLLinkAlignedData *)((umint)_pLeft | (_Skew & 1));
 			m_pNext[1] = (CAVLLinkAlignedData *)((umint)_pRight | (_Skew >> 1));
 		}
+
 		inline_small void f_Clear()
 		{
 			m_pNext[0] = (CAVLLinkAlignedData *)(EAVLTreeSkew_None & 1);
@@ -288,28 +291,29 @@ namespace NMib::NIntrusive::NPrivate
 	class CAVLLinkAlignedRightData
 	{
 		using CThis = CAVLLinkAlignedRightData;
+
 	public:
 #ifdef DMibDebug
 		inline_never CAVLLinkAlignedRightData *fp_Debug_GetLeft() const
 		{
 			return f_GetLeftP();
 		}
+
 		inline_never CAVLLinkAlignedRightData *fp_Debug_GetRight() const
 		{
 			return f_GetRightP();
 		}
 #endif
 	public:
-
 		enum EAVLTreeSkew
 		{
-			 EAVLTreeSkew_None		= 2
-			,EAVLTreeSkew_Left		= 0
-			,EAVLTreeSkew_Right		= 1
-			,EAVLTreeSkew_NotInTree	= 3
+			EAVLTreeSkew_None        = 2
+			, EAVLTreeSkew_Left      = 0
+			, EAVLTreeSkew_Right     = 1
+			, EAVLTreeSkew_NotInTree = 3
 		};
 
-		CAVLLinkAlignedRightData * m_pNext[2];
+		CAVLLinkAlignedRightData *m_pNext[2];
 
 		static inline_small bool fs_GetPtrIsFast()
 		{
@@ -325,6 +329,7 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			return &m_pNext[1];
 		}
+
 		inline_small CAVLLinkAlignedRightData **f_GetLeft()
 		{
 			return &m_pNext[0];
@@ -339,6 +344,7 @@ namespace NMib::NIntrusive::NPrivate
 		{
 			return (CAVLLinkAlignedRightData *)((umint)m_pNext[1] & (~umint(0x3)));
 		}
+
 		inline_small CAVLLinkAlignedRightData *f_GetLeftP() const
 		{
 			return m_pNext[0];
@@ -359,8 +365,7 @@ namespace NMib::NIntrusive::NPrivate
 			return f_GetSkew() == EAVLTreeSkew_None;
 		}
 
-
-		constexpr static inline_small CAVLLinkAlignedRightData *fs_GetPtr(CAVLLinkAlignedRightData *_Src)
+		static constexpr inline_small CAVLLinkAlignedRightData *fs_GetPtr(CAVLLinkAlignedRightData *_Src)
 		{
 			return (CAVLLinkAlignedRightData *)((umint)_Src & (~umint(0x3)));
 		}
@@ -412,7 +417,7 @@ namespace NMib::NIntrusive::NPrivate
 		inline_small void f_SetSkew(umint _Skew)
 		{
 			DMibFastCheck(!(_Skew & (~3))); // We can only save 2 bits
-			m_pNext[1] = (CAVLLinkAlignedRightData *)(((umint)m_pNext[1]&(~umint(3))) | (_Skew));
+			m_pNext[1] = (CAVLLinkAlignedRightData *)(((umint)m_pNext[1] & (~umint(3))) | (_Skew));
 		}
 
 		inline_small void f_SetAll(CAVLLinkAlignedRightData *_pLeft, CAVLLinkAlignedRightData *_pRight, umint _Skew)
@@ -421,6 +426,7 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = _pLeft;
 			m_pNext[1] = (CAVLLinkAlignedRightData *)((umint)_pRight | (_Skew));
 		}
+
 		inline_small void f_Clear()
 		{
 			m_pNext[0] = nullptr;
@@ -433,16 +439,19 @@ namespace NMib::NIntrusive::NPrivate
 	{
 		using CType = void;
 	};
+
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_Aligned>
 	{
 		using CType = CAVLLinkAlignedData;
 	};
+
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_AlignedRight>
 	{
 		using CType = CAVLLinkAlignedRightData;
 	};
+
 	template <>
 	struct TCLinkTypeToLink<EAVLLinkType_Unaligned>
 	{
