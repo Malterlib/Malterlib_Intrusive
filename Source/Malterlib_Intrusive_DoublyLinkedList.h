@@ -2983,45 +2983,61 @@ namespace NMib::NIntrusive
 	|___________________________________________________________________________________________________|
 	\***************************************************************************************************/
 
-#	define DMibListLinkAllocatorD_LinkType(_Allocator) NMib::NIntrusive::TCDLink<NMib::NIntrusive::CDLinkAggregate>
-#	define DMibListLinkAllocatorD_Member(_Member, _Allocator) DMibListLinkAllocatorD_LinkType(_Allocator) _Member;
+#define DMibListLinkAllocatorD_LinkType(_Allocator) NMib::NIntrusive::TCDLink<NMib::NIntrusive::CDLinkAggregate>
+#define DMibListLinkAllocatorD_Member(_Member, _Allocator) DMibListLinkAllocatorD_LinkType(_Allocator) _Member;
 
-#	define DMibListLinkAllocatorDA_LinkType(_Allocator) NMib::NIntrusive::CDLinkAggregate
-#	define DMibListLinkAllocatorDA_Member(_Member, _Allocator) DMibListLinkAllocatorDA_LinkType(_Allocator) _Member;
+#define DMibListLinkAllocatorDA_LinkType(_Allocator) NMib::NIntrusive::CDLinkAggregate
+#define DMibListLinkAllocatorDA_Member(_Member, _Allocator) DMibListLinkAllocatorDA_LinkType(_Allocator) _Member;
 
-#	define DMibListLinkAllocatorD_Link(_Class, _Member, _Allocator) \
-			DMibListLinkAllocatorD_Member(_Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkAllocatorD_Link(_Class, _Member, _Allocator) \
+	DMibListLinkAllocatorD_Member(_Member, _Allocator) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkAllocatorDA_Link(_Class, _Member, _Allocator) \
-			DMibListLinkAllocatorDA_Member(_Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkAllocatorDA_Link(_Class, _Member, _Allocator) \
+	DMibListLinkAllocatorDA_Member(_Member, _Allocator) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkAllocatorD_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, _Allocator>
-#	define DMibListLinkAllocatorD_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
-#	define DMibListLinkAllocatorD_List_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, _Allocator>
-#	define DMibListLinkAllocatorD_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
+#define DMibListLinkAllocatorD_List(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, _Allocator>
+#define DMibListLinkAllocatorD_ListAutoDelete(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
+#define DMibListLinkAllocatorD_List_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, _Allocator>
+#define DMibListLinkAllocatorD_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
 
-#	define DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, _Allocator>
-#	define DMibListLinkAllocatorDA_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
-#	define DMibListLinkAllocatorDA_List_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, _Allocator>
-#	define DMibListLinkAllocatorDA_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
+#define DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, _Allocator>
+#define DMibListLinkAllocatorDA_ListAutoDelete(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
+#define DMibListLinkAllocatorDA_List_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, false \
+		, _Allocator \
+	>
+#define DMibListLinkAllocatorDA_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, _Allocator>
 
-#	define DMibListLinkAllocatorD_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorD_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator)::CIteratorConst
-#	define DMibListLinkAllocatorD_Iter_FromTemplate(_Class, _Member, _Allocator) typename DMibListLinkAllocatorDA_List_FromTemplate(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorD_IterConst_FromTemplate(_Class, _Member, _Allocator) typename DMibListLinkAllocatorDA_List_FromTemplate(_Class, _Member, _Allocator)::CIteratorConst
+#define DMibListLinkAllocatorD_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator)::CIterator
+#define DMibListLinkAllocatorD_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator)::CIteratorConst
+#define DMibListLinkAllocatorD_Iter_FromTemplate(_Class, _Member, _Allocator) typename DMibListLinkAllocatorDA_List_FromTemplate(_Class, _Member, _Allocator)::CIterator
+#define DMibListLinkAllocatorD_IterConst_FromTemplate(_Class, _Member, _Allocator) typename DMibListLinkAllocatorDA_List_FromTemplate(_Class, _Member, _Allocator)::CIteratorConst
 
-#	ifndef DMibPNoShortCuts
-#		define DLinkAllocatorD_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorD_Link(_Class, _Member, _Allocator)
-#		define DLinkAllocatorD_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorD_Iter(_Class, _Member, _Allocator)
-#		define DLinkAllocatorD_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorD_IterConst(_Class, _Member, _Allocator)
-#		define DLinkAllocatorD_List(_Class, _Member, _Allocator) DMibListLinkAllocatorD_List(_Class, _Member, _Allocator)
-#		define DLinkAllocatorD_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorD_ListAutoDelete(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDA_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_Link(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDA_List(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDA_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_ListAutoDelete(_Class, _Member, _Allocator)
-#	endif
+#ifndef DMibPNoShortCuts
+#	define DLinkAllocatorD_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorD_Link(_Class, _Member, _Allocator)
+#	define DLinkAllocatorD_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorD_Iter(_Class, _Member, _Allocator)
+#	define DLinkAllocatorD_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorD_IterConst(_Class, _Member, _Allocator)
+#	define DLinkAllocatorD_List(_Class, _Member, _Allocator) DMibListLinkAllocatorD_List(_Class, _Member, _Allocator)
+#	define DLinkAllocatorD_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorD_ListAutoDelete(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDA_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_Link(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDA_List(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_List(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDA_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorDA_ListAutoDelete(_Class, _Member, _Allocator)
+#endif
 
 	/***************************************************************************************************\
 	|ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ|
@@ -3029,46 +3045,117 @@ namespace NMib::NIntrusive
 	|___________________________________________________________________________________________________|
 	\***************************************************************************************************/
 
-#	define DMibListLinkAllocatorDS_LinkType(_Allocator) NMib::NIntrusive::TCDLink< NMib::NIntrusive::CDLinkAggregateListNoPrevPtr >
-#	define DMibListLinkAllocatorDS_Member(_Member, _Allocator) DMibListLinkAllocatorDS_LinkType(_Allocator) _Member;
+#define DMibListLinkAllocatorDS_LinkType(_Allocator) NMib::NIntrusive::TCDLink< NMib::NIntrusive::CDLinkAggregateListNoPrevPtr >
+#define DMibListLinkAllocatorDS_Member(_Member, _Allocator) DMibListLinkAllocatorDS_LinkType(_Allocator) _Member;
 
-#	define DMibListLinkAllocatorDSA_LinkType(_Allocator) NMib::NIntrusive::CDLinkAggregateListNoPrevPtr
-#	define DMibListLinkAllocatorDSA_Member(_Member, _Allocator) DMibListLinkAllocatorDSA_LinkType(_Allocator) _Member;
+#define DMibListLinkAllocatorDSA_LinkType(_Allocator) NMib::NIntrusive::CDLinkAggregateListNoPrevPtr
+#define DMibListLinkAllocatorDSA_Member(_Member, _Allocator) DMibListLinkAllocatorDSA_LinkType(_Allocator) _Member;
 
-#	define DMibListLinkAllocatorDS_Link(_Class, _Member, _Allocator) \
-			DMibListLinkAllocatorDS_Member(_Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkAllocatorDS_Link(_Class, _Member, _Allocator) \
+	DMibListLinkAllocatorDS_Member(_Member, _Allocator) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkAllocatorDSA_Link(_Class, _Member, _Allocator) \
-			DMibListLinkAllocatorDSA_Member(_Member, _Allocator) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkAllocatorDSA_Link(_Class, _Member, _Allocator) \
+	DMibListLinkAllocatorDSA_Member(_Member, _Allocator) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkAllocatorDS_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, _Allocator>
-#	define DMibListLinkAllocatorDS_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, _Allocator>
-#	define DMibListLinkAllocatorDS_List_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, _Allocator>
-#	define DMibListLinkAllocatorDS_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, _Allocator>
+#define DMibListLinkAllocatorDS_List(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, _Allocator \
+	>
+#define DMibListLinkAllocatorDS_ListAutoDelete(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, _Allocator \
+	>
+#define DMibListLinkAllocatorDS_List_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, _Allocator \
+	>
+#define DMibListLinkAllocatorDS_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, _Allocator \
+	>
 
-#	define DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, _Allocator>
-#	define DMibListLinkAllocatorDSA_ListAutoDelete(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, _Allocator>
-#	define DMibListLinkAllocatorDSA_List_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, _Allocator>
-#	define DMibListLinkAllocatorDSA_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, _Allocator>
+#define DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, _Allocator \
+	>
+#define DMibListLinkAllocatorDSA_ListAutoDelete(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, _Allocator \
+	>
+#define DMibListLinkAllocatorDSA_List_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, _Allocator \
+	>
+#define DMibListLinkAllocatorDSA_ListAutoDelete_FromTemplate(_Class, _Member, _Allocator) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, _Allocator \
+	>
 
-#	define DMibListLinkAllocatorDS_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorDS_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator)::CIteratorConst
-#	define DMibListLinkAllocatorDS_Iter_FromTemplate(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List_FromTemplate(_Class, _Member, _Allocator)::CIterator
-#	define DMibListLinkAllocatorDS_IterConst_FromTemplate(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List_FromTemplate(_Class, _Member, _Allocator)::CIteratorConst
+#define DMibListLinkAllocatorDS_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator)::CIterator
+#define DMibListLinkAllocatorDS_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator)::CIteratorConst
+#define DMibListLinkAllocatorDS_Iter_FromTemplate(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List_FromTemplate(_Class, _Member, _Allocator)::CIterator
+#define DMibListLinkAllocatorDS_IterConst_FromTemplate(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List_FromTemplate(_Class, _Member, _Allocator)::CIteratorConst
 
-#	ifndef DMibPNoShortCuts
-#		define DLinkAllocatorDS_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_Link(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDS_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_Iter(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDS_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_IterConst(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDS_List(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_List(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDS_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_ListAutoDelete(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDSA_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_Link(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDSA_List(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator)
-#		define DLinkAllocatorDSA_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_ListAutoDelete(_Class, _Member, _Allocator)
-#	endif
-
+#ifndef DMibPNoShortCuts
+#	define DLinkAllocatorDS_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_Link(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDS_Iter(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_Iter(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDS_IterConst(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_IterConst(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDS_List(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_List(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDS_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorDS_ListAutoDelete(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDSA_Link(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_Link(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDSA_List(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_List(_Class, _Member, _Allocator)
+#	define DLinkAllocatorDSA_ListAutoDelete(_Class, _Member, _Allocator) DMibListLinkAllocatorDSA_ListAutoDelete(_Class, _Member, _Allocator)
+#endif
 
 	/***************************************************************************************************\
 	|ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ|
@@ -3076,47 +3163,118 @@ namespace NMib::NIntrusive
 	|___________________________________________________________________________________________________|
 	\***************************************************************************************************/
 
-#	define DMibListLinkD_LinkType NMib::NIntrusive::TCDLink<NMib::NIntrusive::CDLinkAggregate>
-#	define DMibListLinkD_Member(_Member) DMibListLinkD_LinkType _Member;
+#define DMibListLinkD_LinkType NMib::NIntrusive::TCDLink<NMib::NIntrusive::CDLinkAggregate>
+#define DMibListLinkD_Member(_Member) DMibListLinkD_LinkType _Member;
 
-#	define DMibListLinkDA_LinkType NMib::NIntrusive::CDLinkAggregate
-#	define DMibListLinkDA_Member(_Member) DMibListLinkDA_LinkType _Member;
+#define DMibListLinkDA_LinkType NMib::NIntrusive::CDLinkAggregate
+#define DMibListLinkDA_Member(_Member) DMibListLinkDA_LinkType _Member;
 
-#	define DMibListLinkD_Link(_Class, _Member) \
-			DMibListLinkD_Member(_Member) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkD_Link(_Class, _Member) \
+	DMibListLinkD_Member(_Member) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkDA_Link(_Class, _Member) \
-			DMibListLinkDA_Member(_Member) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkDA_Link(_Class, _Member) \
+	DMibListLinkDA_Member(_Member) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkD_List(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkD_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkD_List_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkD_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, NMib::NMemory::CDefaultAllocator>
+#define DMibListLinkD_List(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkD_ListAutoDelete(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkD_List_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkD_ListAutoDelete_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
 
-#	define DMibListLinkDA_List(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDA_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDA_List_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDA_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregate, NMib::NIntrusive::CDLinkAggregate, true, NMib::NMemory::CDefaultAllocator>
+#define DMibListLinkDA_List(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDA_ListAutoDelete(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDA_List_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDA_ListAutoDelete_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, NMib::NIntrusive::CDLinkAggregate \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
 
-#	define DMibListLinkD_Iter(_Class, _Member) DMibListLinkDA_List(_Class, _Member)::CIterator
-#	define DMibListLinkD_IterConst(_Class, _Member) DMibListLinkDA_List(_Class, _Member)::CIteratorConst
-#	define DMibListLinkD_Iter_FromTemplate(_Class, _Member) typename DMibListLinkDA_List_FromTemplate(_Class, _Member)::CIterator
-#	define DMibListLinkD_IterConst_FromTemplate(_Class, _Member) typename DMibListLinkDA_List_FromTemplate(_Class, _Member)::CIteratorConst
+#define DMibListLinkD_Iter(_Class, _Member) DMibListLinkDA_List(_Class, _Member)::CIterator
+#define DMibListLinkD_IterConst(_Class, _Member) DMibListLinkDA_List(_Class, _Member)::CIteratorConst
+#define DMibListLinkD_Iter_FromTemplate(_Class, _Member) typename DMibListLinkDA_List_FromTemplate(_Class, _Member)::CIterator
+#define DMibListLinkD_IterConst_FromTemplate(_Class, _Member) typename DMibListLinkDA_List_FromTemplate(_Class, _Member)::CIteratorConst
 
-
-#	ifndef DMibPNoShortCuts
-#		define DLinkD_Trans(_Class, _Member) DMibListLinkD_Trans(_Class, _Member)
-#		define DLinkD_Link(_Class, _Member) DMibListLinkD_Link(_Class, _Member)
-#		define DLinkD_Iter(_Class, _Member) DMibListLinkD_Iter(_Class, _Member)
-#		define DLinkD_IterConst(_Class, _Member) DMibListLinkD_IterConst(_Class, _Member)
-#		define DLinkD_List(_Class, _Member) DMibListLinkD_List(_Class, _Member)
-#		define DLinkD_ListAutoDelete(_Class, _Member) DMibListLinkD_ListAutoDelete(_Class, _Member)
-#		define DLinkDA_Link(_Class, _Member) DMibListLinkDA_Link(_Class, _Member)
-#		define DLinkDA_List(_Class, _Member) DMibListLinkDA_List(_Class, _Member)
-#		define DLinkDA_ListAutoDelete(_Class, _Member) DMibListLinkDA_ListAutoDelete(_Class, _Member)
-#	endif
+#ifndef DMibPNoShortCuts
+#	define DLinkD_Trans(_Class, _Member) DMibListLinkD_Trans(_Class, _Member)
+#	define DLinkD_Link(_Class, _Member) DMibListLinkD_Link(_Class, _Member)
+#	define DLinkD_Iter(_Class, _Member) DMibListLinkD_Iter(_Class, _Member)
+#	define DLinkD_IterConst(_Class, _Member) DMibListLinkD_IterConst(_Class, _Member)
+#	define DLinkD_List(_Class, _Member) DMibListLinkD_List(_Class, _Member)
+#	define DLinkD_ListAutoDelete(_Class, _Member) DMibListLinkD_ListAutoDelete(_Class, _Member)
+#	define DLinkDA_Link(_Class, _Member) DMibListLinkDA_Link(_Class, _Member)
+#	define DLinkDA_List(_Class, _Member) DMibListLinkDA_List(_Class, _Member)
+#	define DLinkDA_ListAutoDelete(_Class, _Member) DMibListLinkDA_ListAutoDelete(_Class, _Member)
+#endif
 
 	/***************************************************************************************************\
 	|ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ|
@@ -3124,45 +3282,125 @@ namespace NMib::NIntrusive
 	|___________________________________________________________________________________________________|
 	\***************************************************************************************************/
 
-#	define DMibListLinkDS_LinkType NMib::NIntrusive::TCDLink< NMib::NIntrusive::CDLinkAggregateListNoPrevPtr >
-#	define DMibListLinkDS_Member(_Member) DMibListLinkDS_LinkType _Member;
+#define DMibListLinkDS_LinkType NMib::NIntrusive::TCDLink< NMib::NIntrusive::CDLinkAggregateListNoPrevPtr >
+#define DMibListLinkDS_Member(_Member) DMibListLinkDS_LinkType _Member;
 
-#	define DMibListLinkDSA_LinkType NMib::NIntrusive::CDLinkAggregateListNoPrevPtr
-#	define DMibListLinkDSA_Member(_Member) DMibListLinkDSA_LinkType _Member;
+#define DMibListLinkDSA_LinkType NMib::NIntrusive::CDLinkAggregateListNoPrevPtr
+#define DMibListLinkDSA_Member(_Member) DMibListLinkDSA_LinkType _Member;
 
-#	define DMibListLinkDS_Link(_Class, _Member) \
-			DMibListLinkDS_Member(_Member) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkDS_Link(_Class, _Member) \
+	DMibListLinkDS_Member(_Member) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkDSA_Link(_Class, _Member) \
-			DMibListLinkDSA_Member(_Member) \
-			DMibListLinkD_Trans(_Class, _Member)
+#define DMibListLinkDSA_Link(_Class, _Member) \
+	DMibListLinkDSA_Member(_Member) \
+	DMibListLinkD_Trans(_Class, _Member)
 
-#	define DMibListLinkDS_List(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDS_ListMT(_Class, _MemberType) NMib::NIntrusive::TCDLinkList<_Class, _MemberType, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDS_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDS_List_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDS_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkList<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, NMib::NMemory::CDefaultAllocator>
+#define DMibListLinkDS_List(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDS_ListMT(_Class, _MemberType) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, _MemberType \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDS_ListAutoDelete(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDS_List_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDS_ListAutoDelete_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkList \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
 
-#	define DMibListLinkDSA_List(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDSA_ListAutoDelete(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDSA_List_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, false, NMib::NMemory::CDefaultAllocator>
-#	define DMibListLinkDSA_ListAutoDelete_FromTemplate(_Class, _Member) NMib::NIntrusive::TCDLinkListAggregate<_Class, typename _Class::CDLinkTranslator##_Member, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList, true, NMib::NMemory::CDefaultAllocator>
+#define DMibListLinkDSA_List(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDSA_ListAutoDelete(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDSA_List_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, false \
+		, NMib::NMemory::CDefaultAllocator \
+	>
+#define DMibListLinkDSA_ListAutoDelete_FromTemplate(_Class, _Member) \
+	NMib::NIntrusive::TCDLinkListAggregate \
+	< \
+		_Class \
+		, typename _Class::CDLinkTranslator##_Member \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtr \
+		, NMib::NIntrusive::CDLinkAggregateListNoPrevPtrList \
+		, true \
+		, NMib::NMemory::CDefaultAllocator \
+	>
 
-#	define DMibListLinkDS_Iter(_Class, _Member) DMibListLinkDSA_List(_Class, _Member)::CIterator
-#	define DMibListLinkDS_IterConst(_Class, _Member) DMibListLinkDSA_List(_Class, _Member)::CIteratorConst
-#	define DMibListLinkDS_Iter_FromTemplate(_Class, _Member) DMibListLinkDSA_List_FromTemplate(_Class, _Member)::CIterator
-#	define DMibListLinkDS_IterConst_FromTemplate(_Class, _Member) DMibListLinkDSA_List_FromTemplate(_Class, _Member)::CIteratorConst
+#define DMibListLinkDS_Iter(_Class, _Member) DMibListLinkDSA_List(_Class, _Member)::CIterator
+#define DMibListLinkDS_IterConst(_Class, _Member) DMibListLinkDSA_List(_Class, _Member)::CIteratorConst
+#define DMibListLinkDS_Iter_FromTemplate(_Class, _Member) DMibListLinkDSA_List_FromTemplate(_Class, _Member)::CIterator
+#define DMibListLinkDS_IterConst_FromTemplate(_Class, _Member) DMibListLinkDSA_List_FromTemplate(_Class, _Member)::CIteratorConst
 
-#	ifndef DMibPNoShortCuts
-#		define DLinkDS_Link(_Class, _Member) DMibListLinkDS_Link(_Class, _Member)
-#		define DLinkDS_Iter(_Class, _Member) DMibListLinkDS_Iter(_Class, _Member)
-#		define DLinkDS_IterConst(_Class, _Member) DMibListLinkDS_IterConst(_Class, _Member)
-#		define DLinkDS_List(_Class, _Member) DMibListLinkDS_List(_Class, _Member)
-#		define DLinkDS_ListAutoDelete(_Class, _Member) DMibListLinkDS_ListAutoDelete(_Class, _Member)
-#		define DLinkDSA_Link(_Class, _Member) DMibListLinkDSA_Link(_Class, _Member)
-#		define DLinkDSA_List(_Class, _Member) DMibListLinkDSA_List(_Class, _Member)
-#		define DLinkDSA_ListAutoDelete(_Class, _Member) DMibListLinkDSA_ListAutoDelete(_Class, _Member)
-#	endif
-
+#ifndef DMibPNoShortCuts
+#	define DLinkDS_Link(_Class, _Member) DMibListLinkDS_Link(_Class, _Member)
+#	define DLinkDS_Iter(_Class, _Member) DMibListLinkDS_Iter(_Class, _Member)
+#	define DLinkDS_IterConst(_Class, _Member) DMibListLinkDS_IterConst(_Class, _Member)
+#	define DLinkDS_List(_Class, _Member) DMibListLinkDS_List(_Class, _Member)
+#	define DLinkDS_ListAutoDelete(_Class, _Member) DMibListLinkDS_ListAutoDelete(_Class, _Member)
+#	define DLinkDSA_Link(_Class, _Member) DMibListLinkDSA_Link(_Class, _Member)
+#	define DLinkDSA_List(_Class, _Member) DMibListLinkDSA_List(_Class, _Member)
+#	define DLinkDSA_ListAutoDelete(_Class, _Member) DMibListLinkDSA_ListAutoDelete(_Class, _Member)
+#endif
 }
