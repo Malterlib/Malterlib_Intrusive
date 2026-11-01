@@ -2983,7 +2983,7 @@ namespace NMib::NIntrusive
 
 #define DMibListLinkD_TransType(_Class, _Member) _Class::CDLinkTranslator##_Member
 	// (((uint8*)(&(pClass->_Member)) - (uint8*)(pClass)));
-	//   (((uint8*)(&((_Class *)0x0)->_Member) - (uint8*)((_Class *)0x0)));
+	// (((uint8*)(&((_Class *)0x0)->_Member) - (uint8*)((_Class *)0x0)));
 
 	/***************************************************************************************************\
 	|ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ|
