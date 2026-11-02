@@ -2,27 +2,27 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 #if 0
-#define TreeDebugNum 128
-#define TreeNumTests 32
-#define TreeTestNum 64*1024
-//#define TreeTestNum 256
+#define DTreeDebugNum 128
+#define DTreeNumTests 32
+#define DTreeTestNum 64*1024
+//#define DTreeTestNum 256
 //#define TreeMixedList
 
 /*
  *  avltree.h
  */
 
-#ifndef AVLTREE_H
-#	define AVLTREE_H
+#ifndef DAvlTreeH
+#	define DAvlTreeH
 
 #	define DMibAllowCodeStandardViolations 1
 
-#	ifndef AVLDATUM
-#		define AVLDATUM class CTestTreeClass *
+#	ifndef DAvldatum
+#		define DAvldatum class CTestTreeClass *
 #	endif
 
-#	ifndef AVLKEY
-#		define AVLKEY(x) (x->m_Data)
+#	ifndef DAvlkey
+#		define DAvlkey(d_Value) (d_Value->m_Data)
 #	endif
 
 /*
@@ -51,7 +51,7 @@ enum AVLRES
 struct avlnode
 {
 	struct avlnode *left, *right;
-	AVLDATUM d;
+	DAvldatum d;
 	enum AVLSKEW skew;
 };
 
@@ -80,11 +80,11 @@ struct avlnode
  *                and the AVL tree may have become unbalanced.
  *
  *    zero        The datum provided could not be inserted, either due
- *                to AVLKEY collision (the tree already contains another
- *                item with which the same AVLKEY is associated), or
+ *                to DAvlkey collision (the tree already contains another
+ *                item with which the same DAvlkey is associated), or
  *                due to insufficient memory.
  */
-enum AVLRES avlinsert(struct avlnode **n, AVLDATUM d);
+enum AVLRES avlinsert(struct avlnode **n, DAvldatum d);
 
 /*
  *  avlremove: remove an item from the tree.
@@ -93,7 +93,7 @@ enum AVLRES avlinsert(struct avlnode **n, AVLDATUM d);
  *
  *    n           Address of a pointer to a node.
  *
- *    key         AVLKEY of item to be removed.
+ *    key         DAvlkey of item to be removed.
  *
  *  Return values:
  *
@@ -111,12 +111,12 @@ enum AVLRES avlinsert(struct avlnode **n, AVLDATUM d);
  *                and the AVL tree may have become unbalanced.
  *
  *   zero         The tree does not contain an item yielding the
- *                AVLKEY value provided by the caller.
+ *                DAvlkey value provided by the caller.
  */
 enum AVLRES avlremove(struct avlnode **n, aint key);
 
 /*
- *  avlaccess: retrieve the datum corresponding to a given AVLKEY.
+ *  avlaccess: retrieve the datum corresponding to a given DAvlkey.
  *
  *  Parameters:
  *
@@ -126,12 +126,12 @@ enum AVLRES avlremove(struct avlnode **n, aint key);
  *
  *  Return values:
  *
- *    non-nullptr    An item yielding the AVLKEY provided has been found,
- *                the return value points to the AVLKEY attached to it.
+ *    non-nullptr    An item yielding the DAvlkey provided has been found,
+ *                the return value points to the DAvlkey attached to it.
  *
  *    nullptr        The item could not be found.
  */
-AVLDATUM *avlaccess(struct avlnode *n, aint key);
+DAvldatum *avlaccess(struct avlnode *n, aint key);
 
 /*
  *  Function to be called by the tree traversal functions.
@@ -212,7 +212,7 @@ public:
 		return (((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
-	static aint const mc_TestSorted = TreeTestNum;
+	static aint const mc_TestSorted = DTreeTestNum;
 
 	CTestTreeClass m_ClassList[mc_TestSorted];
 
@@ -396,7 +396,7 @@ public:
 		// DMibTrace("AVLTree Reference\n", 0);
 		RandomizeList();
 
-		aint DebugTest = TreeDebugNum;
+		aint DebugTest = DTreeDebugNum;
 
 		// Ceck validity of tree code
 		for (aint i = 0; i < (DebugTest < mc_TestSorted ? DebugTest : mc_TestSorted); ++i)
@@ -618,11 +618,11 @@ enum AVLRES avlrightgrown(struct avlnode **n)
  *                and the AVL tree may have become unbalanced.
  *
  *    zero        The datum provided could not be inserted, either due
- *                to AVLKEY collision (the tree already contains another
- *                item with which the same AVLKEY is associated), or
+ *                to DAvlkey collision (the tree already contains another
+ *                item with which the same DAvlkey is associated), or
  *                due to insufficient memory.
  */
-enum AVLRES avlinsert(struct avlnode **n, AVLDATUM d)
+enum AVLRES avlinsert(struct avlnode **n, DAvldatum d)
 {
 	enum AVLRES tmp;
 
@@ -638,13 +638,13 @@ enum AVLRES avlinsert(struct avlnode **n, AVLDATUM d)
 		return BALANCE;
 	}
 
-	if (AVLKEY(d) < AVLKEY((*n)->d))
+	if (DAvlkey(d) < DAvlkey((*n)->d))
 	{
 		if ((tmp = avlinsert(& (*n)->left, d)) == BALANCE)
 			return avlleftgrown(n);
 		return tmp;
 	}
-	if (AVLKEY(d) > AVLKEY((*n)->d))
+	if (DAvlkey(d) > DAvlkey((*n)->d))
 	{
 		if ((tmp = avlinsert(& (*n)->right, d)) == BALANCE)
 			return avlrightgrown(n);
@@ -859,7 +859,7 @@ aint avlfindlowest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
  *
  *    n           Address of a pointer to a node.
  *
- *    key         AVLKEY of item to be removed.
+ *    key         DAvlkey of item to be removed.
  *
  *  Return values:
  *
@@ -877,7 +877,7 @@ aint avlfindlowest(struct avlnode *target, struct avlnode **n, enum AVLRES *res)
  *                and the AVL tree may have become unbalanced.
  *
  *   zero         The tree does not contain an item yielding the
- *                AVLKEY value provided by the caller.
+ *                DAvlkey value provided by the caller.
  */
 enum AVLRES avlremove(struct avlnode **n, aint key)
 {
@@ -885,13 +885,13 @@ enum AVLRES avlremove(struct avlnode **n, aint key)
 
 	if (!(*n))
 		return ERROR;
-	if (key < AVLKEY((*n)->d))
+	if (key < DAvlkey((*n)->d))
 	{
 		if ((tmp = avlremove(& (*n)->left, key)) == BALANCE)
 			return avlleftshrunk(n);
 		return tmp;
 	}
-	if (key > AVLKEY((*n)->d))
+	if (key > DAvlkey((*n)->d))
 	{
 		if ((tmp = avlremove(& (*n)->right, key)) == BALANCE)
 			return avlrightshrunk(n);
@@ -921,7 +921,7 @@ enum AVLRES avlremove(struct avlnode **n, aint key)
 }
 
 /*
- *  avlaccess: retrieve the datum corresponding to a given AVLKEY.
+ *  avlaccess: retrieve the datum corresponding to a given DAvlkey.
  *
  *  Parameters:
  *
@@ -931,18 +931,18 @@ enum AVLRES avlremove(struct avlnode **n, aint key)
  *
  *  Return values:
  *
- *    non-nullptr    An item yielding the AVLKEY provided has been found,
- *                the return value points to the AVLKEY attached to it.
+ *    non-nullptr    An item yielding the DAvlkey provided has been found,
+ *                the return value points to the DAvlkey attached to it.
  *
  *    nullptr        The item could not be found.
  */
-AVLDATUM *avlaccess(struct avlnode *n, aint key)
+DAvldatum *avlaccess(struct avlnode *n, aint key)
 {
 	if (!n)
 		return nullptr;
-	if (key < AVLKEY((n)->d))
+	if (key < DAvlkey((n)->d))
 		return avlaccess(n->left, key);
-	if (key > AVLKEY((n)->d))
+	if (key > DAvlkey((n)->d))
 		return avlaccess(n->right, key);
 	return &(n->d);
 }

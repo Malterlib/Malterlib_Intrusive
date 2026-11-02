@@ -3,10 +3,10 @@
 
 #include <Mib/Core/Core>
 
-#define TreeDebugNum 128
-#define TreeNumTests 32
-#define TreeTestNum 64*1024
-//#define TreeTestNum 256
+#define DTreeDebugNum 128
+#define DTreeNumTests 32
+#define DTreeTestNum 64*1024
+//#define DTreeTestNum 256
 //#define TreeMixedList
 
 using namespace NMib::NIntrusive;
@@ -191,7 +191,7 @@ public:
 	}
 #	endif
 
-	static aint const mc_TestSorted = TreeTestNum;
+	static aint const mc_TestSorted = DTreeTestNum;
 
 	CTestClass m_ClassList[mc_TestSorted];
 	CTestClass2 m_ClassList2[mc_TestSorted];
@@ -430,12 +430,12 @@ public:
 
 		RandomizeList();
 
-		aint DebugTest = TreeDebugNum;
+		aint DebugTest = DTreeDebugNum;
 
 #	ifdef DMibDebug
 		aint NumTests = 1;
 #	else
-		aint NumTests = TreeNumTests;
+		aint NumTests = DTreeNumTests;
 #	endif
 
 		{
@@ -773,7 +773,7 @@ public:
 		}
 	};
 
-	static aint const mc_TestSorted = TreeTestNum;
+	static aint const mc_TestSorted = DTreeTestNum;
 
 	CTestClass m_ClassList[mc_TestSorted];
 
@@ -968,12 +968,12 @@ public:
 
 		RandomizeList();
 
-		aint DebugTest = TreeDebugNum;
+		aint DebugTest = DTreeDebugNum;
 
 #	ifdef DMibDebug
 		aint NumTests = 1;
 #	else
-		aint NumTests = TreeNumTests;
+		aint NumTests = DTreeNumTests;
 #	endif
 
 		// Ceck validity of tree code
