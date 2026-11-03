@@ -130,12 +130,12 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_medium umint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetLen() const
 	{
-		TCIterator<> Iter(this);
+		TCIterator<> iNode(this);
 		umint Len = 0;
-		while (Iter)
+		while (iNode)
 		{
 			++Len;
-			++Iter;
+			++iNode;
 		}
 		return Len;
 	}
@@ -155,18 +155,18 @@ namespace NMib::NIntrusive
 		noexcept(noexcept(fg_GetType<CNode const &>() == fg_GetType<CNode const &>()))
 		-> bool
 	{
-		TCIterator<> Iter0 = *this;
-		TCIterator<> Iter1 = _Other;
+		TCIterator<> iThis = *this;
+		TCIterator<> iOther = _Other;
 
-		while (Iter0 && Iter1)
+		while (iThis && iOther)
 		{
-			if (!(*Iter0 == *Iter1))
+			if (!(*iThis == *iOther))
 				return false;
-			++Iter0;
-			++Iter1;
+			++iThis;
+			++iOther;
 		}
 
-		if (!!Iter0 != !!Iter1)
+		if (!!iThis != !!iOther)
 			return false;
 
 		return true;
@@ -176,23 +176,23 @@ namespace NMib::NIntrusive
 	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::operator <=> (TCAVLTreeAggregate const &_Other) const
 		noexcept(noexcept(fg_GetType<CNode const &>() <=> fg_GetType<CNode const &>()))
 	{
-		TCIterator<> Iter0 = *this;
-		TCIterator<> Iter1 = _Other;
+		TCIterator<> iThis = *this;
+		TCIterator<> iOther = _Other;
 
-		using COrdering = decltype(*Iter0 <=> *Iter1);
+		using COrdering = decltype(*iThis <=> *iOther);
 
-		while (Iter0 && Iter1)
+		while (iThis && iOther)
 		{
-			if (auto Result = *Iter0 <=> *Iter1; Result != 0)
+			if (auto Result = *iThis <=> *iOther; Result != 0)
 				return Result;
 
-			++Iter0;
-			++Iter1;
+			++iThis;
+			++iOther;
 		}
 
-		if (Iter0 && !Iter1)
+		if (iThis && !iOther)
 			return COrdering::greater;
-		if (!Iter0 && Iter1)
+		if (!iThis && iOther)
 			return COrdering::less;
 
 		return COrdering::equivalent;

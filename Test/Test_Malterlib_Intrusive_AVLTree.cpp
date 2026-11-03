@@ -30,43 +30,43 @@ namespace
 		struct CData
 		{
 			CStr m_Data;
-			bool m_Valid;
+			bool m_bValid;
 			CData()
 				: m_Data()
-				, m_Valid(false)
+				, m_bValid(false)
 			{
 			}
 
 			~CData()
 			{
-				m_Valid = false;
+				m_bValid = false;
 			}
 
 			CData(CStr const &_Data)
 				: m_Data(_Data)
-				, m_Valid(true)
+				, m_bValid(true)
 			{
 			}
 
 			CData(CData const &_Other)
 				: m_Data(_Other.m_Data)
-				, m_Valid(_Other.m_Valid)
+				, m_bValid(_Other.m_bValid)
 			{
 			}
 
 		public:
 			CData(CData &&_Other)
 				: m_Data(_Other.m_Data)
-				, m_Valid(_Other.m_Valid)
+				, m_bValid(_Other.m_bValid)
 			{
-				_Other.m_Valid = false;
+				_Other.m_bValid = false;
 			}
 
 			CData &operator = (CData &&_Other)
 			{
 				m_Data = _Other.m_Data;
-				m_Valid = _Other.m_Valid;
-				_Other.m_Valid = false;
+				m_bValid = _Other.m_bValid;
+				_Other.m_bValid = false;
 				return *this;
 			}
 		};
@@ -116,8 +116,8 @@ namespace
 
 				inline_small NMib::COrdering_Partial operator () (CData const &_Left, CData const &_Right) const
 				{
-					DMibTest(DMibExpr(_Left.m_Valid))(ETestFlag_Aggregated);
-					DMibTest(DMibExpr(_Right.m_Valid))(ETestFlag_Aggregated);
+					DMibTest(DMibExpr(_Left.m_bValid))(ETestFlag_Aggregated);
+					DMibTest(DMibExpr(_Right.m_bValid))(ETestFlag_Aggregated);
 
 					return fg_StrCmpNoCase(_Left.m_Data, _Right.m_Data) <=> 0;
 				}
@@ -145,7 +145,7 @@ namespace
 				CTestClass Test3("3");
 				CTestClass Test4("7");
 
-				auto Insert = [&](CNode &_Test, CStr const &_Path)
+				auto fInsert = [&](CNode &_Test, CStr const &_Path)
 					{
 						DMibTestPath(_Path);
 						DMibTest(DMibExpr(!Test.m_Tree.f_FindEqual((_Test.m_Data))));
@@ -153,7 +153,7 @@ namespace
 						DMibTest(DMibExpr(!!Test.m_Tree.f_FindEqual((_Test.m_Data))));
 					}
 				;
-				auto Insert2 = [&](CNode &&_Test, CStr const &_Path)
+				auto fInsert2 = [&](CNode &&_Test, CStr const &_Path)
 					{
 						DMibTestPath(_Path);
 						DMibTest(DMibExpr(!Test.m_Tree.f_FindEqual((_Test.m_Data))));
@@ -161,13 +161,13 @@ namespace
 						DMibTest(DMibExpr(!!Test.m_Tree.f_FindEqual((_Test.m_Data))));
 					}
 				;
-				Insert(Test1, "Test1");
-				Insert(Test2, "Test2");
-				Insert(Test3, "Test3");
-				Insert(Test4, "Test4");
-				Insert2(CNode("5"), "CNode5");
-				Insert2(CNode("9"), "CNode9");
-				Insert2(CNode("0"), "CNode0");
+				fInsert(Test1, "Test1");
+				fInsert(Test2, "Test2");
+				fInsert(Test3, "Test3");
+				fInsert(Test4, "Test4");
+				fInsert2(CNode("5"), "CNode5");
+				fInsert2(CNode("9"), "CNode9");
+				fInsert2(CNode("0"), "CNode0");
 				/*
 				Test.m_Tree.f_Insert(Test1);
 				Test.m_Tree.f_Insert(&Test2);
@@ -180,16 +180,16 @@ namespace
 
 				Test.m_Tree.f_FindEqual(CMint("3"));
 
-				DMibTest(DMibExpr(Test.m_Data.m_Valid));
-				DMibTest(DMibExpr(Test1.m_Data.m_Valid));
-				DMibTest(DMibExpr(Test2.m_Data.m_Valid));
-				DMibTest(DMibExpr(Test3.m_Data.m_Valid));
-				DMibTest(DMibExpr(Test4.m_Data.m_Valid));
+				DMibTest(DMibExpr(Test.m_Data.m_bValid));
+				DMibTest(DMibExpr(Test1.m_Data.m_bValid));
+				DMibTest(DMibExpr(Test2.m_Data.m_bValid));
+				DMibTest(DMibExpr(Test3.m_Data.m_bValid));
+				DMibTest(DMibExpr(Test4.m_Data.m_bValid));
 
-				for (auto It = Test.m_Tree.f_GetIterator(); It; ++It)
+				for (auto iNode = Test.m_Tree.f_GetIterator(); iNode; ++iNode)
 				{
-					DMibTest(DMibExpr(It->m_Data.m_Valid))(ETestFlag_Aggregated);
-					CStr Data = It->m_Data.m_Data;
+					DMibTest(DMibExpr(iNode->m_Data.m_bValid))(ETestFlag_Aggregated);
+					CStr Data = iNode->m_Data.m_Data;
 				}
 
 				/*

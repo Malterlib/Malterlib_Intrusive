@@ -15,10 +15,10 @@ namespace NMib::NIntrusive
 	struct CDLinkAggregateListNoPrevPtrList
 	{
 		using CThis = CDLinkAggregateListNoPrevPtrList;
-		umint m_pNextPtr;
+		umint m_NextPtr;
 
 		constexpr CDLinkAggregateListNoPrevPtrList(EAggregateInitialization _Init)
-			: m_pNextPtr{0}
+			: m_NextPtr{0}
 		{
 		}
 
@@ -83,29 +83,29 @@ namespace NMib::NIntrusive
 		inline_small void fp_Internal_SetNextList(void *_pNext)
 		{
 			DMibFastCheck(fp_Internal_IsListLink());
-			m_pNextPtr = ((umint)_pNext | 1);
+			m_NextPtr = ((umint)_pNext | 1);
 		}
 
 		inline_small void fp_Internal_SetNextInitListLink(void *_pNext)
 		{
-			m_pNextPtr = ((umint)_pNext | 1);
+			m_NextPtr = ((umint)_pNext | 1);
 		}
 
 		inline_small bool fp_Internal_IsListLink() const
 		{
-			return (m_pNextPtr & 1) != 0;
+			return (m_NextPtr & 1) != 0;
 		}
 
 		inline_small void *fp_Internal_GetNextList() const
 		{
 			DMibFastCheck(fp_Internal_IsListLink());
-			return (void *)(m_pNextPtr & (~1));
+			return (void *)(m_NextPtr & (~1));
 		}
 
 		inline_small void *fp_Internal_GetNextNotList() const
 		{
 			DMibFastCheck(!this->fp_Internal_IsListLink());
-			return (void *)m_pNextPtr;
+			return (void *)m_NextPtr;
 		}
 	};
 
@@ -117,11 +117,11 @@ namespace NMib::NIntrusive
 		// The first item has a prev pointer that points to the last item in the list
 		// The List header has a bit of the next pointer set to 1 to specify that it's the header
 
-		umint m_pPrevPtr;
+		umint m_PrevPtr;
 
 		constexpr CDLinkAggregateListNoPrevPtr(EAggregateInitialization _Init)
 			: CDLinkAggregateListNoPrevPtrList{_Init}
-			, m_pPrevPtr{0}
+			, m_PrevPtr{0}
 		{
 		}
 
@@ -482,28 +482,28 @@ namespace NMib::NIntrusive
 	private:
 		inline_small void fp_Internal_SetPrev(void *_pPrev)
 		{
-			m_pPrevPtr = (umint)_pPrev;
+			m_PrevPtr = (umint)_pPrev;
 		}
 
 		inline_small void fp_Internal_SetPrevInit(void *_pPrev)
 		{
-			m_pPrevPtr = (umint)_pPrev;
+			m_PrevPtr = (umint)_pPrev;
 		}
 
 		inline_small void *fp_Internal_GetPrev() const
 		{
-			return (void *)m_pPrevPtr;
+			return (void *)m_PrevPtr;
 		}
 
 		inline_small void fp_Internal_SetNextNotList(void *_pNext)
 		{
 			DMibFastCheck(!this->fp_Internal_IsListLink());
-			m_pNextPtr = (umint)_pNext;
+			m_NextPtr = (umint)_pNext;
 		}
 
 		inline_small void fp_Internal_SetNextInit(void *_pNext)
 		{
-			m_pNextPtr = (umint)_pNext;
+			m_NextPtr = (umint)_pNext;
 		}
 
 		inline_small void fp_UnlinkFirstInternal()
@@ -1411,8 +1411,8 @@ namespace NMib::NIntrusive
 			return nullptr;
 		}
 
-		template <typename tf_CCompare, typename tf_CData2>
-		t_CData const *f_Find(tf_CCompare &&_fCompare, tf_CData2 const &_CheckFor) const
+		template <typename tf_FCompare, typename tf_CData2>
+		t_CData const *f_Find(tf_FCompare &&_fCompare, tf_CData2 const &_CheckFor) const
 		{
 			CIteratorConst Iter(*this);
 			while (Iter)
@@ -1424,8 +1424,8 @@ namespace NMib::NIntrusive
 			return nullptr;
 		}
 
-		template <typename tf_CCompare, typename tf_CData2>
-		t_CData *f_Find(tf_CCompare &&_fCompare, tf_CData2 const &_CheckFor)
+		template <typename tf_FCompare, typename tf_CData2>
+		t_CData *f_Find(tf_FCompare &&_fCompare, tf_CData2 const &_CheckFor)
 		{
 			CIterator Iter(*this);
 			while (Iter)
@@ -1527,14 +1527,14 @@ namespace NMib::NIntrusive
 				f_InsertSorted(pData);
 		}
 
-		template <typename tf_CCompare>
-		void f_InsertSortedLast(t_CData &_ToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_InsertSortedLast(t_CData &_ToInsert, tf_FCompare &&_fCompare)
 		{
 			f_InsertSortedLast(&_ToInsert, _fCompare);
 		}
 
-		template <typename tf_CCompare>
-		void f_InsertSortedLast(t_CData *_pToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_InsertSortedLast(t_CData *_pToInsert, tf_FCompare &&_fCompare)
 		{
 			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
 			pToLink->f_Unlink();
@@ -1560,26 +1560,26 @@ namespace NMib::NIntrusive
 			pToLink->f_Link(pLast);
 		}
 
-		template <typename tf_CCompare>
-		void f_InsertSorted(t_CData &_ToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_InsertSorted(t_CData &_ToInsert, tf_FCompare &&_fCompare)
 		{
 			f_InsertSortedLast(_ToInsert, _fCompare);
 		}
 
-		template <typename tf_CCompare>
-		void f_InsertSorted(t_CData *_pToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_InsertSorted(t_CData *_pToInsert, tf_FCompare &&_fCompare)
 		{
 			f_InsertSortedLast(_pToInsert, _fCompare);
 		}
 
-		template <typename tf_CCompare>
-		void f_InsertSortedFirst(t_CData &_ToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_InsertSortedFirst(t_CData &_ToInsert, tf_FCompare &&_fCompare)
 		{
 			f_InsertSortedFirst(&_ToInsert, _fCompare);
 		}
 
-		template <typename tf_CCompare>
-		void f_InsertSortedFirst(t_CData *_pToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_InsertSortedFirst(t_CData *_pToInsert, tf_FCompare &&_fCompare)
 		{
 			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
 			pToLink->f_Unlink();
@@ -1775,14 +1775,14 @@ namespace NMib::NIntrusive
 			f_UnsafeInsert(&_ToInsert);
 		}
 
-		template <typename tf_CCompare>
-		void f_UnsafeInsertSorted(t_CData &_ToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_UnsafeInsertSorted(t_CData &_ToInsert, tf_FCompare &&_fCompare)
 		{
 			f_UnsafeInsertSorted(&_ToInsert, _fCompare);
 		}
 
-		template <typename tf_CCompare>
-		void f_UnsafeInsertSorted(t_CData *_pToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_UnsafeInsertSorted(t_CData *_pToInsert, tf_FCompare &&_fCompare)
 		{
 			auto pLink = &m_Link;
 			auto *pCurrent = pLink->f_GetNextList();
@@ -1866,9 +1866,9 @@ namespace NMib::NIntrusive
 			fsp_LinkFromMember(_pToRemove)->f_Unlink();
 		}
 
-		inline_small void f_Remove(t_CData &_pToRemove)
+		inline_small void f_Remove(t_CData &_ToRemove)
 		{
-			f_Remove(&_pToRemove);
+			f_Remove(&_ToRemove);
 		}
 
 		inline_medium t_CData *f_Pop()
@@ -1934,8 +1934,8 @@ namespace NMib::NIntrusive
 		|						able to be inlined, at cost of code size.			|
 		|																			|
 		\*_________________________________________________________________________*/
-		template <typename tf_CCompare>
-		void f_MergeSort(tf_CCompare &&_fCompare, aint _InsertionBits = 3)
+		template <typename tf_FCompare>
+		void f_MergeSort(tf_FCompare &&_fCompare, aint _InsertionBits = 3)
 		{
 			// We use mergesort as a stable and predictably performing algorithm, needing no extra heapspace or stackspace
 			// O = n(log n)
@@ -2161,8 +2161,8 @@ namespace NMib::NIntrusive
 			f_MergeSort<tf_CSortClass>(tf_CSortClass());
 		}
 
-		template <typename tf_CCompare>
-		void f_Sort(tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_Sort(tf_FCompare &&_fCompare)
 		{
 			f_MergeSort(_fCompare);
 		}
@@ -2171,19 +2171,19 @@ namespace NMib::NIntrusive
 		struct CBucketCallbackSort
 		{
 			void *m_pContext;
-			FBucketGetIndex *m_pSortFunction;
+			FBucketGetIndex *m_fSortFunction;
 			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
 			{
-				return ((CBucketCallbackSort *)_pContext)->m_pSortFunction(((CBucketCallbackSort *)_pContext)->m_pContext, _Place, _pItem);
+				return ((CBucketCallbackSort *)_pContext)->m_fSortFunction(((CBucketCallbackSort *)_pContext)->m_pContext, _Place, _pItem);
 			}
 		};
 
 		template <aint tf_BucketSize>
-		void f_BucketSortCallback(FBucketGetIndex *_pSortfunction, void *_pContext = nullptr)
+		void f_BucketSortCallback(FBucketGetIndex *_fSortFunction, void *_pContext = nullptr)
 		{
 			CBucketCallbackSort SortContext;
 			SortContext.m_pContext = _pContext;
-			SortContext.m_pSortFunction = _pSortfunction;
+			SortContext.m_fSortFunction = _fSortFunction;
 			f_BucketSort<CBucketCallbackSort, tf_BucketSize>(&SortContext);
 		}
 

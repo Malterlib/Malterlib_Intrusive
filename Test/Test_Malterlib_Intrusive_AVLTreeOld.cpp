@@ -157,23 +157,23 @@ namespace NMib
 				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					MalterlibTree.f_Clear();
-					auto Iter = mp_DataMalterlib.f_GetIterator();
+					auto iData = mp_DataMalterlib.f_GetIterator();
 					{
 						DMibTestScopeMeasure(MalterlibTime, mp_nItems);
-						for (; Iter; ++Iter)
-							MalterlibTree.f_Insert(*Iter);
+						for (; iData; ++iData)
+							MalterlibTree.f_Insert(*iData);
 					}
 				}
 				CBoostTree BoostTree;
 				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					BoostTree.clear();
-					auto Iter = mp_DataBoost.f_GetIterator();
+					auto iData = mp_DataBoost.f_GetIterator();
 
 					{
 						DMibTestScopeMeasure(BoostTime, mp_nItems);
-						for (; Iter; ++Iter)
-							BoostTree.insert(*Iter);
+						for (; iData; ++iData)
+							BoostTree.insert(*iData);
 					}
 				}
 
@@ -194,9 +194,9 @@ namespace NMib
 					using CIter1 = CMalterlibTree::TCIterator<>;
 					CIter1 iMalterlib = MalterlibTree;
 					auto iBoost = BoostTree.begin();
-					auto BoostEnd = BoostTree.end();
+					auto iBoostEnd = BoostTree.end();
 					bool bTreesSameValues = MalterlibTree.f_GetLen() == BoostTree.size();
-					for (; iMalterlib && iBoost != BoostEnd; ++iMalterlib, ++iBoost)
+					for (; iMalterlib && iBoost != iBoostEnd; ++iMalterlib, ++iBoost)
 					{
 						auto MalterlibValue = iMalterlib->m_Data;
 						auto BoostValue = iBoost->m_Data;
@@ -223,30 +223,30 @@ namespace NMib
 				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					CMalterlibTree MalterlibTree;
-					auto Iter = mp_DataMalterlib.f_GetIterator();
-					for (; Iter; ++Iter)
-						MalterlibTree.f_Insert(*Iter);
-					Iter = mp_DataMalterlib.f_GetIterator();
+					auto iData = mp_DataMalterlib.f_GetIterator();
+					for (; iData; ++iData)
+						MalterlibTree.f_Insert(*iData);
+					iData = mp_DataMalterlib.f_GetIterator();
 					CMalterlibNode::CCompare Compare;
 					{
 						DMibTestScopeMeasure(MalterlibTime, mp_nItems);
-						for (; Iter; ++Iter)
-							bFoundMalterlib += MalterlibTree.f_FindEqual(Iter->m_Data, Compare) != nullptr;
+						for (; iData; ++iData)
+							bFoundMalterlib += MalterlibTree.f_FindEqual(iData->m_Data, Compare) != nullptr;
 					}
 				}
 				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					CBoostTree BoostTree;
-					auto Iter = mp_DataBoost.f_GetIterator();
-					for (; Iter; ++Iter)
-						BoostTree.insert(*Iter);
-					Iter = mp_DataBoost.f_GetIterator();
-					auto TreeEnd = BoostTree.end();
+					auto iData = mp_DataBoost.f_GetIterator();
+					for (; iData; ++iData)
+						BoostTree.insert(*iData);
+					iData = mp_DataBoost.f_GetIterator();
+					auto iTreeEnd = BoostTree.end();
 					CBoostNode::CCompareLessThan Compare;
 					{
 						DMibTestScopeMeasure(BoostTime, mp_nItems);
-						for (; Iter; ++Iter)
-							bFoundBoost += BoostTree.find(Iter->m_Data, Compare) != TreeEnd;
+						for (; iData; ++iData)
+							bFoundBoost += BoostTree.find(iData->m_Data, Compare) != iTreeEnd;
 					}
 				}
 
@@ -267,11 +267,11 @@ namespace NMib
 					CMalterlibTree MalterlibTree;
 					for (umint iItem = 0; iItem < mp_nItems; ++iItem)
 						MalterlibTree.f_Insert(mp_DataMalterlib[iItem]);
-					auto Iter = mp_DataMalterlib.f_GetIterator();
+					auto iData = mp_DataMalterlib.f_GetIterator();
 					{
 						DMibTestScopeMeasure(MalterlibTime, mp_nItems);
-						for (; Iter; ++Iter)
-							MalterlibTree.f_Remove(*Iter);
+						for (; iData; ++iData)
+							MalterlibTree.f_Remove(*iData);
 					}
 				}
 
@@ -280,11 +280,11 @@ namespace NMib
 					CBoostTree BoostTree;
 					for (umint iItem = 0; iItem < mp_nItems; ++iItem)
 						BoostTree.insert(mp_DataBoost[iItem]);
-					auto Iter = mp_DataBoost.f_GetIterator();
+					auto iData = mp_DataBoost.f_GetIterator();
 					{
 						DMibTestScopeMeasure(BoostTime, mp_nItems);
-						for (; Iter; ++Iter)
-							BoostTree.erase(*Iter);
+						for (; iData; ++iData)
+							BoostTree.erase(*iData);
 					}
 				}
 
@@ -322,10 +322,10 @@ namespace NMib
 				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					CIter2 iBoost = BoostTree.begin();
-					CIter2 BoostEnd = BoostTree.end();
+					CIter2 iBoostEnd = BoostTree.end();
 					{
 						DMibTestScopeMeasure(BoostTime, mp_nItems);
-						for (; iBoost != BoostEnd; ++iBoost)
+						for (; iBoost != iBoostEnd; ++iBoost)
 							BoostSum += iBoost->m_Data;
 					}
 				}

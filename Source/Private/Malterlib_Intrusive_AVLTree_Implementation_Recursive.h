@@ -56,12 +56,12 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
+	template <typename tf_FCompare>
 	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_InsertRecursive
 		(
 			CLinkPointer &_pObject
 			, CLink *_pObjectToInsert
-			, tf_CCompare &&_fCompare
+			, tf_FCompare &&_fCompare
 			, bool &_bRet
 		)
 		-> bool
@@ -135,8 +135,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RemoveRecursive(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare)
+	template <typename tf_FCompare>
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RemoveRecursive(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_FCompare &&_fCompare)
 	{
 		CLink *pObj = CLink::fs_GetPtr(_pObject);
 
@@ -214,8 +214,8 @@ namespace NMib::NIntrusive
 	\***************************************************************************************************/
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertRecursive(CNode *_pToInsert, tf_CCompare &&_fCompare)
+	template <typename tf_FCompare>
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertRecursive(CNode *_pToInsert, tf_FCompare &&_fCompare)
 	{
 		CLink *pToInsert = fsp_LinkFromMember(_pToInsert);
 		if constexpr (CLinkContainer::mc_bNeedSetTree)
@@ -234,8 +234,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertRecursive(CNode &_ToInsert, tf_CCompare &&_fCompare)
+	template <typename tf_FCompare>
+	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_InsertRecursive(CNode &_ToInsert, tf_FCompare &&_fCompare)
 	{
 		return f_InsertRecursive(&_ToInsert, _fCompare);
 	}
@@ -247,8 +247,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveRecursive(CNode *_pToRemove, tf_CCompare &&_fCompare)
+	template <typename tf_FCompare>
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveRecursive(CNode *_pToRemove, tf_FCompare &&_fCompare)
 	{
 		CLink *pToRemove = fsp_LinkFromMember(_pToRemove);
 
@@ -256,8 +256,8 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <typename tf_CCompare>
-	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveRecursive(CNode &_ToRemove, tf_CCompare &&_fCompare)
+	template <typename tf_FCompare>
+	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveRecursive(CNode &_ToRemove, tf_FCompare &&_fCompare)
 	{
 		f_RemoveRecursive(&_ToRemove, _fCompare);
 	}

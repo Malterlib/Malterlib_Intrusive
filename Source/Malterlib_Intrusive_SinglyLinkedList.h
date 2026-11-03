@@ -450,8 +450,8 @@ namespace NMib::NIntrusive
 			f_InsertSorted<tf_CSortClass>(&_ToInsert);
 		}
 
-		template <typename tf_CCompare>
-		void f_InsertSorted(t_CData *_pToInsert, tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_InsertSorted(t_CData *_pToInsert, tf_FCompare &&_fCompare)
 		{
 			CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
 			if (pCurrent)
@@ -720,8 +720,8 @@ namespace NMib::NIntrusive
 		|																			|
 		\*_________________________________________________________________________*/
 
-		template <class tf_CCompare>
-		void f_MergeSort(tf_CCompare &&_fCompare, aint _InsertionBits = 3)
+		template <class tf_FCompare>
+		void f_MergeSort(tf_FCompare &&_fCompare, aint _InsertionBits = 3)
 		{
 			// We use mergesort as a stable and predictably performing algorithm, needing no extra heapspace or stackspace
 			// O = n(log n)
@@ -921,19 +921,19 @@ namespace NMib::NIntrusive
 		struct CBucketCallbackSort
 		{
 			void *m_pContext;
-			FBucketGetIndex *m_pSortFunction;
+			FBucketGetIndex *m_fSortFunction;
 			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
 			{
-				return ((CBucketCallbackSort *)_pContext)->m_pSortFunction(((CBucketCallbackSort *)_pContext)->m_pContext, _Place, _pItem);
+				return ((CBucketCallbackSort *)_pContext)->m_fSortFunction(((CBucketCallbackSort *)_pContext)->m_pContext, _Place, _pItem);
 			}
 		};
 
 		template <aint tf_BucketSize>
-		void f_BucketSortCallback(FBucketGetIndex *_pSortfunction, void *_pContext = nullptr)
+		void f_BucketSortCallback(FBucketGetIndex *_fSortFunction, void *_pContext = nullptr)
 		{
 			CBucketCallbackSort SortContext;
 			SortContext.m_pContext = _pContext;
-			SortContext.m_pSortFunction = _pSortfunction;
+			SortContext.m_fSortFunction = _fSortFunction;
 			f_BucketSort<CBucketCallbackSort, tf_BucketSize>(&SortContext);
 		}
 
@@ -1030,8 +1030,8 @@ namespace NMib::NIntrusive
 			}
 		}
 
-		template <typename tf_CCompare>
-		void f_Sort(tf_CCompare &&_fCompare)
+		template <typename tf_FCompare>
+		void f_Sort(tf_FCompare &&_fCompare)
 		{
 			f_MergeSort(_fCompare);
 		}
