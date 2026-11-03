@@ -8,9 +8,8 @@
 namespace NMib::NStream
 {
 	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>
+	struct TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>
 	{
-	public:
 		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
 		{
 			typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TCIterator<> Iter(_Data);
@@ -89,9 +88,8 @@ namespace NMib::NStream
 	};
 
 	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	class TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>
+	struct TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>
 	{
-	public:
 		static constexpr void fs_Feed(t_CStream &_Stream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data)
 		{
 			_Stream << (NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &)_Data;

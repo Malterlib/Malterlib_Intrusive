@@ -18,7 +18,7 @@
 #	define DMibAllowCodeStandardViolations 1
 
 #	ifndef DAvldatum
-#		define DAvldatum class CTestTreeClass *
+#		define DAvldatum struct CTestTreeClass *
 #	endif
 
 #	ifndef DAvlkey
@@ -184,9 +184,8 @@ void avlbreadthfirst(struct avlnode *n, AVLWORKER *f, aint param);
 
 #endif
 
-class CTestTreeClass
+struct CTestTreeClass
 {
-public:
 	CTestTreeClass()
 	{
 	}
@@ -198,9 +197,8 @@ public:
 	aint m_Data;
 };
 
-class CTestTreeRef : public CMalterlibTest
+struct CTestTreeRef : public CMalterlibTest
 {
-public:
 	bool f_AutomaticTest()
 	{
 		return true;

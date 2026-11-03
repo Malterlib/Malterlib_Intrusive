@@ -14,11 +14,8 @@ namespace NMib::NIntrusive
 	// Had to make this one a template so the functions won't get compiled at header time
 	// 	template <aint t_Dummy = 0>
 
-	class CSLinkAggr
+	struct CSLinkAggr
 	{
-		using CThis = CSLinkAggr;
-
-	public:
 		constexpr CSLinkAggr(EAggregateInitialization _Init)
 			: m_pNext(nullptr)
 		{
@@ -84,15 +81,13 @@ namespace NMib::NIntrusive
 		{
 			return m_pNext != nullptr;
 		}
+
+	private:
+		using CThis = CSLinkAggr;
 	};
 
-	class CSLink : public CSLinkAggr
+	struct CSLink : public CSLinkAggr
 	{
-	private:
-		CSLink(CSLink const &) = delete;
-		CSLink &operator = (CSLink const &) = delete;
-
-	public:
 		inline_small CSLink()
 		{
 			CSLinkAggr::f_Construct();
@@ -102,11 +97,14 @@ namespace NMib::NIntrusive
 		{
 			CSLinkAggr::f_Destruct();
 		}
+
+	private:
+		CSLink(CSLink const &) = delete;
+		CSLink &operator = (CSLink const &) = delete;
 	};
 
-	class CSLinkListData_Last
+	struct CSLinkListData_Last
 	{
-	public:
 		constexpr CSLinkListData_Last(EAggregateInitialization _Init)
 			: m_First(_Init)
 			, m_pLast(nullptr)
@@ -150,9 +148,8 @@ namespace NMib::NIntrusive
 		}
 	};
 
-	class CSLinkListData
+	struct CSLinkListData
 	{
-	public:
 		constexpr CSLinkListData(EAggregateInitialization _Init)
 			: m_First(_Init)
 		{
@@ -194,8 +191,9 @@ namespace NMib::NIntrusive
 	};
 
 	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
-	class TCSLinkListAggregate
+	struct TCSLinkListAggregate
 	{
+	private:
 		using COffset = typename t_CTranslator::template TCOffset<t_CData>;
 
 	public:
@@ -951,9 +949,8 @@ namespace NMib::NIntrusive
 
 		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
 
-		class CBucketCallbackSort
+		struct CBucketCallbackSort
 		{
-		public:
 			void *m_pContext;
 			FBucketGetIndex *m_pSortFunction;
 			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
@@ -1070,11 +1067,8 @@ namespace NMib::NIntrusive
 			f_MergeSort(_fCompare);
 		}
 
-		class CIterator
+		struct CIterator
 		{
-			using COffset = COffset;
-
-		public:
 			CSLinkAggr *m_pCurrent;
 
 			CIterator()
@@ -1123,6 +1117,9 @@ namespace NMib::NIntrusive
 				if (m_pCurrent)
 					m_pCurrent = m_pCurrent->fp_GetNext();
 			}
+
+		private:
+			using COffset = COffset;
 		};
 
 		CIterator f_GetIterator()
@@ -1130,11 +1127,8 @@ namespace NMib::NIntrusive
 			return CIterator(*this);
 		}
 
-		class CIteratorConst
+		struct CIteratorConst
 		{
-			using COffset = COffset;
-
-		public:
 			CSLinkAggr const *m_pCurrent;
 
 			CIteratorConst()
@@ -1183,6 +1177,9 @@ namespace NMib::NIntrusive
 				if (m_pCurrent)
 					m_pCurrent = m_pCurrent->fp_GetNext();
 			}
+
+		private:
+			using COffset = COffset;
 		};
 
 		CIteratorConst f_GetIterator() const
@@ -1205,13 +1202,8 @@ namespace NMib::NIntrusive
 	};
 
 	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
-	class TCSLinkList : public TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>
+	struct TCSLinkList : public TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>
 	{
-	private:
-		TCSLinkList(TCSLinkList const &) = delete;
-		TCSLinkList &operator = (TCSLinkList const &) = delete;
-
-	public:
 		TCSLinkList()
 		{
 			TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::f_Construct();
@@ -1221,14 +1213,17 @@ namespace NMib::NIntrusive
 		{
 			TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::f_Destruct();
 		}
+
+	private:
+		TCSLinkList(TCSLinkList const &) = delete;
+		TCSLinkList &operator = (TCSLinkList const &) = delete;
 	};
 
 #if defined(DCompiler_clang)
 
 #	define DMibListLinkS_Trans(d_Class, d_Member) \
-		class CSLinkTranslator##d_Member \
+		struct CSLinkTranslator##d_Member \
 		{\
-		public:\
 			template <typename t_CClass, auto t_pMember = &d_Class::d_Member> \
 			struct TCOffset \
 			{ \
@@ -1243,9 +1238,8 @@ namespace NMib::NIntrusive
 #else
 
 #	define DMibListLinkS_Trans(d_Class, d_Member) \
-		class CSLinkTranslator##d_Member \
+		struct CSLinkTranslator##d_Member \
 		{\
-		public:\
 			template <typename t_CClass, auto t_pMember = &d_Class::d_Member> \
 			struct TCOffset \
 			{ \

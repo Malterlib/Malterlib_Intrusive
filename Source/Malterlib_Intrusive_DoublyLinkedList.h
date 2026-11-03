@@ -606,11 +606,8 @@ namespace NMib::NIntrusive
 		return true;
 	}
 
-	class CDLinkAggregate final
+	struct CDLinkAggregate final
 	{
-		using CThis = CDLinkAggregate;
-
-	public:
 		CDLinkAggregate *m_pNextPtr;
 		CDLinkAggregate *m_pPrevPtr;
 
@@ -921,18 +918,14 @@ namespace NMib::NIntrusive
 		{
 			return fp_GetNext() != nullptr;
 		}
+
+	private:
+		using CThis = CDLinkAggregate;
 	};
 
 	template <typename t_CLink>
-	class TCDLink final
+	struct TCDLink final
 	{
-	private:
-		TCDLink(TCDLink const &) = delete;
-		TCDLink &operator = (TCDLink const &) = delete;
-
-		t_CLink m_Link;
-
-	public:
 		inline_small TCDLink()
 		{
 			m_Link.f_Construct();
@@ -1082,12 +1075,17 @@ namespace NMib::NIntrusive
 		{
 			return m_Link.f_IsInList();
 		}
+
+	private:
+		TCDLink(TCDLink const &) = delete;
+		TCDLink &operator = (TCDLink const &) = delete;
+
+		t_CLink m_Link;
 	};
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
-	class TCDLinkListAggregate
+	struct TCDLinkListAggregate
 	{
-	public:
 		using CLink = t_CLink;
 		using CTranslator = t_CTranslator;
 		using COffset = typename CTranslator::template TCOffset<t_CData>;
@@ -1138,9 +1136,8 @@ namespace NMib::NIntrusive
 		}
 
 		template <typename t_CDataInternal1, typename t_CAllocator1, bool _bAutoDelete1>
-		class CAutoDeleteHelper
+		struct CAutoDeleteHelper
 		{
-		public:
 			static inline_small void fs_Delete(t_CData *_pDeleter)
 			{
 				fg_DeleteObject(t_CAllocator(), _pDeleter);
@@ -1148,9 +1145,8 @@ namespace NMib::NIntrusive
 		};
 
 		template <typename t_CDataInternal1, typename t_CAllocator1>
-		class CAutoDeleteHelper<t_CDataInternal1, t_CAllocator1, 0>
+		struct CAutoDeleteHelper<t_CDataInternal1, t_CAllocator1, 0>
 		{
-		public:
 			static inline_small void fs_Delete(t_CData *_pDeleter)
 			{
 			}
@@ -2190,9 +2186,8 @@ namespace NMib::NIntrusive
 		}
 
 		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
-		class CBucketCallbackSort
+		struct CBucketCallbackSort
 		{
-		public:
 			void *m_pContext;
 			FBucketGetIndex *m_pSortFunction;
 			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
@@ -2369,9 +2364,8 @@ namespace NMib::NIntrusive
 			return true;
 		}
 
-		class CIterator
+		struct CIterator
 		{
-		public:
 			using CData = t_CData;
 			t_CLink *m_pCurrent;
 
@@ -2663,9 +2657,8 @@ namespace NMib::NIntrusive
 			return CIterator(*this);
 		}
 
-		class CIteratorConst
+		struct CIteratorConst
 		{
-		public:
 			t_CLink const *m_pCurrent;
 
 			CIteratorConst()
@@ -2908,13 +2901,8 @@ namespace NMib::NIntrusive
 	};
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
-	class TCDLinkList final : public TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>
+	struct TCDLinkList final : public TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>
 	{
-	private:
-		TCDLinkList(TCDLinkList const &) = delete;
-		TCDLinkList &operator = (TCDLinkList const &) = delete;
-
-	public:
 		using CSuper = TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>;
 
 		bool operator == (TCDLinkList const &_Other) const noexcept(noexcept((CSuper const &)*this == (CSuper const &)_Other))
@@ -2944,13 +2932,16 @@ namespace NMib::NIntrusive
 		{
 			CSuper::f_Destruct();
 		}
+
+	private:
+		TCDLinkList(TCDLinkList const &) = delete;
+		TCDLinkList &operator = (TCDLinkList const &) = delete;
 	};
 
 #if defined(DCompiler_clang)
 #	define DMibListLinkD_Trans(d_Class, d_Member) \
-		class CDLinkTranslator##d_Member \
+		struct CDLinkTranslator##d_Member \
 		{\
-		public:\
 			template <typename t_CClass, auto t_pMember = &d_Class::d_Member> \
 			struct TCOffset \
 			{ \
@@ -2966,9 +2957,8 @@ namespace NMib::NIntrusive
 #else
 
 #	define DMibListLinkD_Trans(d_Class, d_Member) \
-		class CDLinkTranslator##d_Member \
+		struct CDLinkTranslator##d_Member \
 		{\
-		public:\
 			template <typename t_CClass, auto t_pMember = &d_Class::d_Member> \
 			struct TCOffset \
 			{ \

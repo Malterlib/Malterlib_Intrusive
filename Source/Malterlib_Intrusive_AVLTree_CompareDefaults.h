@@ -8,9 +8,8 @@
 namespace NMib::NIntrusive
 {
 	template <typename t_CData, typename t_CKey>
-	class TCTreeCompare_Default
+	struct TCTreeCompare_Default
 	{
-	public:
 		inline_small auto operator () (t_CData const &_Left, t_CData const &_Right) const
 		{
 			return _Left <=> _Right;
@@ -28,9 +27,8 @@ namespace NMib::NIntrusive
 	};
 
 	template <typename t_CData, typename t_CKey>
-	class TCTreeCompare_String
+	struct TCTreeCompare_String
 	{
-	public:
 		inline_small COrdering_Strong operator () (t_CData const &_Left, t_CData const &_Right) const
 		{
 			return NStr::fg_StrCmp((t_CKey)_Left, (t_CKey)_Right) <=> 0;
@@ -48,9 +46,8 @@ namespace NMib::NIntrusive
 	};
 
 	template <typename t_CData, typename t_CKey>
-	class TCTreeCompare_StringNoCase
+	struct TCTreeCompare_StringNoCase
 	{
-	public:
 		inline_small COrdering_Weak operator () (t_CData const &_Left, t_CData const &_Right) const
 		{
 			return NStr::fg_StrCmpNoCase((t_CKey const *)_Left, (t_CKey const *)_Right) <=> 0;

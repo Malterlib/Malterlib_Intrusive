@@ -9,9 +9,8 @@ namespace
 	using namespace NMib::NIntrusive;
 	using namespace NMib::NStr;
 
-	class CAVLTree_Tests : public NMib::NTest::CTest
+	struct CAVLTree_Tests : public NMib::NTest::CTest
 	{
-	public:
 		template <typename t_CLinkType, typename t_CData, t_CLinkType (t_CData:: *t_pMemberPointer)>
 		struct TCMemberPointerHolder
 		{
@@ -85,11 +84,8 @@ namespace
 			{
 			}
 
-			class CCompare
+			struct CCompare
 			{
-				bool m_Valid;
-
-			public:
 				CCompare()
 					: m_Valid(true)
 				{
@@ -125,6 +121,9 @@ namespace
 
 					return fg_StrCmpNoCase(_Left.m_Data, _Right.m_Data) <=> 0;
 				}
+
+			private:
+				bool m_Valid;
 			};
 
 			TCAVLLinkAutoRemove<> m_Link;
@@ -226,9 +225,8 @@ struct TCMemberPointerHolder
 };
 
 template <int t_Offset>
-class TCStaticOffset
+struct TCStaticOffset
 {
-public:
 	static int GetOffset()
 	{
 		return t_Offset;

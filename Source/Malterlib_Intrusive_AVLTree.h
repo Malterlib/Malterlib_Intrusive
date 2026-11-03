@@ -42,7 +42,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	class TCAVLTreeAggregate;
+	struct TCAVLTreeAggregate;
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
 	|	Template Class:																					|
@@ -64,12 +64,8 @@ namespace NMib::NIntrusive
 		, typename t_CAllocator = NMib::NMemory::CDefaultAllocator
 		, typename t_COverrideNodeType = NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>
 	>
-	class TCAVLTreeAggregate
+	struct TCAVLTreeAggregate
 	{
-		template <auto t_pLinkMember2, typename t_CCompare2, typename t_CAllocator2, typename t_COverrideNodeType2>
-		friend class TCAVLTreeAggregate;
-
-	public:
 		using CCompare = t_CCompare;
 		using CAllocator = t_CAllocator;
 		using CMemberPointer = decltype(t_pLinkMember);
@@ -449,11 +445,8 @@ namespace NMib::NIntrusive
 		\************************************************************************************************/
 
 		template <aint t_RecursionDepth = mc_SafeTreeDepth>
-		class TCIterator
+		struct TCIterator
 		{
-			friend class TCAVLTreeAggregate;
-
-		public:
 			using CNode = typename TCAVLTreeAggregate::CNode;
 
 		protected:
@@ -534,6 +527,9 @@ namespace NMib::NIntrusive
 			inline_small CNode *operator -> () const;
 			inline_small void operator ++ ();
 			inline_small void operator -- ();
+
+		private:
+			friend struct TCAVLTreeAggregate;
 		};
 
 		using CIterator = TCIterator<>;
@@ -541,6 +537,10 @@ namespace NMib::NIntrusive
 
 		CIterator f_GetIterator();
 		CIteratorConst f_GetIterator() const;
+
+	private:
+		template <auto t_pLinkMember2, typename t_CCompare2, typename t_CAllocator2, typename t_COverrideNodeType2>
+		friend struct TCAVLTreeAggregate;
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -563,14 +563,8 @@ namespace NMib::NIntrusive
 		, typename t_CAllocator = NMib::NMemory::CDefaultAllocator
 		, typename t_COverrideNodeType = NTraits::TCMemberObjectPointerClass<decltype(t_pLinkMember)>
 	>
-	class TCAVLTree : public TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>
+	struct TCAVLTree : public TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>
 	{
-		TCAVLTree(TCAVLTree const &) = delete;
-		TCAVLTree &operator = (TCAVLTree const &) = delete;
-
-		using CSuper = TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>;
-
-	public:
 		TCAVLTree(TCAVLTree &&_Other);
 		constexpr TCAVLTree();
 		constexpr ~TCAVLTree();
@@ -578,6 +572,12 @@ namespace NMib::NIntrusive
 
 		bool operator == (TCAVLTree const &_Other) const noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() == fg_GetType<typename CSuper::CNode const &>()));
 		auto operator <=> (TCAVLTree const &_Other) const noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() <=> fg_GetType<typename CSuper::CNode const &>()));
+
+	private:
+		TCAVLTree(TCAVLTree const &) = delete;
+		TCAVLTree &operator = (TCAVLTree const &) = delete;
+
+		using CSuper = TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>;
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -594,9 +594,8 @@ namespace NMib::NIntrusive
 	|	Index:				!name																		|
 	\*_________________________________________________________________________________________________*/
 	template <EAVLLinkType t_LinkType = EAVLLinkType_AlignedRight, typename t_CLinkData = typename NPrivate::TCLinkTypeToLink<t_LinkType>::CType>
-	class TCAVLLinkAggregate
+	struct TCAVLLinkAggregate
 	{
-	public:
 		using CLink = t_CLinkData;
 		using FRemove = void (void *_pTree, t_CLinkData &_Link);
 
@@ -631,15 +630,14 @@ namespace NMib::NIntrusive
 	|	Index:				!name																		|
 	\*_________________________________________________________________________________________________*/
 	template <EAVLLinkType t_LinkType = EAVLLinkType_AlignedRight, typename t_CLinkData = typename NPrivate::TCLinkTypeToLink<t_LinkType>::CType>
-	class TCAVLLink : public TCAVLLinkAggregate<t_LinkType, t_CLinkData>
+	struct TCAVLLink : public TCAVLLinkAggregate<t_LinkType, t_CLinkData>
 	{
+		TCAVLLink();
+		~TCAVLLink();
+
 	private:
 		TCAVLLink(TCAVLLink const &) = delete;
 		TCAVLLink &operator = (TCAVLLink const &) = delete;
-
-	public:
-		TCAVLLink();
-		~TCAVLLink();
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -656,13 +654,8 @@ namespace NMib::NIntrusive
 	|	Index:				!name																		|
 	\*_________________________________________________________________________________________________*/
 	template <EAVLLinkType t_LinkType = EAVLLinkType_AlignedRight, typename t_CLinkData = typename NPrivate::TCLinkTypeToLink<t_LinkType>::CType>
-	class TCAVLLinkAutoRemove : public TCAVLLink<t_LinkType, t_CLinkData>
+	struct TCAVLLinkAutoRemove : public TCAVLLink<t_LinkType, t_CLinkData>
 	{
-	private:
-		TCAVLLinkAutoRemove(TCAVLLinkAutoRemove const &) = delete;
-		TCAVLLinkAutoRemove &operator = (TCAVLLinkAutoRemove const &) = delete;
-
-	public:
 		static constexpr bool mc_bNeedSetTree = true;
 
 		using FRemove = void (void *_pTree, t_CLinkData &_Link);
@@ -677,6 +670,10 @@ namespace NMib::NIntrusive
 
 		TCAVLLinkAutoRemove();
 		~TCAVLLinkAutoRemove();
+
+	private:
+		TCAVLLinkAutoRemove(TCAVLLinkAutoRemove const &) = delete;
+		TCAVLLinkAutoRemove &operator = (TCAVLLinkAutoRemove const &) = delete;
 	};
 }
 

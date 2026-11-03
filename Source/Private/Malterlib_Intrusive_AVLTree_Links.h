@@ -7,11 +7,8 @@
 
 namespace NMib::NIntrusive::NPrivate
 {
-	class CAVLLinkData
+	struct CAVLLinkData
 	{
-		using CThis = CAVLLinkData;
-
-	public:
 		enum EAVLTreeSkew
 		{
 			EAVLTreeSkew_None        = 2
@@ -136,6 +133,9 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[1] = 0;
 			m_Skew = EAVLTreeSkew_None;
 		}
+
+	private:
+		using CThis = CAVLLinkData;
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -145,9 +145,8 @@ namespace NMib::NIntrusive::NPrivate
 	|	Parameters:																	|
 	|		t_Dummy:		description												|
 	\*_____________________________________________________________________________*/
-	class CAVLLinkAlignedData
+	struct CAVLLinkAlignedData
 	{
-	public:
 		using CThis = CAVLLinkAlignedData;
 
 		enum EAVLTreeSkew
@@ -288,11 +287,8 @@ namespace NMib::NIntrusive::NPrivate
 		}
 	};
 
-	class CAVLLinkAlignedRightData
+	struct CAVLLinkAlignedRightData
 	{
-		using CThis = CAVLLinkAlignedRightData;
-
-	public:
 #ifdef DMibDebug
 		inline_never CAVLLinkAlignedRightData *fp_Debug_GetLeft() const
 		{
@@ -432,6 +428,9 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = nullptr;
 			m_pNext[1] = (CAVLLinkAlignedRightData *)umint(EAVLTreeSkew_None);
 		}
+
+	private:
+		using CThis = CAVLLinkAlignedRightData;
 	};
 
 	template <EAVLLinkType t_LinkType>

@@ -19,9 +19,8 @@ namespace NMib
 	{
 		using CTestTimer = CPrefCyclesTimeMeasureMin;
 
-		class CMalterlibNode
+		struct CMalterlibNode
 		{
-		public:
 			struct CCompare
 			{
 				inline_small int const &operator () (CMalterlibNode const &_Node) const
@@ -50,12 +49,10 @@ namespace NMib
 			}
 		};
 
-		class CBoostNode : public boost::intrusive::avl_set_base_hook<boost::intrusive::optimize_size<true>, boost::intrusive::constant_time_size<0>>
+		struct CBoostNode : public boost::intrusive::avl_set_base_hook<boost::intrusive::optimize_size<true>, boost::intrusive::constant_time_size<0>>
 		{
-		public:
-			class CCompare
+			struct CCompare
 			{
-			public:
 				COrdering_Partial operator () (CBoostNode const &_Left, int _Right) const
 				{
 					return _Left.m_Data <=> _Right;
@@ -67,9 +64,8 @@ namespace NMib
 				}
 			};
 
-			class CCompareLessThan
+			struct CCompareLessThan
 			{
-			public:
 				bool operator () (CBoostNode const &_Left, int _Right) const
 				{
 					return _Left.m_Data < _Right;
@@ -113,18 +109,8 @@ namespace NMib
 		using CMalterlibTree = NIntrusive::TCAVLTree<&CMalterlibNode::m_Link, CMalterlibNode::CCompare>;
 
 		template <bool t_bMemoryTests>
-		class TCAVLTreeTester
+		struct TCAVLTreeTester
 		{
-			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> m_DataMalterlib;
-			TCVector<CBoostNode, NMemory::CAllocator_Virtual> m_DataBoost;
-			umint m_nItems;
-			umint m_nTests;
-			fp64 m_AllowedDelta;
-
-			using CMeasureType = TCConditional<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure>;
-			using CTestType = TCConditional<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance>;
-
-		public:
 			TCAVLTreeTester(umint _nItems, bool _bRandom)
 			{
 				m_nItems = _nItems;
@@ -388,11 +374,20 @@ namespace NMib
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
 			}
+
+		private:
+			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> m_DataMalterlib;
+			TCVector<CBoostNode, NMemory::CAllocator_Virtual> m_DataBoost;
+			umint m_nItems;
+			umint m_nTests;
+			fp64 m_AllowedDelta;
+
+			using CMeasureType = TCConditional<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure>;
+			using CTestType = TCConditional<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance>;
 		};
 
-		class CAVL_Tests : public CTest
+		struct CAVL_Tests : public CTest
 		{
-		public: // Define test suites
 			void f_Suite(bool _bRandom, bool _bMemoryTests)
 			{
 #ifdef DMibDebug

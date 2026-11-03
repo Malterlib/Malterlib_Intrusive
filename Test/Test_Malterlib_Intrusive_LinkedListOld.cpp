@@ -8,7 +8,7 @@
 \*************************************************************************************************/
 
 #if 0
-class CTestSort : public CMalterlibTest
+struct CTestSort : public CMalterlibTest
 {
 public:
 	aint Rand(void)
@@ -28,16 +28,14 @@ public:
 		return true;
 	}
 
-	class CDataDouble
+	struct CDataDouble
 	{
-	public:
 		DMibListLinkDS_Link(CDataDouble, m_Link);
 		aint Hula;
 	};
 
-	class CDataSingle
+	struct CDataSingle
 	{
-	public:
 		DMibListLinkS_Link(CDataSingle, m_Link);
 		aint Hula;
 	};
@@ -48,9 +46,8 @@ public:
 	static aint ms_NumCompare;
 	static aint const mc_BucketSize = 11;
 
-	class CMergeSortClassDouble
+	struct CMergeSortClassDouble
 	{
-	public:
 		using CRet = aint;
 
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
@@ -59,9 +56,8 @@ public:
 		}
 	};
 
-	class CMergeSortClassSingle
+	struct CMergeSortClassSingle
 	{
-	public:
 		using CRet = aint;
 
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
@@ -70,9 +66,8 @@ public:
 		}
 	};
 
-	class CMergeSortClassNumCompareDouble
+	struct CMergeSortClassNumCompareDouble
 	{
-	public:
 		using CRet = aint;
 
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
@@ -82,9 +77,8 @@ public:
 		}
 	};
 
-	class CMergeSortClassNumCompareSingle
+	struct CMergeSortClassNumCompareSingle
 	{
-	public:
 		using CRet = aint;
 
 		static inline_small CRet fs_Compare(void *_pContext, void *_pFirst, void *_pSecond)
@@ -94,27 +88,24 @@ public:
 		}
 	};
 
-	class CBucketSortClassDouble
+	struct CBucketSortClassDouble
 	{
-	public:
 		static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
 		{
 			return (((CDataDouble *)(_pItem))->Hula >> (_Place * mc_BucketSize)) & ((1 << mc_BucketSize) - 1);
 		}
 	};
 
-	class CBucketSortClassSingle
+	struct CBucketSortClassSingle
 	{
-	public:
 		static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
 		{
 			return (((CDataSingle *)(_pItem))->Hula >> (_Place * mc_BucketSize)) & ((1 << mc_BucketSize) - 1);
 		}
 	};
 
-	class CBucketSortClassNumCompareDouble
+	struct CBucketSortClassNumCompareDouble
 	{
-	public:
 		static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
 		{
 			++ms_NumCompare;
@@ -122,9 +113,8 @@ public:
 		}
 	};
 
-	class CBucketSortClassNumCompareSingle
+	struct CBucketSortClassNumCompareSingle
 	{
-	public:
 		static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
 		{
 			++ms_NumCompare;
@@ -214,16 +204,14 @@ public:
 		return "";
 	}
 
-	class CDataTest1
+	struct CDataTest1
 	{
-	public:
 		DMibListLinkDS_Link(CDataTest1, m_Link);
 		aint Hula;
 	};
 
-	class CMergeSortCDataTest1
+	struct CMergeSortCDataTest1
 	{
-	public:
 		using CRet = aint;
 
 		static inline_small CRet fs_Compare(void *_pContext, CDataTest1 *_pFirst, CDataTest1 *_pSecond)
@@ -232,9 +220,8 @@ public:
 		}
 	};
 
-	class CTestAutoPtr
+	struct CTestAutoPtr
 	{
-	public:
 		DMibAutoClearPtrDeclare;
 
 		int m_Test;

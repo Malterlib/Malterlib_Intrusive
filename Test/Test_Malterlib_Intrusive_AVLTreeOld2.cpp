@@ -11,7 +11,7 @@
 
 using namespace NMib::NIntrusive;
 #if 0
-class CTestTree : public CMalterlibTest
+struct CTestTree : public CMalterlibTest
 {
 public:
 	CTestTree()
@@ -30,12 +30,11 @@ public:
 		return true;
 	}
 
-	class CCompare;
-	class CCompare2;
+	struct CCompare;
+	struct CCompare2;
 #	if 0
-	class CTestClass
+	struct CTestClass
 	{
-	public:
 		CTestClass()
 		{
 		}
@@ -47,9 +46,8 @@ public:
 		NMib::NStr::CStr m_Data;
 	};
 
-	class CTestClass2
+	struct CTestClass2
 	{
-	public:
 		CTestClass2()
 		{
 		}
@@ -61,9 +59,8 @@ public:
 		NMib::NStr::CStr m_Data;
 	};
 
-	class CCompare
+	struct CCompare
 	{
-	public:
 		using CRet = aint;
 
 		static inline_small CRet fs_Compare(CTestClass const *_pFirst, CTestClass const *_pSecond, void *_pContext)
@@ -78,9 +75,8 @@ public:
 		}
 	};
 
-	class CCompare2
+	struct CCompare2
 	{
-	public:
 		using CRet = aint;
 
 		static inline_small CRet fs_Compare(CTestClass2 const *_pFirst, CTestClass2 const *_pSecond, void *_pContext)
@@ -117,9 +113,8 @@ public:
 #		endif
 	}
 #	else
-	class CTestClass
+	struct CTestClass
 	{
-	public:
 		CTestClass()
 		{
 		}
@@ -132,9 +127,8 @@ public:
 		aint m_Data;
 	};
 
-	class CTestClass2
+	struct CTestClass2
 	{
-	public:
 		CTestClass2()
 		{
 		}
@@ -147,18 +141,16 @@ public:
 		aint m_Data;
 	};
 
-	class CCompare
+	struct CCompare
 	{
-	public:
 		inline_small aint const &operator () (CTestClass const &_Node) const
 		{
 			return _Node.m_Data;
 		}
 	};
 
-	class CCompare2
+	struct CCompare2
 	{
-	public:
 		inline_small aint const &operator () (CTestClass2 const &_Node) const
 		{
 			return _Node.m_Data;
@@ -739,19 +731,17 @@ public:
 	}
 };
 
-class CTestTreeAligned : public CMalterlibTest
+struct CTestTreeAligned : public CMalterlibTest
 {
-public:
 	aint Rand(void)
 	{
 		static aint holdrand = 548;
 		return (((holdrand = holdrand * 214013L + 2531011L) >> 16) & 0x7fff);
 	}
 
-	class CCompare;
-	class CTestClass
+	struct CCompare;
+	struct CTestClass
 	{
-	public:
 		CTestClass()
 		{
 		}
@@ -764,9 +754,8 @@ public:
 		aint m_Data;
 	};
 
-	class CCompare
+	struct CCompare
 	{
-	public:
 		inline_small aint const &operator () (CTestClass const &_Node) const
 		{
 			return _Node.m_Data;
