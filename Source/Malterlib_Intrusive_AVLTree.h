@@ -27,15 +27,9 @@ namespace NMib::NIntrusive
 		template <typename t_CInner>
 		struct TCImplicitConvert
 		{
-			TCImplicitConvert(t_CInner &_Inner)
-				: m_Inner(_Inner)
-			{
-			}
+			TCImplicitConvert(t_CInner &_Inner);
 
-			operator t_CInner & ()
-			{
-				return m_Inner;
-			}
+			operator t_CInner & ();
 
 			t_CInner &m_Inner;
 		};
@@ -101,11 +95,7 @@ namespace NMib::NIntrusive
 	public:
 		CLinkPointer m_Root;
 
-		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init)
-			: m_Root{nullptr}
-		{
-		}
-
+		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init);
 		TCAVLTreeAggregate() = default;
 
 	protected:
@@ -134,36 +124,25 @@ namespace NMib::NIntrusive
 		inline_small static auto fsp_GetKey(tf_FCompare &&_fCompare, tf_CNode &&_Node)
 			-> NTraits::TCCallableReturnTypeFor<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>
 			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
-		{
-			return _fCompare(fg_Forward<tf_CNode>(NPrivate::TCImplicitConvert<tf_CNode>(_Node)));
-		}
+		;
 
 		template <typename tf_FCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_FCompare &&_fCompare, tf_CNode &&_Node) -> NTraits::TCRemoveRValueReference<tf_CNode>
 			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
-		{
-			return _Node;
-		}
+		;
 
 		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
 		inline_small static auto fsp_DoCompare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
 			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
-		{
-			return _fCompare(_Left, _Right);
-		}
+		;
 
 		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
 		inline_small static auto fsp_DoCompare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
 			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
-		{
-			return _Left <=> _Right;
-		}
+		;
 
 		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_Compare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
-		{
-			return fsp_DoCompare(fg_Forward<tf_FCompare>(_fCompare), fsp_GetKey(_fCompare, fg_Forward<tf_CLeft>(_Left)), fsp_GetKey(_fCompare, fg_Forward<tf_CRight>(_Right)));
-		}
+		inline_small static auto fsp_Compare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right);
 
 		//static void fp_RemoveAll(CLink *_pObject);
 		template <typename tf_FOnRemove>
@@ -608,10 +587,7 @@ namespace NMib::NIntrusive
 
 #ifdef DCompiler_clang
 
-		constexpr TCAVLLinkAggregate()
-			: m_Link()
-		{
-		}
+		constexpr TCAVLLinkAggregate();
 #endif
 
 		inline_small void f_Construct();
@@ -681,16 +657,17 @@ namespace NMib::NIntrusive
 }
 
 // Implementation
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Lifetime.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Shared.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_LowStack.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Recursive.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_StaticStack.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Debug.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Misc.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Search.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Iterator.h"
-#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Links.h"
+#include "Malterlib_Intrusive_AVLTree.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Lifetime.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Shared.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_LowStack.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Recursive.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_StaticStack.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Debug.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Misc.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Search.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Iterator.hpp"
+#include "Private/Malterlib_Intrusive_AVLTree_Implementation_Links.hpp"
 
 #ifdef DMibIncluded_Stream
 #	include "Malterlib_Intrusive_AVLTree_Stream.h"

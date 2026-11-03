@@ -1,0 +1,128 @@
+// Copyright © Unbroken AB
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+#pragma once
+
+namespace NMib::NStream
+{
+	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	constexpr void TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>::fs_Feed
+		(
+			t_CStream &_Stream
+			, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data
+		)
+	{
+		typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TCIterator<> Iter(_Data);
+
+		umint nItems = 0;
+
+		while (Iter)
+		{
+			++nItems;
+			++Iter;
+		};
+
+		fg_FeedLenToStream(_Stream, nItems);
+
+		Iter = _Data;
+
+		while (Iter)
+		{
+			_Stream.f_Feed(*Iter);
+			++Iter;
+		};
+	}
+
+	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	constexpr void TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>::fs_Feed
+		(
+			t_CStream &_Stream
+			, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data
+		)
+	{
+		typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::template TCIterator<> Iter(_Data);
+
+		umint nItems = 0;
+
+		while (Iter)
+		{
+			++nItems;
+			++Iter;
+		};
+
+		fg_FeedLenToStream(_Stream, nItems);
+
+		Iter = _Data;
+
+		while (Iter)
+		{
+			_Stream.f_Feed(fg_Move(*Iter));
+			++Iter;
+		};
+	}
+
+	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	constexpr void TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>::fs_Consume
+		(
+			t_CStream &_Stream
+			, NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &_Data
+		)
+	{
+		uint64 nItems;
+		fg_ConsumeLenFromStream(_Stream, nItems);
+		fg_CheckLengthLimit(_Stream, nItems);
+
+		using CNode = typename NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode;
+
+		while (nItems)
+		{
+			auto Memory = t_CAllocator::f_AllocSafe(sizeof(CNode), alignof(CNode));
+			CNode *pNewItem = new(Memory.m_pMemory) CNode();
+			Memory.f_Claim();
+			auto Cleanup = g_OnScopeExit / [&]
+				{
+					pNewItem->~CNode();
+					t_CAllocator::f_Free(pNewItem, sizeof(CNode));
+				}
+			;
+
+			_Stream.f_Consume(*pNewItem);
+			if (!_Data.f_Insert(pNewItem))
+				DMibError("AVLTree stream contained a duplicate key");
+			else
+				Cleanup.f_Clear();
+
+			--nItems;
+		}
+	}
+
+	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	constexpr void TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>::fs_Feed
+		(
+			t_CStream &_Stream
+			, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &_Data
+		)
+	{
+		_Stream << (NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> const &)_Data;
+	}
+
+	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	constexpr void TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>::fs_Feed
+		(
+			t_CStream &_Stream
+			, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &&_Data
+		)
+	{
+		_Stream << fg_Move((NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &)_Data);
+	}
+
+	template <typename t_CStream, auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
+	constexpr void TCBinaryStreamTypeReference<t_CStream, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>>::fs_Consume
+		(
+			t_CStream &_Stream
+			, NIntrusive::TCAVLTree<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &_Data
+		)
+	{
+		_Stream >> (NIntrusive::TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType> &)_Data;
+	}
+}

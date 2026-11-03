@@ -17,58 +17,17 @@ namespace NMib::NIntrusive
 		using CThis = CDLinkAggregateListNoPrevPtrList;
 		umint m_NextPtr;
 
-		constexpr CDLinkAggregateListNoPrevPtrList(EAggregateInitialization _Init)
-			: m_NextPtr{0}
-		{
-		}
-
-		CDLinkAggregateListNoPrevPtrList()
-		{
-		}
-
-		inline_small void f_SetNextList(CDLinkAggregateListNoPrevPtrList *_pNext)
-		{
-			fp_Internal_SetNextList(_pNext);
-		}
-
-		inline_small void f_SetNextInitListLink(CDLinkAggregateListNoPrevPtrList *_pNext)
-		{
-			fp_Internal_SetNextInitListLink(_pNext);
-		}
-
-		inline_small void f_ConstructList()
-		{
-			f_SetNextInitListLink(nullptr);
-		}
-
-		inline_small bool f_IsListLink() const
-		{
-			return fp_Internal_IsListLink();
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtrList *f_GetNextList()
-		{
-			return (CDLinkAggregateListNoPrevPtrList *)fp_Internal_GetNextList();
-		}
-
-		inline_small void f_SetPrevInitListLink(CDLinkAggregateListNoPrevPtrList *_pPrev)
-		{
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtrList const *f_GetNextList() const
-		{
-			return (CDLinkAggregateListNoPrevPtrList const *)fp_Internal_GetNextList();
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtrList *f_GetNextNotList()
-		{
-			return (CDLinkAggregateListNoPrevPtrList *)fp_Internal_GetNextNotList();
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtrList const *f_GetNextNotList() const
-		{
-			return (CDLinkAggregateListNoPrevPtrList const *)fp_Internal_GetNextNotList();
-		}
+		constexpr CDLinkAggregateListNoPrevPtrList(EAggregateInitialization _Init);
+		CDLinkAggregateListNoPrevPtrList();
+		inline_small void f_SetNextList(CDLinkAggregateListNoPrevPtrList *_pNext);
+		inline_small void f_SetNextInitListLink(CDLinkAggregateListNoPrevPtrList *_pNext);
+		inline_small void f_ConstructList();
+		inline_small bool f_IsListLink() const;
+		inline_small CDLinkAggregateListNoPrevPtrList *f_GetNextList();
+		inline_small void f_SetPrevInitListLink(CDLinkAggregateListNoPrevPtrList *_pPrev);
+		inline_small CDLinkAggregateListNoPrevPtrList const *f_GetNextList() const;
+		inline_small CDLinkAggregateListNoPrevPtrList *f_GetNextNotList();
+		inline_small CDLinkAggregateListNoPrevPtrList const *f_GetNextNotList() const;
 
 		bool f_IsValid() const;
 
@@ -80,33 +39,11 @@ namespace NMib::NIntrusive
 		inline_small void f_TransferList(CDLinkAggregateListNoPrevPtrList *_pFirst, CDLinkAggregateListNoPrevPtrList *_pLast);
 
 	protected:
-		inline_small void fp_Internal_SetNextList(void *_pNext)
-		{
-			DMibFastCheck(fp_Internal_IsListLink());
-			m_NextPtr = ((umint)_pNext | 1);
-		}
-
-		inline_small void fp_Internal_SetNextInitListLink(void *_pNext)
-		{
-			m_NextPtr = ((umint)_pNext | 1);
-		}
-
-		inline_small bool fp_Internal_IsListLink() const
-		{
-			return (m_NextPtr & 1) != 0;
-		}
-
-		inline_small void *fp_Internal_GetNextList() const
-		{
-			DMibFastCheck(fp_Internal_IsListLink());
-			return (void *)(m_NextPtr & (~1));
-		}
-
-		inline_small void *fp_Internal_GetNextNotList() const
-		{
-			DMibFastCheck(!this->fp_Internal_IsListLink());
-			return (void *)m_NextPtr;
-		}
+		inline_small void fp_Internal_SetNextList(void *_pNext);
+		inline_small void fp_Internal_SetNextInitListLink(void *_pNext);
+		inline_small bool fp_Internal_IsListLink() const;
+		inline_small void *fp_Internal_GetNextList() const;
+		inline_small void *fp_Internal_GetNextNotList() const;
 	};
 
 	struct CDLinkAggregateListNoPrevPtr final : public CDLinkAggregateListNoPrevPtrList
@@ -119,860 +56,125 @@ namespace NMib::NIntrusive
 
 		umint m_PrevPtr;
 
-		constexpr CDLinkAggregateListNoPrevPtr(EAggregateInitialization _Init)
-			: CDLinkAggregateListNoPrevPtrList{_Init}
-			, m_PrevPtr{0}
-		{
-		}
-
-		CDLinkAggregateListNoPrevPtr()
-		{
-		}
-
-		inline_small void f_Construct()
-		{
-			f_SetNextInit(nullptr);
-#ifdef DMibEnableSafeCheck
-			// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-			f_SetPrevInit(nullptr);
-#endif
-		}
-
-		inline_small void f_SetNextNotList(CDLinkAggregateListNoPrevPtrList *_pNext)
-		{
-			fp_Internal_SetNextNotList(_pNext);
-		}
-
-		inline_small void f_SetNextInit(CDLinkAggregateListNoPrevPtrList *_pNext)
-		{
-			fp_Internal_SetNextInit(_pNext);
-		}
-
-		inline_small void f_SetPrevNotList(CDLinkAggregateListNoPrevPtrList *_pPrev)
-		{
-			DMibSafeCheck(!f_IsListLink(), "");
-			fp_Internal_SetPrev(_pPrev);
-		}
-
-		inline_small void f_SetPrevInit(CDLinkAggregateListNoPrevPtrList *_pPrev)
-		{
-			//DMibSafeCheck(!f_IsListLink(), ""); // this could be uninitialized memory
-			fp_Internal_SetPrevInit(_pPrev);
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtr *f_GetPrevPtr()
-		{
-			return ((CDLinkAggregateListNoPrevPtr *)fp_Internal_GetPrev());
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtr const *f_GetPrevPtr() const
-		{
-			return ((CDLinkAggregateListNoPrevPtr *)fp_Internal_GetPrev());
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtrList *f_GetPrevNotList()
-		{
-			DMibFastCheck(!f_IsListLink());
-			auto pPrev = f_GetPrevPtr();
-			auto pPrevNext = pPrev->f_GetNextNotList();
-			if (pPrevNext->f_IsListLink())
-				return pPrevNext;
-			else
-				return pPrev;
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtr *f_GetPrevNoList()
-		{
-			DMibFastCheck(!f_IsListLink());
-			auto pPrev = f_GetPrevPtr();
-			DMibFastCheck(!pPrev->f_GetNextNotList()->f_IsListLink());
-			return pPrev;
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtrList const *f_GetPrevNotList() const
-		{
-			DMibFastCheck(!f_IsListLink());
-			auto pPrev = f_GetPrevPtr();
-			auto pPrevNext = pPrev->f_GetNextNotList();
-			if (pPrevNext->f_IsListLink())
-				return pPrevNext;
-			else
-				return pPrev;
-		}
-
-		inline_small CDLinkAggregateListNoPrevPtr const *f_GetPrevNoList() const
-		{
-			DMibFastCheck(!f_IsListLink());
-			auto pPrev = f_GetPrevPtr();
-			DMibFastCheck(!pPrev->f_GetNextNotList()->f_IsListLink());
-			return pPrev;
-		}
-
-		inline_small void f_Link(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
-		{
-			DMibSafeCheck(!f_GetNextNotList(), "Must not be in list here");
-			f_LinkNoUnlink(_pLinkAfter);
-		}
-
-		inline_small void f_LinkFirst(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
-		{
-			DMibSafeCheck(!f_GetNextNotList(), "Must not be in list here");
-			f_LinkNoUnlinkFirst(_pLinkAfter);
-		}
-
-		inline_small void f_LinkLast(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
-		{
-			DMibSafeCheck(!f_GetNextNotList(), "Must not be in list here");
-			f_LinkNoUnlinkLast(_pLinkAfter);
-		}
-
-		static inline_small void fs_UnlinkRange(CDLinkAggregateListNoPrevPtr *_pFirst, CDLinkAggregateListNoPrevPtr *_pLast)
-		{
-			auto *pFirst = _pFirst->f_GetPrevNotList();
-			auto *pLast = _pLast->f_GetNextNotList();
-
-			if (pFirst == pLast)
-			{
-				DMibSafeCheck(pFirst->f_IsListLink(), "Must be a list link");
-				// We should be an empty list pointing to ourselves
-				pFirst->f_SetNextInitListLink(pFirst);
-			}
-			else if (pFirst->f_IsListLink())
-			{
-				// The first pointer is a list link
-				auto *pLastInList = pFirst->f_GetPrevList()->f_Upcast();
-				pFirst->f_SetNextInitListLink(pLast);
-				pLast->f_Upcast()->f_SetPrevInit(pLastInList);
-			}
-			else if (pLast->f_IsListLink())
-			{
-				// The last pointer is a list link
-				auto *pFirstInList = pLast->f_GetNextList();
-				pFirst->f_Upcast()->f_SetNextInit(pLast);
-				pFirstInList->f_Upcast()->f_SetPrevInit(pFirst);
-			}
-			else
-			{
-				pFirst->f_Upcast()->f_SetNextInit(pLast);
-				pLast->f_Upcast()->f_SetPrevInit(pFirst);
-			}
-		}
-
-		static inline_small void fs_LinkRange(CDLinkAggregateListNoPrevPtr *_pFirst, CDLinkAggregateListNoPrevPtr *_pLast, CDLinkAggregateListNoPrevPtrList *_pInsertAfter)
-		{
-			DMibSafeCheck(!_pFirst->f_IsListLink(), "Cannot insert empty list");
-			DMibSafeCheck(!_pLast->f_IsListLink(), "Cannot insert empty list");
-
-			if (_pInsertAfter->f_IsListLink())
-			{
-				auto *pInsertAfterNext = _pInsertAfter->f_GetNextList();
-				DMibSafeCheck(pInsertAfterNext != _pInsertAfter, "Cannot insert into empty list");
-				auto *pLastInList = _pInsertAfter->f_GetPrevList();
-				// Insert at beginning of list
-				_pFirst->f_SetPrevInit(pLastInList);
-				_pInsertAfter->f_SetNextInitListLink(_pFirst);
-
-				_pLast->f_SetNextInit(pInsertAfterNext);
-				pInsertAfterNext->f_Upcast()->f_SetPrevInit(_pLast);
-			}
-			else
-			{
-				auto *pInsertAfterNext = _pInsertAfter->f_GetNextNotList();
-				DMibSafeCheck(pInsertAfterNext != _pInsertAfter, "Cannot insert into empty list");
-				if (pInsertAfterNext->f_IsListLink())
-				{
-					// Insert at end of list
-					auto *pFirstInList = pInsertAfterNext->f_GetNextList();
-
-					_pFirst->f_SetPrevInit(_pInsertAfter);
-					_pInsertAfter->f_Upcast()->f_SetNextInit(_pFirst);
-
-					_pLast->f_SetNextInit(pInsertAfterNext);
-					pFirstInList->f_Upcast()->f_SetPrevInit(_pLast);
-				}
-				else
-				{
-					// Middle of list
-					_pFirst->f_SetPrevInit(_pInsertAfter);
-					_pInsertAfter->f_Upcast()->f_SetNextInit(_pFirst);
-
-					_pLast->f_SetNextInit(pInsertAfterNext);
-					pInsertAfterNext->f_Upcast()->f_SetPrevInit(_pLast);
-				}
-			}
-		}
-
-		inline_extralarge void f_LinkNoUnlink(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
-		{
-			if (_pLinkAfter->f_IsListLink()) [[unlikely]]
-			{
-				auto *pAfterNext = _pLinkAfter->f_GetNextList();
-				if (pAfterNext == _pLinkAfter)
-				{
-					// Empty list
-					f_SetPrevInit(this);
-					f_SetNextInit(_pLinkAfter);
-					_pLinkAfter->f_SetNextList(this);
-					return;
-				}
-
-				// First in list
-
-				f_SetPrevInit(pAfterNext->f_Upcast()->f_GetPrevPtr());
-				f_SetNextInit(pAfterNext);
-				pAfterNext->f_Upcast()->f_SetPrevNotList(this);
-				_pLinkAfter->f_SetNextList(this);
-			}
-			else
-			{
-				auto *pAfterNext = _pLinkAfter->f_GetNextNotList();
-				if (pAfterNext->f_IsListLink()) [[unlikely]]
-				{
-					// Last in list
-					f_SetPrevInit(_pLinkAfter);
-					f_SetNextInit(pAfterNext);
-					pAfterNext->f_GetNextList()->f_Upcast()->f_SetPrevNotList(this);
-					_pLinkAfter->f_Upcast()->f_SetNextNotList(this);
-				}
-				else
-				{
-					f_SetPrevInit(_pLinkAfter);
-					f_SetNextInit(pAfterNext);
-					pAfterNext->f_Upcast()->f_SetPrevNotList(this);
-					_pLinkAfter->f_Upcast()->f_SetNextNotList(this);
-				}
-			}
-		}
-
-		inline_extralarge void f_LinkNoUnlinkNotList(CDLinkAggregateListNoPrevPtr *_pLinkAfter)
-		{
-			DMibFastCheck(!_pLinkAfter->f_IsListLink());
-			auto *pAfterNext = _pLinkAfter->f_GetNextNotList();
-			DMibFastCheck(!pAfterNext->f_IsListLink());
-			f_SetPrevInit(_pLinkAfter);
-			f_SetNextInit(pAfterNext);
-			pAfterNext->f_Upcast()->f_SetPrevNotList(this);
-			_pLinkAfter->f_SetNextNotList(this);
-		}
-
-		inline_extralarge void f_LinkNoUnlinkFirst(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
-		{
-			DMibFastCheck(_pLinkAfter->f_IsListLink());
-
-			auto *pAfterNext = _pLinkAfter->f_GetNextList();
-			if (pAfterNext == _pLinkAfter)
-			{
-				// Empty list
-				f_SetPrevInit(this);
-				f_SetNextInit(_pLinkAfter);
-				_pLinkAfter->f_SetNextList(this);
-				return;
-			}
-
-			// First in list
-
-			f_SetPrevInit(pAfterNext->f_Upcast()->f_GetPrevPtr());
-			f_SetNextInit(pAfterNext);
-			pAfterNext->f_Upcast()->f_SetPrevNotList(this);
-			_pLinkAfter->f_SetNextList(this);
-		}
-
-		inline_extralarge void f_LinkNoUnlinkLast(CDLinkAggregateListNoPrevPtrList *_pLinkAfter)
-		{
-			if (_pLinkAfter->f_IsListLink()) [[unlikely]]
-			{
-				DMibFastCheck(_pLinkAfter->f_GetNextList() == _pLinkAfter);
-				// Empty list
-				f_SetPrevInit(this);
-				f_SetNextInit(_pLinkAfter);
-				_pLinkAfter->f_SetNextList(this);
-				return;
-			}
-			else
-			{
-				auto *pAfterNext = _pLinkAfter->f_GetNextNotList();
-				DMibFastCheck(pAfterNext->f_IsListLink());
-				// Last in list
-				f_SetPrevInit(_pLinkAfter);
-				f_SetNextInit(pAfterNext);
-				pAfterNext->f_GetNextList()->f_Upcast()->f_SetPrevNotList(this);
-				_pLinkAfter->f_Upcast()->f_SetNextNotList(this);
-			}
-		}
+		constexpr CDLinkAggregateListNoPrevPtr(EAggregateInitialization _Init);
+		CDLinkAggregateListNoPrevPtr();
+		inline_small void f_Construct();
+		inline_small void f_SetNextNotList(CDLinkAggregateListNoPrevPtrList *_pNext);
+		inline_small void f_SetNextInit(CDLinkAggregateListNoPrevPtrList *_pNext);
+		inline_small void f_SetPrevNotList(CDLinkAggregateListNoPrevPtrList *_pPrev);
+		inline_small void f_SetPrevInit(CDLinkAggregateListNoPrevPtrList *_pPrev);
+		inline_small CDLinkAggregateListNoPrevPtr *f_GetPrevPtr();
+		inline_small CDLinkAggregateListNoPrevPtr const *f_GetPrevPtr() const;
+		inline_small CDLinkAggregateListNoPrevPtrList *f_GetPrevNotList();
+		inline_small CDLinkAggregateListNoPrevPtr *f_GetPrevNoList();
+		inline_small CDLinkAggregateListNoPrevPtrList const *f_GetPrevNotList() const;
+		inline_small CDLinkAggregateListNoPrevPtr const *f_GetPrevNoList() const;
+		inline_small void f_Link(CDLinkAggregateListNoPrevPtrList *_pLinkAfter);
+		inline_small void f_LinkFirst(CDLinkAggregateListNoPrevPtrList *_pLinkAfter);
+		inline_small void f_LinkLast(CDLinkAggregateListNoPrevPtrList *_pLinkAfter);
+		static inline_small void fs_UnlinkRange(CDLinkAggregateListNoPrevPtr *_pFirst, CDLinkAggregateListNoPrevPtr *_pLast);
+		static inline_small void fs_LinkRange(CDLinkAggregateListNoPrevPtr *_pFirst, CDLinkAggregateListNoPrevPtr *_pLast, CDLinkAggregateListNoPrevPtrList *_pInsertAfter);
+		inline_extralarge void f_LinkNoUnlink(CDLinkAggregateListNoPrevPtrList *_pLinkAfter);
+		inline_extralarge void f_LinkNoUnlinkNotList(CDLinkAggregateListNoPrevPtr *_pLinkAfter);
+		inline_extralarge void f_LinkNoUnlinkFirst(CDLinkAggregateListNoPrevPtrList *_pLinkAfter);
+		inline_extralarge void f_LinkNoUnlinkLast(CDLinkAggregateListNoPrevPtrList *_pLinkAfter);
 
 		// Public functions
-		inline_extralarge void f_Unlink()
-		{
-			if (f_GetNextNotList())
-			{
-				fp_UnlinkInternal();
-				f_SetNextInit(nullptr);
-#ifdef DMibEnableSafeCheck
-				// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-				f_SetPrevInit(nullptr);
-#endif
-			}
-		}
-
-		inline_small void f_UnlinkFirst()
-		{
-			if (f_GetNextNotList())
-			{
-				fp_UnlinkFirstInternal();
-				f_SetNextInit(nullptr);
-#ifdef DMibEnableSafeCheck
-				// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-				f_SetPrevInit(nullptr);
-#endif
-			}
-		}
-
-		inline_small void f_UnsafeUnlink()
-		{
-			fp_UnlinkInternal();
-		}
-
-		inline_small void f_UnsafeUnlinkFirst()
-		{
-			fp_UnlinkFirstInternal();
-		}
-
-		inline_small void f_UnlinkLinked()
-		{
-			fp_UnlinkInternal();
-			f_SetNextInit(nullptr);
-#ifdef DMibEnableSafeCheck
-			// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-			f_SetPrevInit(nullptr);
-#endif
-		}
-
-		inline_small void f_UnlinkFirstLinked()
-		{
-			fp_UnlinkFirstInternal();
-			f_SetNextInit(nullptr);
-#ifdef DMibEnableSafeCheck
-			// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-			f_SetPrevInit(nullptr);
-#endif
-		}
-
-		inline_small void f_Destruct()
-		{
-			if (f_GetNextNotList())
-			{
-				fp_UnlinkInternal();
-#ifdef DMibEnableSafeCheck
-				f_SetNextInit(nullptr);
-				f_SetPrevInit(nullptr);
-#endif
-			}
-		}
-
-		inline_small bool f_IsAloneInList() const
-		{
-			return f_IsInList() && f_GetPrevPtr() == this;
-		}
-
-		inline_small bool f_IsInList() const
-		{
-			return f_GetNextNotList() != nullptr;
-		}
+		inline_extralarge void f_Unlink();
+		inline_small void f_UnlinkFirst();
+		inline_small void f_UnsafeUnlink();
+		inline_small void f_UnsafeUnlinkFirst();
+		inline_small void f_UnlinkLinked();
+		inline_small void f_UnlinkFirstLinked();
+		inline_small void f_Destruct();
+		inline_small bool f_IsAloneInList() const;
+		inline_small bool f_IsInList() const;
 
 	private:
-		inline_small void fp_Internal_SetPrev(void *_pPrev)
-		{
-			m_PrevPtr = (umint)_pPrev;
-		}
-
-		inline_small void fp_Internal_SetPrevInit(void *_pPrev)
-		{
-			m_PrevPtr = (umint)_pPrev;
-		}
-
-		inline_small void *fp_Internal_GetPrev() const
-		{
-			return (void *)m_PrevPtr;
-		}
-
-		inline_small void fp_Internal_SetNextNotList(void *_pNext)
-		{
-			DMibFastCheck(!this->fp_Internal_IsListLink());
-			m_NextPtr = (umint)_pNext;
-		}
-
-		inline_small void fp_Internal_SetNextInit(void *_pNext)
-		{
-			m_NextPtr = (umint)_pNext;
-		}
-
-		inline_small void fp_UnlinkFirstInternal()
-		{
-			auto pPrevPtr = f_GetPrevPtr();
-			auto pPrev = pPrevPtr->f_GetNextNotList();
-			DMibFastCheck(pPrev->f_IsListLink());
-			auto pNext = f_GetNextNotList();
-			pPrev->f_SetNextList(pNext);
-			if (!pNext->f_IsListLink()) [[likely]]
-				pNext->f_Upcast()->f_SetPrevNotList(pPrevPtr);
-			else
-			{
-				// Alone in list
-				DMibFastCheck(pNext == pPrev);
-			}
-		}
-
-		inline_small void fp_UnlinkInternal()
-		{
-			auto pPrev = f_GetPrevNotList();
-			auto pNext = f_GetNextNotList();
-			if (pPrev->f_IsListLink()) [[unlikely]]
-			{
-				pPrev->f_SetNextList(pNext);
-				if (!pNext->f_IsListLink()) [[likely]]
-					pNext->f_Upcast()->f_SetPrevNotList(f_GetPrevPtr());
-				else
-				{
-					// Alone in list
-					DMibFastCheck(pNext == pPrev);
-				}
-			}
-			else
-			{
-				pPrev->f_Upcast()->f_SetNextNotList(pNext);
-
-				if (pNext->f_IsListLink()) [[unlikely]] // Last in list
-					pNext->f_GetNextList()->f_Upcast()->f_SetPrevNotList(pPrev);
-				else // Between two usual blocks
-					pNext->f_Upcast()->f_SetPrevNotList(pPrev);
-			}
-		}
+		inline_small void fp_Internal_SetPrev(void *_pPrev);
+		inline_small void fp_Internal_SetPrevInit(void *_pPrev);
+		inline_small void *fp_Internal_GetPrev() const;
+		inline_small void fp_Internal_SetNextNotList(void *_pNext);
+		inline_small void fp_Internal_SetNextInit(void *_pNext);
+		inline_small void fp_UnlinkFirstInternal();
+		inline_small void fp_UnlinkInternal();
 	};
-
-	inline_small CDLinkAggregateListNoPrevPtr *CDLinkAggregateListNoPrevPtrList::f_Upcast()
-	{
-		return static_cast<CDLinkAggregateListNoPrevPtr *>(this);
-	}
-
-	inline_small CDLinkAggregateListNoPrevPtr const *CDLinkAggregateListNoPrevPtrList::f_Upcast() const
-	{
-		return static_cast<CDLinkAggregateListNoPrevPtr const *>(this);
-	}
-
-	inline_small CDLinkAggregateListNoPrevPtrList *CDLinkAggregateListNoPrevPtrList::f_GetPrevList()
-	{
-		DMibFastCheck(f_IsListLink());
-		auto pNext = f_GetNextList();
-		if (pNext->f_IsListLink())
-			return this;
-		else
-			return pNext->f_Upcast()->f_GetPrevPtr();
-	}
-
-	inline_small CDLinkAggregateListNoPrevPtrList const *CDLinkAggregateListNoPrevPtrList::f_GetPrevList() const
-	{
-		DMibFastCheck(f_IsListLink());
-		auto pNext = f_GetNextList();
-		if (pNext->f_IsListLink())
-			return this;
-		else
-			return pNext->f_Upcast()->f_GetPrevPtr();
-	}
-
-	inline_small void CDLinkAggregateListNoPrevPtrList::f_TransferList(CDLinkAggregateListNoPrevPtrList *_pFirst, CDLinkAggregateListNoPrevPtrList *_pLast)
-	{
-		if (_pFirst->f_IsListLink())
-		{
-			// Empty list
-			f_ConstructList();
-		}
-		else
-		{
-			f_SetNextInitListLink(_pFirst);
-			_pFirst->f_Upcast()->f_SetPrevInit(_pLast);
-			_pLast->f_Upcast()->f_SetNextInit(this);
-		}
-	}
-
-	inline bool CDLinkAggregateListNoPrevPtrList::f_IsValid() const
-	{
-		if (f_IsListLink())
-		{
-			auto *pNext = f_GetNextList();
-			if (pNext == this)
-				return true;
-			if (pNext->f_Upcast()->f_GetPrevPtr()->f_GetNextNotList() != this)
-				return false;
-		}
-
-		return true;
-	}
 
 	struct CDLinkAggregate final
 	{
 		CDLinkAggregate *m_pNextPtr;
 		CDLinkAggregate *m_pPrevPtr;
 
-		constexpr CDLinkAggregate(EAggregateInitialization _Init)
-			: m_pNextPtr{nullptr}
-			, m_pPrevPtr{nullptr}
-		{
-		}
-
-		CDLinkAggregate()
-		{
-		}
-
-		bool f_IsValid() const
-		{
-			return true;
-		}
-
-		inline_extralarge void f_Link(CDLinkAggregate *_pLinkAfter)
-		{
-			DMibSafeCheck(!fp_GetNext(), "Must not be in list here");
-
-			f_SetPrevInit(_pLinkAfter);
-			fp_SetNext(_pLinkAfter->fp_GetNext());
-			fp_GetNext()->fp_SetPrev(this);
-			f_GetPrev()->fp_SetNext(this);
-		}
-
-		inline_small void f_LinkFirst(CDLinkAggregate *_pLinkAfter)
-		{
-			f_Link(_pLinkAfter);
-		}
-
-		inline_small void f_LinkLast(CDLinkAggregate *_pLinkAfter)
-		{
-			f_Link(_pLinkAfter);
-		}
-
-		static inline_small void fs_UnlinkRange(CDLinkAggregate *_pFirst, CDLinkAggregate *_pLast)
-		{
-			CThis *pFirst = _pFirst->f_GetPrev();
-			CThis *pLast = _pLast->fp_GetNext();
-			pFirst->fp_SetNext(pLast);
-			pLast->fp_SetPrev(pFirst);
-		}
-
-		static inline_small void fs_LinkRange(CDLinkAggregate *_pFirst, CDLinkAggregate *_pLast, CDLinkAggregate *_pInsertAfter)
-		{
-			CThis *pInsertAfterNext = _pInsertAfter->fp_GetNext();
-			_pFirst->fp_SetPrev(_pInsertAfter);
-			_pInsertAfter->fp_SetNext(_pFirst);
-
-			_pLast->fp_SetNext(pInsertAfterNext);
-			pInsertAfterNext->fp_SetPrev(_pLast);
-		}
-
-		inline_small void f_LinkNoUnlink(CDLinkAggregate *_pLinkAfter)
-		{
-			f_SetPrevInit(_pLinkAfter);
-			fp_SetNext(_pLinkAfter->fp_GetNext());
-			fp_GetNext()->fp_SetPrev(this);
-			f_GetPrev()->fp_SetNext(this);
-		}
-
-		inline_small void f_LinkNoUnlinkNotList(CDLinkAggregate *_pLinkAfter)
-		{
-			f_LinkNoUnlink(_pLinkAfter);
-		}
-
-		inline_small void f_LinkNoUnlinkFirst(CDLinkAggregate *_pLinkAfter)
-		{
-			f_LinkNoUnlink(_pLinkAfter);
-		}
-
-		inline_small void f_LinkNoUnlinkLast(CDLinkAggregate *_pLinkAfter)
-		{
-			f_LinkNoUnlink(_pLinkAfter);
-		}
-
-		inline_small void f_SetNextNotList(CDLinkAggregate *_pNext)
-		{
-			m_pNextPtr = _pNext;
-		}
-
-		inline_small void f_SetNextInit(CDLinkAggregate *_pNext)
-		{
-			m_pNextPtr = _pNext;
-		}
-
-		inline_small void f_SetNextInitListLink(CDLinkAggregate *_pNext)
-		{
-			m_pNextPtr = _pNext;
-		}
-
-		inline_small void f_SetPrevNotList(CDLinkAggregate *_pPrev)
-		{
-			m_pPrevPtr = (CDLinkAggregate *)(((umint)(CDLinkAggregate *)m_pPrevPtr & 1) | (umint)_pPrev);
-		}
-
-		inline_small void f_SetPrevInit(CDLinkAggregate *_pPrev)
-		{
-			m_pPrevPtr = _pPrev;
-		}
-
-		inline_small void f_SetPrevInitListLink(CDLinkAggregate *_pPrev)
-		{
-			m_pPrevPtr = (CDLinkAggregate *)((umint)_pPrev | 1);
-		}
-
-		inline_small bool f_IsListLink() const
-		{
-			return ((umint)(CDLinkAggregate *)m_pPrevPtr & 1);
-		}
-
-		inline_small CDLinkAggregate const *f_GetNextList() const
-		{
-			return m_pNextPtr;
-		}
-
-		inline_small CDLinkAggregate const *f_GetNextNotList() const
-		{
-			return m_pNextPtr;
-		}
-
-		inline_small CDLinkAggregate const *f_GetPrev() const
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small CDLinkAggregate const *f_GetPrevList() const
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small CDLinkAggregate const *f_GetPrevNotList() const
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small CDLinkAggregate const *f_GetPrevNoList() const
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small CDLinkAggregate *f_GetNextList()
-		{
-			return m_pNextPtr;
-		}
-
-		inline_small CDLinkAggregate *f_GetNextNotList()
-		{
-			return m_pNextPtr;
-		}
-
-		inline_small CDLinkAggregate *f_GetPrev()
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small CDLinkAggregate *f_GetPrevNotList()
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small CDLinkAggregate *f_GetPrevNoList()
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small CDLinkAggregate *f_GetPrevList()
-		{
-			return (CDLinkAggregate *)((umint)(CDLinkAggregate *)m_pPrevPtr & (~1));
-		}
-
-		inline_small void f_TransferList(CDLinkAggregate *_pFirst, CDLinkAggregate *_pLast)
-		{
-			f_SetNextInitListLink(_pFirst);
-			fp_GetNext()->fp_SetPrev(this);
-			f_SetPrevInitListLink(_pLast);
-			f_GetPrev()->fp_SetNext(this);
-		}
+		constexpr CDLinkAggregate(EAggregateInitialization _Init);
+		CDLinkAggregate();
+		bool f_IsValid() const;
+		inline_extralarge void f_Link(CDLinkAggregate *_pLinkAfter);
+		inline_small void f_LinkFirst(CDLinkAggregate *_pLinkAfter);
+		inline_small void f_LinkLast(CDLinkAggregate *_pLinkAfter);
+		static inline_small void fs_UnlinkRange(CDLinkAggregate *_pFirst, CDLinkAggregate *_pLast);
+		static inline_small void fs_LinkRange(CDLinkAggregate *_pFirst, CDLinkAggregate *_pLast, CDLinkAggregate *_pInsertAfter);
+		inline_small void f_LinkNoUnlink(CDLinkAggregate *_pLinkAfter);
+		inline_small void f_LinkNoUnlinkNotList(CDLinkAggregate *_pLinkAfter);
+		inline_small void f_LinkNoUnlinkFirst(CDLinkAggregate *_pLinkAfter);
+		inline_small void f_LinkNoUnlinkLast(CDLinkAggregate *_pLinkAfter);
+		inline_small void f_SetNextNotList(CDLinkAggregate *_pNext);
+		inline_small void f_SetNextInit(CDLinkAggregate *_pNext);
+		inline_small void f_SetNextInitListLink(CDLinkAggregate *_pNext);
+		inline_small void f_SetPrevNotList(CDLinkAggregate *_pPrev);
+		inline_small void f_SetPrevInit(CDLinkAggregate *_pPrev);
+		inline_small void f_SetPrevInitListLink(CDLinkAggregate *_pPrev);
+		inline_small bool f_IsListLink() const;
+		inline_small CDLinkAggregate const *f_GetNextList() const;
+		inline_small CDLinkAggregate const *f_GetNextNotList() const;
+		inline_small CDLinkAggregate const *f_GetPrev() const;
+		inline_small CDLinkAggregate const *f_GetPrevList() const;
+		inline_small CDLinkAggregate const *f_GetPrevNotList() const;
+		inline_small CDLinkAggregate const *f_GetPrevNoList() const;
+		inline_small CDLinkAggregate *f_GetNextList();
+		inline_small CDLinkAggregate *f_GetNextNotList();
+		inline_small CDLinkAggregate *f_GetPrev();
+		inline_small CDLinkAggregate *f_GetPrevNotList();
+		inline_small CDLinkAggregate *f_GetPrevNoList();
+		inline_small CDLinkAggregate *f_GetPrevList();
+		inline_small void f_TransferList(CDLinkAggregate *_pFirst, CDLinkAggregate *_pLast);
 
 		// Public functions
 
-		inline_small CDLinkAggregate *f_Upcast()
-		{
-			return this;
-		}
-
-		inline_small CDLinkAggregate const *f_Upcast() const
-		{
-			return this;
-		}
-
-		inline_small bool f_IsAloneInList() const
-		{
-			return f_IsInList() && (f_GetPrev()->f_IsListLink()) && (fp_GetNext()->f_IsListLink());
-		}
-
-		inline_extralarge void f_Unlink()
-		{
-			if (fp_GetNext())
-			{
-				fp_GetNext()->fp_SetPrev(f_GetPrev());
-				f_GetPrev()->fp_SetNext(fp_GetNext());
-				fp_SetNext(nullptr);
-#ifdef DMibEnableSafeCheck
-				// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-				f_SetPrevInit(nullptr);
-#endif
-			}
-		}
-
-		inline_small void f_UnlinkFirst()
-		{
-			f_Unlink();
-		}
-
-		inline_small void f_UnsafeUnlink()
-		{
-			fp_GetNext()->fp_SetPrev(f_GetPrev());
-			f_GetPrev()->fp_SetNext(fp_GetNext());
-		}
-
-		inline_small void f_UnsafeUnlinkFirst()
-		{
-			f_UnsafeUnlink();
-		}
-
-		inline_small void f_UnlinkLinked()
-		{
-			fp_GetNext()->fp_SetPrev(f_GetPrev());
-			f_GetPrev()->fp_SetNext(fp_GetNext());
-			fp_SetNext(nullptr);
-#ifdef DMibEnableSafeCheck
-			// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-			f_SetPrevInit(nullptr);
-#endif
-		}
-
-		inline_small void f_UnlinkFirstLinked()
-		{
-			f_UnlinkLinked();
-		}
-
-		inline_small void f_ConstructList()
-		{
-			fp_SetNext(nullptr);
-#ifdef DMibEnableSafeCheck
-			// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-			f_SetPrevInit(nullptr);
-#endif
-		}
-
-		inline_small void f_Construct()
-		{
-			fp_SetNext(nullptr);
-#ifdef DMibEnableSafeCheck
-			// Clear the prev ptr in debug so ppl don't get confused about garbled data :)
-			f_SetPrevInit(nullptr);
-#endif
-		}
-
-		inline_small void f_Destruct()
-		{
-			if (fp_GetNext())
-			{
-				fp_GetNext()->fp_SetPrev(f_GetPrev());
-				f_GetPrev()->fp_SetNext(fp_GetNext());
-#ifdef DMibEnableSafeCheck
-				fp_SetNext(nullptr);
-				f_SetPrevInit(nullptr);
-#endif
-			}
-		}
-
-		inline_small bool f_IsInList() const
-		{
-			return fp_GetNext() != nullptr;
-		}
+		inline_small CDLinkAggregate *f_Upcast();
+		inline_small CDLinkAggregate const *f_Upcast() const;
+		inline_small bool f_IsAloneInList() const;
+		inline_extralarge void f_Unlink();
+		inline_small void f_UnlinkFirst();
+		inline_small void f_UnsafeUnlink();
+		inline_small void f_UnsafeUnlinkFirst();
+		inline_small void f_UnlinkLinked();
+		inline_small void f_UnlinkFirstLinked();
+		inline_small void f_ConstructList();
+		inline_small void f_Construct();
+		inline_small void f_Destruct();
+		inline_small bool f_IsInList() const;
 
 	private:
 		using CThis = CDLinkAggregate;
 
-		inline_small void fp_SetNext(CDLinkAggregate *_pNext)
-		{
-			m_pNextPtr = _pNext;
-		}
+		inline_small void fp_SetNext(CDLinkAggregate *_pNext);
+		inline_small void fp_SetPrev(CDLinkAggregate *_pPrev);
+		inline_small void fp_SetPrevList(CDLinkAggregate *_pPrev);
+		inline_small CDLinkAggregate const *fp_GetNext() const;
+		inline_small CDLinkAggregate *fp_GetNext();
 
-		inline_small void fp_SetPrev(CDLinkAggregate *_pPrev)
-		{
-			m_pPrevPtr = (CDLinkAggregate *)(((umint)(CDLinkAggregate *)m_pPrevPtr & 1) | (umint)_pPrev);
-		}
-
-		inline_small void fp_SetPrevList(CDLinkAggregate *_pPrev)
-		{
-			m_pPrevPtr = (CDLinkAggregate *)(((umint)(CDLinkAggregate *)m_pPrevPtr & 1) | (umint)_pPrev);
-		}
-
-		inline_small CDLinkAggregate const *fp_GetNext() const
-		{
-			return m_pNextPtr;
-		}
-
-		inline_small CDLinkAggregate *fp_GetNext()
-		{
-			return m_pNextPtr;
-		}
-
-		inline_small void fp_SetNextList(CDLinkAggregate *_pNext)
-		{
-			m_pNextPtr = _pNext;
-		}
+		inline_small void fp_SetNextList(CDLinkAggregate *_pNext);
 	};
 
 	template <typename t_CLink>
 	struct TCDLink final
 	{
-		inline_small TCDLink()
-		{
-			mp_Link.f_Construct();
-		}
-
-		TCDLink(TCDLink &&_Other)
-		{
-			if (_Other.mp_Link.f_IsInList())
-			{
-				auto pOtherPrev = _Other.mp_Link.f_GetPrevNotList();
-				_Other.mp_Link.f_UnlinkLinked();
-				mp_Link.f_LinkNoUnlink(pOtherPrev);
-			}
-			else
-				mp_Link.f_Construct();
-		}
-
-		TCDLink &operator = (TCDLink &&_Other)
-		{
-			mp_Link.f_Destruct();
-			if (_Other.mp_Link.f_IsInList())
-			{
-				auto pOtherPrev = _Other.mp_Link.f_GetPrevNotList();
-				_Other.mp_Link.f_UnlinkLinked();
-				mp_Link.f_LinkNoUnlink(pOtherPrev);
-			}
-			else
-				mp_Link.f_Construct();
-			return *this;
-		}
-
-		inline_small ~TCDLink()
-		{
-			mp_Link.f_Destruct();
-		}
-
-		inline_small t_CLink const *f_GetNext() const
-		{
-			return (t_CLink const *)mp_Link.f_GetNextNotList();
-		}
-
-		inline_small t_CLink const *f_GetPrev() const
-		{
-			return (t_CLink const *)mp_Link.f_GetPrevNotList();
-		}
+		inline_small TCDLink();
+		TCDLink(TCDLink &&_Other);
+		TCDLink &operator = (TCDLink &&_Other);
+		inline_small ~TCDLink();
+		inline_small t_CLink const *f_GetNext() const;
+		inline_small t_CLink const *f_GetPrev() const;
 
 		/*
 		inline_small void fp_Link(t_CLink *_pLinkAfter)
@@ -1036,47 +238,17 @@ namespace NMib::NIntrusive
 		*/
 
 		// Public functions
-		inline_small void f_Unlink()
-		{
-			mp_Link.f_Unlink();
-		}
-
-		inline_small void f_UnsafeUnlink()
-		{
-			mp_Link.f_UnsafeUnlink();
-		}
-
-		inline_small void f_UnlinkLinked()
-		{
-			mp_Link.f_UnlinkLinked();
-		}
+		inline_small void f_Unlink();
+		inline_small void f_UnsafeUnlink();
+		inline_small void f_UnlinkLinked();
 
 		// First
 
-		inline_small void f_UnlinkFirst()
-		{
-			mp_Link.f_UnlinkFirst();
-		}
-
-		inline_small void f_UnsafeUnlinkFirst()
-		{
-			mp_Link.f_UnsafeUnlinkFirst();
-		}
-
-		inline_small void f_UnlinkFirstLinked()
-		{
-			mp_Link.f_UnlinkFirstLinked();
-		}
-
-		inline_small bool f_IsAloneInList() const
-		{
-			return mp_Link.f_IsAloneInList();
-		}
-
-		inline_small bool f_IsInList() const
-		{
-			return mp_Link.f_IsInList();
-		}
+		inline_small void f_UnlinkFirst();
+		inline_small void f_UnsafeUnlinkFirst();
+		inline_small void f_UnlinkFirstLinked();
+		inline_small bool f_IsAloneInList() const;
+		inline_small bool f_IsInList() const;
 
 	private:
 		TCDLink(TCDLink const &_Other) = delete;
@@ -1097,369 +269,67 @@ namespace NMib::NIntrusive
 		// 	t_CLink m_Last;
 		t_CLinkInList m_Link;
 
-		constexpr TCDLinkListAggregate(EAggregateInitialization _Init)
-			: m_Link{_Init}
-		{
-		}
-
-		TCDLinkListAggregate()
-		{
-		}
-
-		inline_small void f_Construct()
-		{
-#ifdef DMibDebug
-			if ((umint)this & 1)
-				DMibPDebugBreak; // We must be aligned
-#endif
-
-			m_Link.f_SetNextInitListLink(&m_Link);
-			m_Link.f_SetPrevInitListLink(&m_Link);
-		}
+		constexpr TCDLinkListAggregate(EAggregateInitialization _Init);
+		TCDLinkListAggregate();
+		inline_small void f_Construct();
 
 		template <typename t_CDataInternal1, typename t_CAllocator1, bool t_bAutoDelete1>
 		struct TCAutoDeleteHelper
 		{
-			static inline_small void fs_Delete(t_CData *_pDeleter)
-			{
-				fg_DeleteObject(t_CAllocator(), _pDeleter);
-			}
+			static inline_small void fs_Delete(t_CData *_pDeleter);
 		};
 
 		template <typename t_CDataInternal1, typename t_CAllocator1>
 		struct TCAutoDeleteHelper<t_CDataInternal1, t_CAllocator1, 0>
 		{
-			static inline_small void fs_Delete(t_CData *_pDeleter)
-			{
-			}
+			static inline_small void fs_Delete(t_CData *_pDeleter);
 		};
 
-		inline_small void f_Destruct()
-		{
-			if constexpr (t_bAutoDelete)
-			{
-				while (t_CData *pCurrent = f_GetLast())
-				{
-					// We must use this special template or objects that cannot be deleted will get a compile error here even if t_bAutoDelete is false
-					TCAutoDeleteHelper<t_CData, t_CAllocator, t_bAutoDelete>::fs_Delete(pCurrent);
-				}
-			}
-			else
-				f_Clear();
-		}
-
-		void f_Clear()
-		{
-			auto pLink = &m_Link;
-			auto pNext = m_Link.f_GetNextList();
-
-			while (pNext != pLink)
-			{
-				auto pCurrent = pNext;
-				pNext = pNext->f_GetNextNotList();
-
-				pCurrent->f_Upcast()->f_SetNextInit(nullptr);
-#ifdef DMibEnableSafeCheck
-				pCurrent->f_Upcast()->f_SetPrevInit(nullptr);
-#endif
-			}
-
-			pLink->f_SetNextInitListLink(pLink);
-			pLink->f_SetPrevInitListLink(pLink);
-		}
-
-		inline_medium void f_Transfer(TCDLinkListAggregate *_pFrom)
-		{
-			DMibSafeCheck(f_IsEmpty(), "We must be empty to be able to transfer from another list");
-			if (_pFrom->f_IsEmpty())
-				return;
-			f_UnsafeTransfer(_pFrom);
-			_pFrom->f_Construct();
-		}
-
-		inline_medium void f_UnsafeTransfer(TCDLinkListAggregate *_pFrom)
-		{
-			auto *pFromLink = &_pFrom->m_Link;
-			m_Link.f_TransferList(pFromLink->f_GetNextList(), pFromLink->f_GetPrevList());
-		}
-
-		inline_small void f_Transfer(TCDLinkListAggregate &_From)
-		{
-			f_Transfer(&_From);
-		}
-
-		inline_small void f_UnsafeTransfer(TCDLinkListAggregate &_From)
-		{
-			f_UnsafeTransfer(&_From);
-		}
-
-		inline_small t_CData *f_GetFirst()
-		{
-			auto pLink = &m_Link;
-			auto pNext = pLink->f_GetNextList();
-			if (pNext != pLink)
-				return fsp_MemberFromLink(pNext->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		inline_small t_CData *f_GetLast()
-		{
-			auto pLink = &m_Link;
-			auto pPrev = pLink->f_GetPrevList();
-			if (pPrev != pLink)
-				return fsp_MemberFromLink(pPrev->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		inline_small t_CData const *f_GetFirst() const
-		{
-			auto pLink = &m_Link;
-			auto pNext = pLink->f_GetNextList();
-			if (pNext != pLink)
-				return fsp_MemberFromLink(pNext->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		inline_small t_CData const *f_GetLast() const
-		{
-			auto pLink = &m_Link;
-			auto pPrev = pLink->f_GetPrevList();
-			if (pPrev != pLink)
-				return fsp_MemberFromLink(pPrev->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		static inline_small t_CData *fs_GetNextUnsafe(t_CData *_pCurrent)
-		{
-			auto *pNext = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetNextNotList();
-			if (!pNext->f_IsListLink())
-				return TCDLinkListAggregate::fsp_MemberFromLink(pNext->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		static inline_small t_CData *fs_GetNext(t_CData *_pCurrent)
-		{
-			auto *pNext = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetNextNotList();
-			if (pNext && !pNext->f_IsListLink())
-				return TCDLinkListAggregate::fsp_MemberFromLink(pNext->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		static inline_small t_CData *fs_GetPrevUnsafe(t_CData *_pCurrent)
-		{
-			auto *pPrev = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetPrevNotList();
-			if (!pPrev->f_IsListLink())
-				return TCDLinkListAggregate::fsp_MemberFromLink(pPrev->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		static inline_small t_CData *fs_GetPrev(t_CData *_pCurrent)
-		{
-			if (!TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_IsInList())
-				return nullptr;
-
-			return fs_GetPrevUnsafe(_pCurrent);
-		}
-
-		static inline_small t_CData const *fs_GetNextUnsafe(t_CData const *_pCurrent)
-		{
-			auto const *pNext = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetNextNotList();
-			if (!pNext->f_IsListLink())
-				return TCDLinkListAggregate::fsp_MemberFromLink(pNext->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		static inline_small t_CData const *fs_GetNext(t_CData const *_pCurrent)
-		{
-			auto const *pNext = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetNextNotList();
-			if (pNext && !pNext->f_IsListLink())
-				return TCDLinkListAggregate::fsp_MemberFromLink(pNext->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		static inline_small t_CData const *fs_GetPrevUnsafe(t_CData const *_pCurrent)
-		{
-			auto const *pPrev = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetPrevNotList();
-			if (!pPrev->f_IsListLink())
-				return TCDLinkListAggregate::fsp_MemberFromLink(pPrev->f_Upcast());
-			else
-				return nullptr;
-		}
-
-		static inline_small t_CData const *fs_GetPrev(t_CData const *_pCurrent)
-		{
-			if (!TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_IsInList())
-				return nullptr;
-			return fs_GetPrevUnsafe(_pCurrent);
-		}
-
-		void f_DeleteAll()
-		{
-			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObject(t_CAllocator(), pCurrent);
-		}
-
+		inline_small void f_Destruct();
+		void f_Clear();
+		inline_medium void f_Transfer(TCDLinkListAggregate *_pFrom);
+		inline_medium void f_UnsafeTransfer(TCDLinkListAggregate *_pFrom);
+		inline_small void f_Transfer(TCDLinkListAggregate &_From);
+		inline_small void f_UnsafeTransfer(TCDLinkListAggregate &_From);
+		inline_small t_CData *f_GetFirst();
+		inline_small t_CData *f_GetLast();
+		inline_small t_CData const *f_GetFirst() const;
+		inline_small t_CData const *f_GetLast() const;
+		static inline_small t_CData *fs_GetNextUnsafe(t_CData *_pCurrent);
+		static inline_small t_CData *fs_GetNext(t_CData *_pCurrent);
+		static inline_small t_CData *fs_GetPrevUnsafe(t_CData *_pCurrent);
+		static inline_small t_CData *fs_GetPrev(t_CData *_pCurrent);
+		static inline_small t_CData const *fs_GetNextUnsafe(t_CData const *_pCurrent);
+		static inline_small t_CData const *fs_GetNext(t_CData const *_pCurrent);
+		static inline_small t_CData const *fs_GetPrevUnsafe(t_CData const *_pCurrent);
+		static inline_small t_CData const *fs_GetPrev(t_CData const *_pCurrent);
+		void f_DeleteAll();
 		template <typename tf_CAllocator2>
-		void f_DeleteAllAllocator()
-		{
-			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObject(tf_CAllocator2(), pCurrent);
-		}
-
+		void f_DeleteAllAllocator();
 		template <typename tf_CAllocator2>
-		void f_DeleteAllAllocator(tf_CAllocator2 &_Allocator)
-		{
-			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObject(_Allocator, pCurrent);
-		}
-
-		void f_DeleteAllDefiniteType()
-		{
-			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObjectDefiniteType(t_CAllocator(), pCurrent);
-		}
-
+		void f_DeleteAllAllocator(tf_CAllocator2 &_Allocator);
+		void f_DeleteAllDefiniteType();
 		template <typename tf_CAllocator2>
-		void f_DeleteAllAllocatorDefiniteType()
-		{
-			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObjectDefiniteType(tf_CAllocator2(), pCurrent);
-		}
-
+		void f_DeleteAllAllocatorDefiniteType();
 		template <typename tf_CAllocator2>
-		void f_DeleteAllAllocatorDefiniteType(tf_CAllocator2 &_Allocator)
-		{
-			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObjectDefiniteType(_Allocator, pCurrent);
-		}
-
+		void f_DeleteAllAllocatorDefiniteType(tf_CAllocator2 &_Allocator);
 		template <typename tf_CDeleter>
-		void f_DeleteAllDeleter()
-		{
-			while (t_CData *pCurrent = f_GetLast())
-				tf_CDeleter::fs_Delete(pCurrent);
-		}
-
-		void f_DeleteAllDeleter()
-		{
-			f_DeleteAllDeleter<t_CData>();
-		}
-
-		inline_small bool f_IsEmpty() const
-		{
-			auto pLink = &m_Link;
-			return pLink->f_GetNextList() == pLink;
-		}
-
-		umint f_GetLen() const
-		{
-			CIteratorConst Iter(*this);
-			umint Num = 0;
-			while (Iter)
-			{
-				++Num;
-				++Iter;
-			}
-			return Num;
-		}
-
+		void f_DeleteAllDeleter();
+		void f_DeleteAllDeleter();
+		inline_small bool f_IsEmpty() const;
+		umint f_GetLen() const;
 		template <typename tf_CData2>
-		bool f_Contains(tf_CData2 const &_CheckFor) const
-		{
-			CIteratorConst Iter(*this);
-			while (Iter)
-			{
-				if ((*Iter) == _CheckFor)
-					return true;
-				++Iter;
-			}
-			return false;
-		}
-
+		bool f_Contains(tf_CData2 const &_CheckFor) const;
 		template <typename tf_CData2>
-		t_CData const *f_Find(tf_CData2 const &_CheckFor) const
-		{
-			CIteratorConst Iter(*this);
-			while (Iter)
-			{
-				if ((*Iter) == _CheckFor)
-					return Iter;
-				++Iter;
-			}
-			return nullptr;
-		}
-
+		t_CData const *f_Find(tf_CData2 const &_CheckFor) const;
 		template <typename tf_CData2>
-		t_CData *f_Find(tf_CData2 const &_CheckFor)
-		{
-			CIterator Iter(*this);
-			while (Iter)
-			{
-				if ((*Iter) == _CheckFor)
-					return Iter;
-				++Iter;
-			}
-			return nullptr;
-		}
-
+		t_CData *f_Find(tf_CData2 const &_CheckFor);
 		template <typename tf_FCompare, typename tf_CData2>
-		t_CData const *f_Find(tf_FCompare &&_fCompare, tf_CData2 const &_CheckFor) const
-		{
-			CIteratorConst Iter(*this);
-			while (Iter)
-			{
-				if (!_fCompare((*Iter), _CheckFor) && !_fCompare(_CheckFor, (*Iter)))
-					return Iter;
-				++Iter;
-			}
-			return nullptr;
-		}
-
+		t_CData const *f_Find(tf_FCompare &&_fCompare, tf_CData2 const &_CheckFor) const;
 		template <typename tf_FCompare, typename tf_CData2>
-		t_CData *f_Find(tf_FCompare &&_fCompare, tf_CData2 const &_CheckFor)
-		{
-			CIterator Iter(*this);
-			while (Iter)
-			{
-				if (!_fCompare((*Iter), _CheckFor) && !_fCompare(_CheckFor, (*Iter)))
-					return Iter;
-				++Iter;
-			}
-			return nullptr;
-		}
-
-		bool f_Contains(t_CData const *_pCheckFor) const
-		{
-			CIteratorConst Iter(*this);
-			while (Iter)
-			{
-				if (Iter.f_GetCurrent() == _pCheckFor)
-					return true;
-				++Iter;
-			}
-			return false;
-		}
-
-		bool f_Contains(t_CData *_pCheckFor) const
-		{
-			CIteratorConst Iter(*this);
-			while (Iter)
-			{
-				if (Iter.f_GetCurrent() == _pCheckFor)
-					return true;
-				++Iter;
-			}
-			return false;
-		}
+		t_CData *f_Find(tf_FCompare &&_fCompare, tf_CData2 const &_CheckFor);
+		bool f_Contains(t_CData const *_pCheckFor) const;
+		bool f_Contains(t_CData *_pCheckFor) const;
 
 		/***************************************************************************************************\
 		|ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ|
@@ -1467,296 +337,51 @@ namespace NMib::NIntrusive
 		|___________________________________________________________________________________________________|
 		\***************************************************************************************************/
 
-		void f_SplitInto(t_CData *_pFirst, t_CData *_pLast)
-		{
-			DMibSafeCheck(f_IsEmpty(), "List must be empty here");
-			DMibSafeCheck(_pFirst, "First must be specified");
-			DMibSafeCheck(_pLast, "Last must be specified");
-			t_CLink *pToLinkFirst = fsp_LinkFromMember(_pFirst);
-			t_CLink *pToLinkLast = fsp_LinkFromMember(_pLast);
-			DMibSafeCheck(pToLinkFirst->f_IsInList(), "First must be in list");
-			DMibSafeCheck(pToLinkLast->f_IsInList(), "Last must be in list");
-			DMibSafeCheck(!pToLinkFirst->f_IsListLink(), "Internal error");
-			DMibSafeCheck(!pToLinkLast->f_IsListLink(), "Internal error");
-
-			t_CLink::fs_UnlinkRange(pToLinkFirst, pToLinkLast);
-
-			m_Link.f_TransferList(pToLinkFirst, pToLinkLast);
-		}
+		void f_SplitInto(t_CData *_pFirst, t_CData *_pLast);
 
 		// Insert
-		void f_Insert(TCDLinkListAggregate &_OtherList)
-		{
-			if (_OtherList.f_IsEmpty())
-				return;
-
-			auto pLink = &m_Link;
-			auto pOtherLink = &_OtherList.m_Link;
-			if (f_IsEmpty())
-			{
-				pLink->f_TransferList(pOtherLink->f_GetNextList(), pOtherLink->f_GetPrevList());
-				_OtherList.f_Construct();
-				return;
-			}
-			auto *pToLinkFirst = pOtherLink->f_GetNextList();
-			auto *pToLinkLast = pOtherLink->f_Upcast()->f_GetPrevList();
-			auto *pToInsertAfter = pLink->f_Upcast()->f_GetPrevList();
-
-			t_CLink::fs_LinkRange(pToLinkFirst->f_Upcast(), pToLinkLast->f_Upcast(), pToInsertAfter);
-
-			// Just reset other list
-			_OtherList.f_Construct();
-		}
-
-		inline_small void f_Insert(t_CData *_pToInsert)
-		{
-			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-			pToLink->f_Unlink();
-			auto *pLast = m_Link.f_GetPrevList();
-			pToLink->f_LinkLast(pLast);
-		}
-
-		inline_small void f_Insert(t_CData &_ToInsert)
-		{
-			f_Insert(&_ToInsert);
-		}
-
-		void f_InsertSorted(TCDLinkListAggregate &_OtherList)
-		{
-			while (auto *pData = _OtherList.f_Pop())
-				f_InsertSorted(pData);
-		}
-
+		void f_Insert(TCDLinkListAggregate &_OtherList);
+		inline_small void f_Insert(t_CData *_pToInsert);
+		inline_small void f_Insert(t_CData &_ToInsert);
+		void f_InsertSorted(TCDLinkListAggregate &_OtherList);
 		template <typename tf_FCompare>
-		void f_InsertSortedLast(t_CData &_ToInsert, tf_FCompare &&_fCompare)
-		{
-			f_InsertSortedLast(&_ToInsert, _fCompare);
-		}
-
+		void f_InsertSortedLast(t_CData &_ToInsert, tf_FCompare &&_fCompare);
 		template <typename tf_FCompare>
-		void f_InsertSortedLast(t_CData *_pToInsert, tf_FCompare &&_fCompare)
-		{
-			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-			pToLink->f_Unlink();
-
-			if (f_IsEmpty() || fg_CheckOrdering(_fCompare(*_pToInsert, *f_GetLast())) > 0)
-			{
-				f_InsertLast(_pToInsert);
-				return;
-			}
-
-			auto pLink = &m_Link;
-			auto *pCurrent = pLink->f_GetNextList();
-			auto *pLast = pLink;
-
-			while (pCurrent != pLink)
-			{
-				if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) > 0)
-					break;
-				pLast = pCurrent;
-				pCurrent = pCurrent->f_GetNextNotList();
-			}
-
-			pToLink->f_Link(pLast);
-		}
-
+		void f_InsertSortedLast(t_CData *_pToInsert, tf_FCompare &&_fCompare);
 		template <typename tf_FCompare>
-		void f_InsertSorted(t_CData &_ToInsert, tf_FCompare &&_fCompare)
-		{
-			f_InsertSortedLast(_ToInsert, _fCompare);
-		}
-
+		void f_InsertSorted(t_CData &_ToInsert, tf_FCompare &&_fCompare);
 		template <typename tf_FCompare>
-		void f_InsertSorted(t_CData *_pToInsert, tf_FCompare &&_fCompare)
-		{
-			f_InsertSortedLast(_pToInsert, _fCompare);
-		}
-
+		void f_InsertSorted(t_CData *_pToInsert, tf_FCompare &&_fCompare);
 		template <typename tf_FCompare>
-		void f_InsertSortedFirst(t_CData &_ToInsert, tf_FCompare &&_fCompare)
-		{
-			f_InsertSortedFirst(&_ToInsert, _fCompare);
-		}
-
+		void f_InsertSortedFirst(t_CData &_ToInsert, tf_FCompare &&_fCompare);
 		template <typename tf_FCompare>
-		void f_InsertSortedFirst(t_CData *_pToInsert, tf_FCompare &&_fCompare)
-		{
-			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-			pToLink->f_Unlink();
-
-			if (f_IsEmpty() || fg_CheckOrdering(_fCompare(*_pToInsert, *f_GetLast())) > 0)
-			{
-				f_InsertLast(_pToInsert);
-				return;
-			}
-
-			auto *pLink = &m_Link;
-			auto *pCurrent = pLink->f_GetNextList();
-			auto *pLast = pLink;
-
-			while (pCurrent != pLink)
-			{
-				if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) >= 0)
-					break;
-				pLast = pCurrent;
-				pCurrent = pCurrent->f_GetNextNotList();
-			}
-
-			pToLink->f_Link(pLast);
-		}
+		void f_InsertSortedFirst(t_CData *_pToInsert, tf_FCompare &&_fCompare);
 
 		// f_InsertLast
 
-		void f_InsertLast(TCDLinkListAggregate &_OtherList)
-		{
-			f_Insert(_OtherList);
-		}
-
-		inline_small void f_InsertLast(t_CData *_pToInsert)
-		{
-			f_Insert(_pToInsert);
-		}
-
-		inline_small void f_InsertLast(t_CData &_ToInsert)
-		{
-			f_InsertLast(&_ToInsert);
-		}
+		void f_InsertLast(TCDLinkListAggregate &_OtherList);
+		inline_small void f_InsertLast(t_CData *_pToInsert);
+		inline_small void f_InsertLast(t_CData &_ToInsert);
 
 		// f_InsertFirst
-		inline_small void f_InsertFirst(t_CData *_pToInsert)
-		{
-			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-			pToLink->f_Unlink();
-			pToLink->f_LinkFirst(&m_Link);
-		}
-
-		inline_small void f_InsertFirst(t_CData &_ToInsert)
-		{
-			f_InsertFirst(&_ToInsert);
-		}
-
-		void f_InsertFirst(TCDLinkListAggregate &_OtherList)
-		{
-			if (_OtherList.f_IsEmpty())
-				return;
-			auto pLink = &m_Link;
-			auto pOtherLink = &_OtherList.m_Link;
-			if (f_IsEmpty())
-			{
-				pLink->f_TransferList(pOtherLink->f_GetNextList(), pOtherLink->f_GetPrevList());
-				_OtherList.f_Construct();
-				return;
-			}
-			auto *pToLinkFirst = pOtherLink->f_GetNextList();
-			auto *pToLinkLast = pOtherLink->f_GetPrevList();
-			auto *pToInsertAfter = pLink;
-
-			t_CLink::fs_LinkRange(pToLinkFirst->f_Upcast(), pToLinkLast->f_Upcast(), pToInsertAfter);
-
-			// Just reset other list
-			_OtherList.f_Construct();
-		}
+		inline_small void f_InsertFirst(t_CData *_pToInsert);
+		inline_small void f_InsertFirst(t_CData &_ToInsert);
+		void f_InsertFirst(TCDLinkListAggregate &_OtherList);
 
 		// InsertHead
 
-		void f_InsertAfter(TCDLinkListAggregate &_OtherList, t_CData *_pToInsertAfter)
-		{
-			if (_OtherList.f_IsEmpty())
-				return;
-			DMibSafeCheck(!f_IsEmpty(), "Cannot be empty");
-			DMibSafeCheck(fsp_LinkFromMember(_pToInsertAfter)->f_IsInList(), "The object has to be in a list to be able to be inserted");
-
-			auto pOtherLink = &_OtherList.m_Link;
-
-			t_CLink *pToLinkFirst = pOtherLink->f_GetNextList()->f_Upcast();
-			t_CLink *pToLinkLast = pOtherLink->f_GetPrevList()->f_Upcast();
-
-			t_CLink *pToInsertAfter = fsp_LinkFromMember(_pToInsertAfter);
-
-			t_CLink::fs_LinkRange(pToLinkFirst, pToLinkLast, pToInsertAfter);
-
-			// Just reset other list
-			_OtherList.f_Construct();
-		}
-
-		inline_small void f_InsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter)
-		{
-			DMibSafeCheck(fsp_LinkFromMember(_pToInsertAfter)->f_IsInList(), "The object has to be in a list to be able to be inserted");
-			DMibSafeCheck(_pToInsert != _pToInsertAfter, "You cannot insert an object after itself");
-			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-			pToLink->f_Unlink();
-			pToLink->f_Link(fsp_LinkFromMember(_pToInsertAfter));
-		}
-
-		inline_small void f_InsertAfter(t_CData &_ToInsert, t_CData *_pToInsertAfter)
-		{
-			f_InsertAfter(&_ToInsert, _pToInsertAfter);
-		}
-
-		inline_small void f_InsertAfter(t_CData *_pToInsert, t_CData &_ToInsertAfter)
-		{
-			f_InsertAfter(_pToInsert, &_ToInsertAfter);
-		}
-
-		inline_small void f_InsertAfter(t_CData &_ToInsert, t_CData &_ToInsertAfter)
-		{
-			f_InsertAfter(&_ToInsert, &_ToInsertAfter);
-		}
-
-		void f_InsertBefore(TCDLinkListAggregate &_OtherList, t_CData *_pLinkBeforeThis)
-		{
-			if (_OtherList.f_IsEmpty())
-				return;
-			DMibSafeCheck(!f_IsEmpty(), "Cannot be empty");
-			DMibSafeCheck(fsp_LinkFromMember(_pLinkBeforeThis)->f_IsInList(), "The object has to be in a list to be able to be inserted");
-
-			auto pOtherLink = &_OtherList.m_Link;
-			t_CLink *pToLinkFirst = pOtherLink->f_GetNextList()->f_Upcast();
-			t_CLink *pToLinkLast = pOtherLink->f_GetPrevList()->f_Upcast();
-
-			t_CLink *pToInsertAfter = fsp_LinkFromMember(_pLinkBeforeThis)->f_GetPrevNotList();
-
-			t_CLink::fs_LinkRange(pToLinkFirst, pToLinkLast, pToInsertAfter);
-
-			// Just reset other list
-			_OtherList.f_Construct();
-		}
-
-		inline_small void f_InsertBefore(t_CData *_pToInsert, t_CData *_pLinkBeforeThis)
-		{
-			DMibSafeCheck(fsp_LinkFromMember(_pLinkBeforeThis)->f_IsInList(), "The object has to be in a list to be able to be inserted");
-			DMibSafeCheck(_pToInsert != _pLinkBeforeThis, "You cannot insert an object before itself");
-			t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-			t_CLink *pLinkBeforeThis = fsp_LinkFromMember(_pLinkBeforeThis);
-
-			pToLink->f_Unlink();
-			pToLink->f_Link(pLinkBeforeThis->f_GetPrevNotList());
-		}
-
-		inline_small void f_InsertBefore(t_CData &_ToInsert, t_CData *_pToInsertBefore)
-		{
-			f_InsertBefore(&_ToInsert, _pToInsertBefore);
-		}
-
-		inline_small void f_InsertBefore(t_CData *_pToInsert, t_CData &_ToInsertBefore)
-		{
-			f_InsertBefore(_pToInsert, &_ToInsertBefore);
-		}
-
-		inline_small void f_InsertBefore(t_CData &_ToInsert, t_CData &_ToInsertBefore)
-		{
-			f_InsertBefore(&_ToInsert, &_ToInsertBefore);
-		}
-
-		inline_small void f_Push(t_CData *_pData)
-		{
-			f_InsertFirst(_pData);
-		}
-
-		inline_small void f_Push(t_CData &_Data)
-		{
-			f_InsertFirst(&_Data);
-		}
+		void f_InsertAfter(TCDLinkListAggregate &_OtherList, t_CData *_pToInsertAfter);
+		inline_small void f_InsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter);
+		inline_small void f_InsertAfter(t_CData &_ToInsert, t_CData *_pToInsertAfter);
+		inline_small void f_InsertAfter(t_CData *_pToInsert, t_CData &_ToInsertAfter);
+		inline_small void f_InsertAfter(t_CData &_ToInsert, t_CData &_ToInsertAfter);
+		void f_InsertBefore(TCDLinkListAggregate &_OtherList, t_CData *_pLinkBeforeThis);
+		inline_small void f_InsertBefore(t_CData *_pToInsert, t_CData *_pLinkBeforeThis);
+		inline_small void f_InsertBefore(t_CData &_ToInsert, t_CData *_pToInsertBefore);
+		inline_small void f_InsertBefore(t_CData *_pToInsert, t_CData &_ToInsertBefore);
+		inline_small void f_InsertBefore(t_CData &_ToInsert, t_CData &_ToInsertBefore);
+		inline_small void f_Push(t_CData *_pData);
+		inline_small void f_Push(t_CData &_Data);
 
 		/***************************************************************************************************\
 		|ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ|
@@ -1765,95 +390,27 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		// Insert
-		inline_small void f_UnsafeInsert(t_CData *_pToInsert)
-		{
-			fsp_LinkFromMember(_pToInsert)->f_LinkNoUnlinkLast(m_Link.f_GetPrevList());
-		}
-
-		inline_small void f_UnsafeInsert(t_CData &_ToInsert)
-		{
-			f_UnsafeInsert(&_ToInsert);
-		}
-
+		inline_small void f_UnsafeInsert(t_CData *_pToInsert);
+		inline_small void f_UnsafeInsert(t_CData &_ToInsert);
 		template <typename tf_FCompare>
-		void f_UnsafeInsertSorted(t_CData &_ToInsert, tf_FCompare &&_fCompare)
-		{
-			f_UnsafeInsertSorted(&_ToInsert, _fCompare);
-		}
-
+		void f_UnsafeInsertSorted(t_CData &_ToInsert, tf_FCompare &&_fCompare);
 		template <typename tf_FCompare>
-		void f_UnsafeInsertSorted(t_CData *_pToInsert, tf_FCompare &&_fCompare)
-		{
-			auto pLink = &m_Link;
-			auto *pCurrent = pLink->f_GetNextList();
-
-			while (pCurrent != pLink)
-			{
-				if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pCurrent->f_Upcast()), *_pToInsert)) > 0)
-					break;
-				pCurrent = pCurrent->f_GetNextNotList();
-			}
-
-			if (pCurrent != pLink)
-			{
-				t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-				pToLink->f_LinkNoUnlink(pCurrent);
-			}
-			else
-			{
-				t_CLink *pToLink = fsp_LinkFromMember(_pToInsert);
-				pToLink->f_LinkNoUnlinkFirst(pLink);
-			}
-		}
+		void f_UnsafeInsertSorted(t_CData *_pToInsert, tf_FCompare &&_fCompare);
 
 		// InsertTail
-		inline_small void f_UnsafeInsertLast(t_CData *_pToInsert)
-		{
-			f_UnsafeInsert(_pToInsert);
-		}
-
-		inline_small void f_UnsafeInsertLast(t_CData &_ToInsert)
-		{
-			f_UnsafeInsertLast(&_ToInsert);
-		}
+		inline_small void f_UnsafeInsertLast(t_CData *_pToInsert);
+		inline_small void f_UnsafeInsertLast(t_CData &_ToInsert);
 
 		// InsertHead
-		inline_small void f_UnsafeInsertFirst(t_CData *_pToInsert)
-		{
-			fsp_LinkFromMember(_pToInsert)->f_LinkNoUnlinkFirst(&m_Link);
-		}
-
-		inline_small void f_UnsafeInsertFirst(t_CData &_ToInsert)
-		{
-			f_UnsafeInsertFirst(&_ToInsert);
-		}
+		inline_small void f_UnsafeInsertFirst(t_CData *_pToInsert);
+		inline_small void f_UnsafeInsertFirst(t_CData &_ToInsert);
 
 		// InsertHead
-		inline_small void f_UnsafeInsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter)
-		{
-			DMibSafeCheck(fsp_LinkFromMember(_pToInsertAfter)->f_IsInList(), "The object has to be in a list to be able to be inserted");
-			fsp_LinkFromMember(_pToInsert)->f_LinkNoUnlink(fsp_LinkFromMember(_pToInsertAfter));
-		}
-
-		inline_small void f_UnsafeInsertAfter(t_CData &_ToInsert, t_CData *_pToInsertAfter)
-		{
-			f_UnsafeInsertAfter(&_ToInsert, _pToInsertAfter);
-		}
-
-		inline_small void f_UnsafeInsertAfter(t_CData *_pToInsert, t_CData &_ToInsertAfter)
-		{
-			f_UnsafeInsertAfter(_pToInsert, &_ToInsertAfter);
-		}
-
-		inline_small void f_UnsafeInsertAfter(t_CData &_ToInsert, t_CData &_ToInsertAfter)
-		{
-			f_UnsafeInsertAfter(&_ToInsert, &_ToInsertAfter);
-		}
-
-		inline_small void f_UnsafePush(t_CData *_pData)
-		{
-			f_UnsafeInsertFirst(_pData);
-		}
+		inline_small void f_UnsafeInsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter);
+		inline_small void f_UnsafeInsertAfter(t_CData &_ToInsert, t_CData *_pToInsertAfter);
+		inline_small void f_UnsafeInsertAfter(t_CData *_pToInsert, t_CData &_ToInsertAfter);
+		inline_small void f_UnsafeInsertAfter(t_CData &_ToInsert, t_CData &_ToInsertAfter);
+		inline_small void f_UnsafePush(t_CData *_pData);
 
 		/***************************************************************************************************\
 		|ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ|
@@ -1861,1046 +418,113 @@ namespace NMib::NIntrusive
 		|___________________________________________________________________________________________________|
 		\***************************************************************************************************/
 
-		inline_small void f_Remove(t_CData *_pToRemove)
-		{
-			fsp_LinkFromMember(_pToRemove)->f_Unlink();
-		}
-
-		inline_small void f_Remove(t_CData &_ToRemove)
-		{
-			f_Remove(&_ToRemove);
-		}
-
-		inline_medium t_CData *f_Pop()
-		{
-			auto *pLink = &m_Link;
-			auto *pNext = pLink->f_GetNextList();
-			if (pNext != pLink)
-			{
-				pNext->f_Upcast()->f_UnlinkFirstLinked();
-				return fsp_MemberFromLink(pNext->f_Upcast());
-			}
-			else
-				return nullptr;
-		}
-
-		inline_medium t_CData *f_UnsafePop()
-		{
-			auto *pLink = &m_Link;
-			auto *pNext = pLink->f_GetNextList();
-			if (pNext != pLink)
-			{
-				pNext->f_Upcast()->f_UnsafeUnlinkFirst();
-				return fsp_MemberFromLink(pNext->f_Upcast());
-			}
-			else
-				return nullptr;
-		}
-
-		void f_Reverse()
-		{
-			auto *pLink = &m_Link;
-			auto *pCurrent = pLink->f_GetNextList();
-			while (pCurrent != pLink)
-			{
-				t_CLink *pTemp = pCurrent->f_Upcast();
-				pCurrent = pCurrent->f_GetNextNotList();
-				pTemp->f_UnlinkLinked();
-				pTemp->f_LinkFirst(pLink);
-			}
-		}
-
-		/*ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ*\
-		|	Function:			Sorts the linked list								|
-		|																			|
-		|	Parameters:																|
-		|		_fCompare:		Compare functor										|
-		|																			|
-		|		_InsertionBits:	The sort uses insertion sort to sort				|
-		|						1 << _InsertionBits parts of the list, then uses	|
-		|						mergesort to sort the rest.							|
-		|																			|
-		|						  If you have an expensive sort function you		|
-		|						should use 2 for _InsertionBits, wich will mostly	|
-		|						use the smallest number of compares for a given		|
-		|						sort session. 4 or largen Will be fastest for		|
-		|						small compare funcions, but 3 is probably a good	|
-		|						compromise that will work good on most compares.	|
-		|																			|
-		|	Returns:			description											|
-		|																			|
-		|	Comments:			You can use this method instead of the callback		|
-		|						method when you want the compare function to be		|
-		|						able to be inlined, at cost of code size.			|
-		|																			|
-		\*_________________________________________________________________________*/
+		inline_small void f_Remove(t_CData *_pToRemove);
+		inline_small void f_Remove(t_CData &_ToRemove);
+		inline_medium t_CData *f_Pop();
+		inline_medium t_CData *f_UnsafePop();
+		void f_Reverse();
 		template <typename tf_FCompare>
-		void f_MergeSort(tf_FCompare &&_fCompare, aint _InsertionBits = 3)
-		{
-			// We use mergesort as a stable and predictably performing algorithm, needing no extra heapspace or stackspace
-			// O = n(log n)
-
-			// Empty list ??
-			if (f_IsEmpty())
-				return;
-
-			// Start with insertion sorting a bit first
-			auto *pLink = &m_Link;
-			t_CLink List;
-			{
-				auto pNext = pLink->f_GetNextList();
-				auto pPrev = pLink->f_GetPrevList();
-				List.f_SetNextInit(pNext);
-				List.f_SetPrevInit(pPrev);
-				pNext->f_Upcast()->f_SetPrevInit(&List);
-				pPrev->f_Upcast()->f_SetNextInit(&List);
-
-				pLink->f_SetNextInitListLink(pLink);
-				pLink->f_SetPrevInitListLink(pLink);
-			}
-
-			aint MergeSize = aint(1) << (_InsertionBits);
-
-			if (_InsertionBits > 0)
-			{
-				aint const SortSize = aint(1) << _InsertionBits;
-
-				auto *pCurrent = List.f_GetNextNotList();
-				t_CLink LastLink;
-				t_CLink *pLastLink = &LastLink;
-				pLastLink->f_SetNextInit(pLastLink);
-				pLastLink->f_SetPrevInit(pLastLink);
-				aint NumSorted = 0;
-
-				while (pCurrent != &List)
-				{
-					// Add first member
-
-					++NumSorted;
-					t_CLink *pTemp = pCurrent->f_GetNextNotList()->f_Upcast();
-					pCurrent->f_Upcast()->f_LinkNoUnlinkNotList(pLastLink->f_GetPrevNoList());
-					pCurrent = pTemp;
-
-					if (pCurrent == &List)
-						break;
-
-					for (aint iItem = 1; iItem < SortSize; ++iItem)
-					{
-						aint NumChecked = iItem;
-						++NumSorted;
-
-						t_CLink *pTemp = pLastLink->f_GetPrevNoList();
-
-						while (NumChecked)
-						{
-							if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pCurrent->f_Upcast()), *fsp_MemberFromLink(pTemp))) >= 0)
-								break;
-
-							--NumChecked;
-							pTemp = pTemp->f_GetPrevNoList();
-						}
-
-						t_CLink *pTempNext = pCurrent->f_GetNextNotList()->f_Upcast();
-						pCurrent->f_Upcast()->f_LinkNoUnlinkNotList(pTemp);
-						pCurrent = pTempNext;
-						if (pCurrent == &List)
-							break;
-					}
-				}
-
-				pLink->f_TransferList(pLastLink->f_GetNextNotList(), pLastLink->f_GetPrevNoList());
-				if (NumSorted <= MergeSize)
-				{
-					// Add last link
-					return;
-				}
-
-				// Remove last link
-				// 	LastLink.f_GetPrev()->fp_SetNext(nullptr);
-			}
-
-			DMibSafeCheck(_InsertionBits >= 0, "Has to be at least 1");
-
-			{
-				auto pNext = pLink->f_GetNextList();
-				auto pPrev = pLink->f_GetPrevList();
-				List.f_SetNextInit(pNext);
-				List.f_SetPrevInit(pPrev);
-				pNext->f_Upcast()->f_SetPrevInit(&List);
-				pPrev->f_Upcast()->f_SetNextInit(&List);
-
-				pLink->f_SetNextInitListLink(pLink);
-				pLink->f_SetPrevInitListLink(pLink);
-			}
-
-			while (1)
-			{
-				auto *pFirst = List.f_GetNextNotList()->f_Upcast();
-				auto *pLast = &List;
-
-				aint MergesDone = 0; // count number of merges we do in this pass
-
-				while (pFirst != &List)
-				{
-					MergesDone++; // there exists a merge to be done
-					// step 'MergeSize' places along from pFirst
-					t_CLink *pSecond = pFirst->f_Upcast();
-					aint MergeSizeFirst = 0;
-					aint MergeSizeSecond = MergeSize;
-					while (MergeSizeFirst < MergeSize)
-					{
-						MergeSizeFirst++;
-						pSecond = pSecond->f_GetNextNotList()->f_Upcast();
-						if (pSecond == &List)
-							break;
-					}
-					// if pSecond hasn't fallen off end, we have two lists to merge
-
-					if (pSecond == &List)
-					{
-						// End of list
-						pLast->f_SetNextNotList(pFirst);
-						pFirst->f_SetPrevNotList(pLast);
-						pLast = &List;
-						pFirst = pSecond;
-						continue;
-					}
-
-					if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pSecond->f_GetPrevNoList()), *fsp_MemberFromLink(pSecond))) <= 0)
-					{
-						// Lists already sorted
-						pLast->f_SetNextNotList(pFirst);
-						pFirst->f_SetPrevNotList(pLast);
-
-						while (MergeSizeSecond && pSecond != &List)
-						{
-							--MergeSizeSecond;
-							pLast = pSecond;
-							pSecond = pSecond->f_GetNextNotList()->f_Upcast();
-						}
-					}
-					else
-					{
-						DMibSafeCheck(MergeSizeSecond && MergeSizeFirst, "Hula");
-						// now we have two lists; merge them
-						while (1)
-						{
-							// decide whether m_pNext element of merge comes from pFirst or pSecond
-							if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pFirst), *fsp_MemberFromLink(pSecond))) <= 0)
-							{
-								// First element of pFirst is lower (or same); pTemp must come from pFirst.
-								pLast->f_SetNextNotList(pFirst);
-								pFirst->f_SetPrevNotList(pLast);
-								pLast = pFirst;
-								pFirst = pFirst->f_GetNextNotList()->f_Upcast();
-								MergeSizeFirst--;
-								if (!MergeSizeFirst)
-								{
-									pLast->f_SetNextNotList(pSecond);
-									pSecond->f_SetPrevNotList(pLast);
-
-									while (MergeSizeSecond && pSecond != &List)
-									{
-										--MergeSizeSecond;
-										pLast = pSecond;
-										pSecond = pSecond->f_GetNextNotList()->f_Upcast();
-									}
-									break;
-								}
-							}
-							else
-							{
-								// First element of pSecond is lower; pTemp must come from pSecond.
-								pLast->f_SetNextNotList(pSecond);
-								pSecond->f_SetPrevNotList(pLast);
-								pLast = pSecond;
-								pSecond = pSecond->f_GetNextNotList()->f_Upcast();
-								MergeSizeSecond--;
-								if (pSecond == &List || !MergeSizeSecond)
-								{
-									pLast->f_SetNextNotList(pFirst);
-									pFirst->f_SetPrevNotList(pLast);
-
-									while (MergeSizeFirst)
-									{
-										MergeSizeFirst--;
-										pLast = pFirst;
-										pFirst = pFirst->f_GetNextNotList()->f_Upcast();
-									}
-									break;
-								}
-							}
-						}
-					}
-
-					// now pFirst has stepped 'MergeSize' places along, and pSecond has too
-					pFirst = pSecond;
-				}
-
-				if (pLast != &List)
-				{
-					pLast->f_SetNextNotList(&List);
-					List.f_SetPrevNotList(pLast);
-				}
-
-				// If we have done only one merge, we're finished.
-				if (MergesDone <= 1) // allow for MergesDone==0, the empty list case
-				{
-					pLink->f_TransferList(List.f_GetNextNotList(), List.f_GetPrevNotList());
-					return;
-				}
-
-				// Otherwise repeat, merging lists twice the size
-				MergeSize <<= 1;
-			}
-		}
-
+		void f_MergeSort(tf_FCompare &&_fCompare, aint _InsertionBits = 3);
 		template <typename tf_CSortClass>
-		void f_MergeSort()
-		{
-			f_MergeSort<tf_CSortClass>(tf_CSortClass());
-		}
-
+		void f_MergeSort();
 		template <typename tf_FCompare>
-		void f_Sort(tf_FCompare &&_fCompare)
-		{
-			f_MergeSort(_fCompare);
-		}
+		void f_Sort(tf_FCompare &&_fCompare);
 
 		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
 		struct CBucketCallbackSort
 		{
 			void *m_pContext;
 			FBucketGetIndex *m_fSortFunction;
-			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem)
-			{
-				return ((CBucketCallbackSort *)_pContext)->m_fSortFunction(((CBucketCallbackSort *)_pContext)->m_pContext, _Place, _pItem);
-			}
+			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem);
 		};
 
 		template <aint tf_BucketSize>
-		void f_BucketSortCallback(FBucketGetIndex *_fSortFunction, void *_pContext = nullptr)
-		{
-			CBucketCallbackSort SortContext;
-			SortContext.m_pContext = _pContext;
-			SortContext.m_fSortFunction = _fSortFunction;
-			f_BucketSort<CBucketCallbackSort, tf_BucketSize>(&SortContext);
-		}
-
-		/*ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ*\
-		|	Function:			Sorts the linked list								|
-		|																			|
-		|	Template params:														|
-		|		tf_CSortClass:	The class that implements the index funtion.		|
-		|						The funtion must be static and be called fs_GetIndex|
-		|						It takes parameters									|
-		|						(void *_pContext, aint _Place, void *_pItem)		|
-		|						and returns the least significant index for _pItem	|
-		|																			|
-		|						  You can inline the compare function with good		|
-		|						results, if the compare is small.					|
-		|																			|
-		|	Parameters:																|
-		|		_pContext:		The context that is sent to the compare function	|
-		|																			|
-		|		_InsertionBits:	The sort uses insertion sort to sort				|
-		|						1 << _InsertionBits parts of the list, then uses	|
-		|						mergesort to sort the rest.							|
-		|																			|
-		|						  If you have an expensive sort function you		|
-		|						should use 2 for _InsertionBits, wich will mostly	|
-		|						use the smallest number of compares for a given		|
-		|						sort session. 4 or largen Will be fastest for		|
-		|						small compare funcions, but 3 is probably a good	|
-		|						compromise that will work good on most compares.	|
-		|																			|
-		|	Returns:			description											|
-		|																			|
-		|	Comments:			You can use this method instead of the callback		|
-		|						method when you want the compare function to be		|
-		|						able to be inlined, at cost of code size.			|
-		|																			|
-		\*_________________________________________________________________________*/
-
+		void f_BucketSortCallback(FBucketGetIndex *_fSortFunction, void *_pContext = nullptr);
 		template <typename tf_CSortClass, aint tf_BucketSize>
-		void f_BucketSort(aint _NumPlaces, void *_pContext = nullptr)
-		{
-			if (f_IsEmpty())
-				return;
-
-			t_CLink *Bucket[tf_BucketSize];
-
-			// Reset buckets
-			for (aint iBucket = 0; iBucket < tf_BucketSize; ++iBucket)
-				Bucket[iBucket] = nullptr;
-
-			t_CLink List;
-			{
-				auto pLink = &m_Link;
-				auto pNext = pLink->f_GetNextList();
-				auto pPrev = pLink->f_GetPrevList();
-				List.f_SetNextInit(pNext);
-				List.f_SetPrevInit(pPrev);
-				pNext->f_SetPrevInit(&List);
-				pPrev->f_SetNextInit(&List);
-
-				pLink->f_SetNextInitListLink(pLink);
-				pLink->f_SetPrevInitListLink(pLink);
-			}
-
-			auto pLink = &List;
-
-			// Put list in first bucket
-
-			for (aint Place = 0; Place < _NumPlaces; ++Place)
-			{
-				// Remove last link
-				pLink->f_GetPrevNoList()->f_SetNextNotList(nullptr);
-
-				auto *pCurrent = pLink->f_GetNextNotList();
-
-				while (pCurrent)
-				{
-					aint Index = tf_CSortClass::fs_GetIndex(_pContext, Place, fsp_MemberFromLink(pCurrent->f_Upcast()));
-					t_CLink **pBucket = &Bucket[Index];
-
-					t_CLink *pNext = pCurrent->f_GetNextNotList();
-
-					if (*pBucket)
-						(*pBucket)->f_SetPrevNotList(pCurrent);
-					pCurrent->f_Upcast()->f_SetNextNotList(*pBucket);
-					(*pBucket) = pCurrent;
-
-					pCurrent = pNext;
-				}
-
-				// Rebuild list
-
-				pLink->f_SetNextNotList(pLink);
-				pLink->f_SetPrevNotList(pLink);
-
-				for (aint iBucket = 0; iBucket < tf_BucketSize; ++iBucket)
-				{
-					if (Bucket[iBucket])
-					{
-						t_CLink *pTemp = Bucket[iBucket];
-						Bucket[iBucket] = nullptr;
-						auto *pLinkAfter = pLink->f_GetPrevNoList();
-
-						while (pTemp)
-						{
-							auto *pTempNext = pTemp->f_GetNextNotList();
-							pTemp->f_LinkNoUnlinkNotList(pLinkAfter);
-							pTemp = pTempNext;
-						}
-					}
-				}
-			}
-
-			m_Link.f_TransferList(List.f_GetNextNotList(), List.f_GetPrevNoList());
-		}
-
-		bool f_CheckList(bool _bBreak) const
-		{
-			auto *pLink = &m_Link;
-			auto *pCurrent = pLink;
-			if (!pCurrent->f_IsListLink())
-			{
-				if (_bBreak)
-					DMibPDebugBreak;
-				return false;
-			}
-			if (!pCurrent->f_IsValid())
-			{
-				if (_bBreak)
-					DMibPDebugBreak;
-				return false;
-			}
-			auto *pPrev = pCurrent;
-			pCurrent = pCurrent->f_GetNextList();
-			while (pCurrent != pLink)
-			{
-				if (pCurrent->f_Upcast()->f_GetPrevNotList() != pPrev || !pCurrent->f_IsValid())
-				{
-					if (_bBreak)
-						DMibPDebugBreak;
-					return false;
-				}
-				pPrev = pCurrent;
-				pCurrent = pCurrent->f_GetNextNotList();
-			}
-			pCurrent = pLink;
-			pPrev = pCurrent;
-			pCurrent = pCurrent->f_GetPrevList();
-			while (pCurrent != pLink)
-			{
-				if (pCurrent->f_Upcast()->f_GetNextNotList() != pPrev || !pCurrent->f_IsValid())
-				{
-					if (_bBreak)
-						DMibPDebugBreak;
-					return false;
-				}
-				pPrev = pCurrent;
-				pCurrent = pCurrent->f_Upcast()->f_GetPrevNotList();
-			}
-			return true;
-		}
+		void f_BucketSort(aint _NumPlaces, void *_pContext = nullptr);
+		bool f_CheckList(bool _bBreak) const;
 
 		struct CIterator
 		{
 			using CData = t_CData;
 			t_CLink *m_pCurrent;
 
-			CIterator()
-			{
-				m_pCurrent = nullptr;
-			}
-
-			CIterator(TCDLinkListAggregate &_List)
-			{
-				auto *pLink = &_List.m_Link;
-				auto pCurrent = pLink->f_GetNextList();
-				if (pCurrent == pLink)
-					m_pCurrent = nullptr;
-				else
-					m_pCurrent = pCurrent->f_Upcast();
-			}
-
-			CIterator(CIterator const &_Copy)
-			{
-				m_pCurrent = _Copy.m_pCurrent;
-			}
-
-			CIterator(t_CData *_pStart)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(_pStart);
-			}
-
-			CIterator(t_CData &_Start)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(&_Start);
-			}
-
-			CIterator f_GetIterator() const
-			{
-				return *this;
-			}
-
-			CIterator &operator = (TCDLinkListAggregate &_List)
-			{
-				auto *pLink = &_List.m_Link;
-				auto *pNext = pLink->f_GetNextList();
-				if (pNext == pLink)
-					m_pCurrent = nullptr;
-				else
-					m_pCurrent = pNext->f_Upcast();
-
-				return *this;
-			}
-
-			CIterator &operator = (CIterator const &_Copy)
-			{
-				m_pCurrent = _Copy.m_pCurrent;
-				return *this;
-			}
-
-			CIterator &operator = (t_CData &_Start)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(&_Start);
-
-				return *this;
-			}
-
-			CIterator &operator = (t_CData *_pStart)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(_pStart);
-
-				return *this;
-			}
-
-			static inline_small t_CData *fs_GetNext(t_CData *_pCurrent)
-			{
-				auto *pNext = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetNextNotList();
-				if (pNext && !pNext->f_IsListLink())
-					return TCDLinkListAggregate::fsp_MemberFromLink(pNext->f_Upcast());
-				else
-					return nullptr;
-			}
-
-			static inline_small t_CData *fs_GetNextUnsafe(t_CData *_pCurrent)
-			{
-				auto *pNext = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetNextNotList();
-				if (!pNext->f_IsListLink())
-					return TCDLinkListAggregate::fsp_MemberFromLink(pNext->f_Upcast());
-				else
-					return nullptr;
-			}
-
-			static inline_small t_CData *fs_GetPrevUnsafe(t_CData *_pCurrent)
-			{
-				auto *pPrev = TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_GetPrevNotList();
-				if (!pPrev->f_IsListLink())
-					return TCDLinkListAggregate::fsp_MemberFromLink(pPrev->f_Upcast());
-				else
-					return nullptr;
-			}
-
-			static inline_small t_CData *fs_GetPrev(t_CData *_pCurrent)
-			{
-				if (!TCDLinkListAggregate::fsp_LinkFromMember(_pCurrent)->f_IsInList())
-					return nullptr;
-				return fs_GetPrevUnsafe(_pCurrent);
-			}
-
-			void f_Reverse(TCDLinkListAggregate &_List)
-			{
-				auto *pLink = &_List.m_Link;
-				auto *pPrev = _List.m_Link.f_GetPrevList();
-
-				if (pPrev == pLink)
-					m_pCurrent = nullptr;
-				else
-					m_pCurrent = pPrev->f_Upcast();
-			}
-
-			inline_small t_CData *f_GetCurrent() const
-			{
-				if (m_pCurrent)
-					return TCDLinkListAggregate::fsp_MemberFromLink(m_pCurrent);
-				else
-					return nullptr;
-			}
-
-			inline_small operator t_CData * () const
-			{
-				return f_GetCurrent();
-			}
-
-			inline_small t_CData *operator -> () const
-			{
-				return f_GetCurrent();
-			}
-
-			inline_small t_CData *operator [] (aint _nPlaces) const
-			{
-				if (m_pCurrent)
-				{
-					auto *pCurrent = m_pCurrent;
-					if (_nPlaces > 0)
-					{
-						while (_nPlaces)
-						{
-							auto *pNext = pCurrent->f_GetNextNotList();
-							if (pNext->f_IsListLink())
-							{
-								DMibSafeCheck(0, "You tried to access an element outside the list");
-								return nullptr;
-							}
-							pCurrent = pNext->f_Upcast();
-							--_nPlaces;
-						}
-					}
-					else
-					{
-						while (_nPlaces)
-						{
-							auto *pPrev = pCurrent->f_GetPrevNotList();
-							if (pPrev->f_IsListLink())
-							{
-								DMibSafeCheck(0, "You tried to access an element outside the list");
-								return nullptr;
-							}
-							pCurrent = pPrev->f_Upcast();
-							++_nPlaces;
-						}
-					}
-					return TCDLinkListAggregate::fsp_MemberFromLink(pCurrent);
-				}
-				DMibSafeCheck(0, "You tried to access an element outside the list");
-				return nullptr;
-			}
-
-			umint f_GetLen() const
-			{
-				if (m_pCurrent)
-				{
-					t_CLinkInList *pCurrent = m_pCurrent;
-					umint Len = 0;
-					while (!pCurrent->f_IsListLink())
-					{
-						++Len;
-						pCurrent = pCurrent->f_GetNextNotList();
-					}
-					return Len;
-				}
-				return 0;
-			}
+			CIterator();
+			CIterator(TCDLinkListAggregate &_List);
+			CIterator(CIterator const &_Copy);
+			CIterator(t_CData *_pStart);
+			CIterator(t_CData &_Start);
+			CIterator f_GetIterator() const;
+			CIterator &operator = (TCDLinkListAggregate &_List);
+			CIterator &operator = (CIterator const &_Copy);
+			CIterator &operator = (t_CData &_Start);
+			CIterator &operator = (t_CData *_pStart);
+			static inline_small t_CData *fs_GetNext(t_CData *_pCurrent);
+			static inline_small t_CData *fs_GetNextUnsafe(t_CData *_pCurrent);
+			static inline_small t_CData *fs_GetPrevUnsafe(t_CData *_pCurrent);
+			static inline_small t_CData *fs_GetPrev(t_CData *_pCurrent);
+			void f_Reverse(TCDLinkListAggregate &_List);
+			inline_small t_CData *f_GetCurrent() const;
+			inline_small operator t_CData * () const;
+			inline_small t_CData *operator -> () const;
+			inline_small t_CData *operator [] (aint _nPlaces) const;
+			umint f_GetLen() const;
 
 #ifdef DMibPUniqueType_int
-			inline_small t_CData *operator [] (int _nPlaces) const
-			{
-				return operator [] (aint(_nPlaces));
-			}
+			inline_small t_CData *operator [] (int _nPlaces) const;
 #endif
 
-			inline_small void operator += (aint _nPlaces)
-			{
-				if (m_pCurrent)
-				{
-					while (_nPlaces)
-					{
-						auto *pNext = m_pCurrent->f_GetNextNotList();
-						if (pNext->f_IsListLink())
-						{
-							m_pCurrent = nullptr;
-							break;
-						}
-						m_pCurrent = pNext->f_Upcast();
-						--_nPlaces;
-					}
-				}
-				DMibSafeCheck(!_nPlaces, "You tried to access an element outside the list");
-			}
-
-			inline_small void operator ++ ()
-			{
-				if (m_pCurrent)
-				{
-					auto pNext = m_pCurrent->f_GetNextNotList();
-					if (pNext->f_IsListLink())
-						m_pCurrent = nullptr;
-					else
-						m_pCurrent = pNext->f_Upcast();
-				}
-			}
-
-			inline_small void operator -- ()
-			{
-				if (m_pCurrent)
-				{
-					auto *pPrev = m_pCurrent->f_GetPrevNotList();
-					if (pPrev->f_IsListLink())
-						m_pCurrent = nullptr;
-					else
-						m_pCurrent = pPrev->f_Upcast();
-				}
-			}
-
-			inline_small void operator -= (aint _nPlaces)
-			{
-				if (m_pCurrent)
-				{
-					while (_nPlaces)
-					{
-						auto *pPrev = m_pCurrent->f_GetPrevNotList();
-						if (pPrev->f_IsListLink())
-						{
-							m_pCurrent = nullptr;
-							break;
-						}
-						else
-							m_pCurrent = pPrev->f_Upcast();
-						--_nPlaces;
-					}
-				}
-				DMibSafeCheck(!_nPlaces, "You tried to access an element outside the list");
-			}
-
-			void f_Delete()
-			{
-				t_CData *pCurrent = f_GetCurrent();
-				++(*this);
-				fg_DeleteObject(t_CAllocator(), pCurrent);
-			}
-
+			inline_small void operator += (aint _nPlaces);
+			inline_small void operator ++ ();
+			inline_small void operator -- ();
+			inline_small void operator -= (aint _nPlaces);
+			void f_Delete();
 			template <typename tf_CDeleter>
-			void f_DeleteDeleter()
-			{
-				t_CData *pCurrent = f_GetCurrent();
-				++(*this);
-				tf_CDeleter::fs_Delete(pCurrent);
-			}
-
-			void f_DeleteDeleter()
-			{
-				f_DeleteDeleter<t_CData>();
-			}
-
-			void f_Remove()
-			{
-				t_CLink *pLink = m_pCurrent;
-				++(*this);
-				pLink->f_UnlinkLinked();
-			}
+			void f_DeleteDeleter();
+			void f_DeleteDeleter();
+			void f_Remove();
 		};
 
-		CIterator f_GetIterator()
-		{
-			return CIterator(*this);
-		}
+		CIterator f_GetIterator();
 
 		struct CIteratorConst
 		{
 			t_CLink const *m_pCurrent;
 
-			CIteratorConst()
-			{
-				m_pCurrent = nullptr;
-			}
-
-			CIteratorConst(CIteratorConst const &_Copy)
-			{
-				m_pCurrent = _Copy.m_pCurrent;
-			}
-
-			CIteratorConst(TCDLinkListAggregate const &_List)
-			{
-				auto *pLink = &_List.m_Link;
-				auto *pNext = pLink->f_GetNextList();
-				if (pNext == pLink)
-					m_pCurrent = nullptr;
-				else
-					m_pCurrent = pNext->f_Upcast();
-			}
-
-			CIteratorConst(t_CData const *_pStart)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(_pStart);
-			}
-
-			CIteratorConst(t_CData const &_Start)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(&_Start);
-			}
-
-			CIteratorConst f_GetIterator() const
-			{
-				return *this;
-			}
-
-			CIteratorConst &operator = (TCDLinkListAggregate const &_List)
-			{
-				auto *pLink = &_List.m_Link;
-				auto *pNext = pLink->f_GetNextList();
-				if (pNext == pLink)
-					m_pCurrent = nullptr;
-				else
-					m_pCurrent = pNext->f_Upcast();
-				return *this;
-			}
-
-			CIteratorConst &operator = (CIteratorConst const &_Copy)
-			{
-				m_pCurrent = _Copy.m_pCurrent;
-				return *this;
-			}
-
-			CIteratorConst &operator = (t_CData const &_Start)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(&_Start);
-
-				return *this;
-			}
-
-			CIteratorConst &operator = (t_CData const *_pStart)
-			{
-				m_pCurrent = TCDLinkListAggregate::fsp_LinkFromMember(_pStart);
-
-				return *this;
-			}
-
-			void f_Reverse(TCDLinkListAggregate const &_List)
-			{
-				auto *pLink = &_List.m_Link;
-				auto *pPrev = pLink->f_GetPrev();
-				if (pPrev == pLink)
-					m_pCurrent = nullptr;
-				else
-					m_pCurrent = pPrev->f_Upcast();
-			}
-
-			inline_small t_CData const *f_GetCurrent() const
-			{
-				if (m_pCurrent)
-					return TCDLinkListAggregate::fsp_MemberFromLink(m_pCurrent);
-				else
-					return nullptr;
-			}
-
-			inline_small operator t_CData const * () const
-			{
-				return f_GetCurrent();
-			}
-
-			inline_small t_CData const *operator -> () const
-			{
-				return f_GetCurrent();
-			}
-
-			umint f_GetLen() const
-			{
-				if (m_pCurrent)
-				{
-					t_CLinkInList *pCurrent = m_pCurrent;
-					umint Len = 0;
-					while (!pCurrent->f_IsListLink())
-					{
-						++Len;
-						pCurrent = pCurrent->f_GetNextNotList();
-					}
-					return Len;
-				}
-				return 0;
-			}
-
-			inline_small t_CData const *operator [] (aint _nPlaces) const
-			{
-				if (m_pCurrent)
-				{
-					t_CLinkInList const *pCurrent = m_pCurrent;
-					if (_nPlaces > 0)
-					{
-						while (_nPlaces)
-						{
-							pCurrent = pCurrent->f_GetNextNotList();
-							if (pCurrent->f_IsListLink())
-								return nullptr;
-							--_nPlaces;
-						}
-					}
-					else
-					{
-						while (_nPlaces)
-						{
-							pCurrent = pCurrent->f_GetPrevNotList();
-							if (pCurrent->f_IsListLink())
-								return nullptr;
-							++_nPlaces;
-						}
-					}
-					return TCDLinkListAggregate::fsp_MemberFromLink(pCurrent->f_Upcast());
-				}
-				return nullptr;
-			}
+			CIteratorConst();
+			CIteratorConst(CIteratorConst const &_Copy);
+			CIteratorConst(TCDLinkListAggregate const &_List);
+			CIteratorConst(t_CData const *_pStart);
+			CIteratorConst(t_CData const &_Start);
+			CIteratorConst f_GetIterator() const;
+			CIteratorConst &operator = (TCDLinkListAggregate const &_List);
+			CIteratorConst &operator = (CIteratorConst const &_Copy);
+			CIteratorConst &operator = (t_CData const &_Start);
+			CIteratorConst &operator = (t_CData const *_pStart);
+			void f_Reverse(TCDLinkListAggregate const &_List);
+			inline_small t_CData const *f_GetCurrent() const;
+			inline_small operator t_CData const * () const;
+			inline_small t_CData const *operator -> () const;
+			umint f_GetLen() const;
+			inline_small t_CData const *operator [] (aint _nPlaces) const;
 
 #ifdef DMibPUniqueType_int
-			inline_small t_CData const *operator [] (int _nPlaces) const
-			{
-				return operator [] (aint(_nPlaces));
-			}
+			inline_small t_CData const *operator [] (int _nPlaces) const;
 #endif
-			inline_small void operator += (aint _nPlaces)
-			{
-				if (m_pCurrent)
-				{
-					while (_nPlaces)
-					{
-						auto *pNext = m_pCurrent->f_GetNextNotList();
-						if (pNext->f_IsListLink())
-						{
-							m_pCurrent = nullptr;
-							break;
-						}
-						else
-							m_pCurrent = pNext->f_Upcast();
-						--_nPlaces;
-					}
-				}
-				DMibSafeCheck(!_nPlaces, "You tried to access an element outside the list");
-			}
-
-			inline_small void operator ++ ()
-			{
-				if (m_pCurrent)
-				{
-					auto *pNext = m_pCurrent->f_GetNextNotList();
-					if (pNext->f_IsListLink())
-						m_pCurrent = nullptr;
-					else
-						m_pCurrent = pNext->f_Upcast();
-				}
-			}
-
-			inline_small void operator -- ()
-			{
-				if (m_pCurrent)
-				{
-					auto *pPrev = m_pCurrent->f_GetPrevNotList();
-					if (pPrev->f_IsListLink())
-						m_pCurrent = nullptr;
-					else
-						m_pCurrent = pPrev->f_Upcast();
-				}
-			}
-
-			inline_small void operator -= (aint _nPlaces)
-			{
-				if (m_pCurrent)
-				{
-					while (_nPlaces)
-					{
-						auto *pPrev = m_pCurrent->f_GetPrevNotList();
-						if (pPrev->f_IsListLink())
-						{
-							m_pCurrent = nullptr;
-							break;
-						}
-						else
-							m_pCurrent = pPrev->f_Upcast();
-						--_nPlaces;
-					}
-				}
-				DMibSafeCheck(!_nPlaces, "You tried to access an element outside the list");
-			}
+			inline_small void operator += (aint _nPlaces);
+			inline_small void operator ++ ();
+			inline_small void operator -- ();
+			inline_small void operator -= (aint _nPlaces);
 		};
 
-		CIteratorConst f_GetIterator() const
-		{
-			return CIteratorConst(*this);
-		}
-
-		bool operator == (TCDLinkListAggregate const &_Other) const noexcept(noexcept(fg_GetType<t_CData const &>() == fg_GetType<t_CData const &>()))
-		{
-			CIteratorConst Iter0 = *this;
-			CIteratorConst Iter1 = _Other;
-
-			while (Iter0 && Iter1)
-			{
-				if (!(*Iter0 == *Iter1))
-					return false;
-
-				++Iter0;
-				++Iter1;
-			}
-
-			if (Iter0 && !Iter1)
-				return false;
-			if (!Iter0 && Iter1)
-				return false;
-
-			return true;
-		}
+		CIteratorConst f_GetIterator() const;
+		bool operator == (TCDLinkListAggregate const &_Other) const noexcept(noexcept(fg_GetType<t_CData const &>() == fg_GetType<t_CData const &>()));
 
 	private:
-		static inline_small t_CLink *fsp_LinkFromMember(t_CData *_pMember)
-		{
-			return ((t_CLink *)(((uint8 *)_pMember) + COffset::mc_Offset));
-		}
-
-		static inline_small t_CData *fsp_MemberFromLink(t_CLink *_pLink)
-		{
-			return ((t_CData *)(((uint8 *)_pLink) - COffset::mc_Offset));
-		}
-
-		static inline_small t_CLink const *fsp_LinkFromMember(t_CData const *_pMember)
-		{
-			return ((t_CLink const *)(((uint8 *)_pMember) + COffset::mc_Offset));
-		}
-
-		static inline_small t_CData const *fsp_MemberFromLink(t_CLink const *_pLink)
-		{
-			return ((t_CData const *)(((uint8 *)_pLink) - COffset::mc_Offset));
-		}
+		static inline_small t_CLink *fsp_LinkFromMember(t_CData *_pMember);
+		static inline_small t_CData *fsp_MemberFromLink(t_CLink *_pLink);
+		static inline_small t_CLink const *fsp_LinkFromMember(t_CData const *_pMember);
+		static inline_small t_CData const *fsp_MemberFromLink(t_CLink const *_pLink);
 	};
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
@@ -2908,33 +532,11 @@ namespace NMib::NIntrusive
 	{
 		using CSuper = TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>;
 
-		bool operator == (TCDLinkList const &_Other) const noexcept(noexcept((CSuper const &)*this == (CSuper const &)_Other))
-		{
-			return (CSuper const &)*this == (CSuper const &)_Other;
-		}
-
-		TCDLinkList(TCDLinkList &&_Other)
-		{
-			CSuper::f_Construct();
-			this->f_Transfer(_Other);
-		}
-
-		TCDLinkList &operator = (TCDLinkList &&_Other)
-		{
-			this->f_Clear();
-			this->f_Transfer(_Other);
-			return *this;
-		}
-
-		inline_small TCDLinkList()
-		{
-			CSuper::f_Construct();
-		}
-
-		inline_small ~TCDLinkList()
-		{
-			CSuper::f_Destruct();
-		}
+		bool operator == (TCDLinkList const &_Other) const noexcept(noexcept((CSuper const &)*this == (CSuper const &)_Other));
+		TCDLinkList(TCDLinkList &&_Other);
+		TCDLinkList &operator = (TCDLinkList &&_Other);
+		inline_small TCDLinkList();
+		inline_small ~TCDLinkList();
 
 	private:
 		TCDLinkList(TCDLinkList const &_Other) = delete;
@@ -3405,3 +1007,5 @@ namespace NMib::NIntrusive
 #	define DLinkDSA_ListAutoDelete(d_Class, d_Member) DMibListLinkDSA_ListAutoDelete(d_Class, d_Member)
 #endif
 }
+
+#include "Malterlib_Intrusive_DoublyLinkedList.hpp"
