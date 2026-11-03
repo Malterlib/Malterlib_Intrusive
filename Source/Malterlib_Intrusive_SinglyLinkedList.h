@@ -171,7 +171,7 @@ namespace NMib::NIntrusive
 		};
 
 		template <aint tf_BucketSize>
-		void f_BucketSortCallback(FBucketGetIndex *_fSortFunction, void *_pContext = nullptr);
+		void f_BucketSortCallback(aint _NumPlaces, FBucketGetIndex *_fSortFunction, void *_pContext = nullptr);
 
 		template <class tf_CSortClass, aint tf_BucketSize>
 		void f_BucketSort(aint _NumPlaces, void *_pContext = nullptr);

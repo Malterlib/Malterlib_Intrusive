@@ -2122,12 +2122,17 @@ namespace NMib::NIntrusive
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
 	template <aint tf_BucketSize>
-	void TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::f_BucketSortCallback(FBucketGetIndex *_fSortFunction, void *_pContext)
+	void TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>::f_BucketSortCallback
+		(
+			aint _NumPlaces
+			, FBucketGetIndex *_fSortFunction
+			, void *_pContext
+		)
 	{
 		CBucketCallbackSort SortContext;
 		SortContext.m_pContext = _pContext;
 		SortContext.m_fSortFunction = _fSortFunction;
-		f_BucketSort<CBucketCallbackSort, tf_BucketSize>(&SortContext);
+		f_BucketSort<CBucketCallbackSort, tf_BucketSize>(_NumPlaces, &SortContext);
 	}
 
 	/*ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ*\
