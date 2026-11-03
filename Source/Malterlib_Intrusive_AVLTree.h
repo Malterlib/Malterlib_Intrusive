@@ -75,10 +75,13 @@ namespace NMib::NIntrusive
 
 		// Depth of perfect tree * 1.5 approximation of (1.44*Log2(n+2) - 1)
 #ifdef DCompiler_clang_cl
+		// NOLINTBEGIN(malterlib-type-naming): as a variable, clang-cl fails on the arrays of this size with an impossible stack frame size
 		enum
 		{
 			mc_SafeTreeDepth = umint(((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>))
 		};
+
+		// NOLINTEND(malterlib-type-naming)
 #else
 		static constexpr umint mc_SafeTreeDepth = ((sizeof(void *) * 12) - gc_HighestBitSet<sizeof(CLink)>);
 #endif

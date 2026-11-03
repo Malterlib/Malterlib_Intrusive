@@ -228,8 +228,8 @@ namespace NMib
 				}
 				DMibTest(DMibExpr(bTreesSame));
 				{
-					using Iter1 = CMalterlibTree::TCIterator<>;
-					Iter1 it1 = MalterlibTree;
+					using CIter1 = CMalterlibTree::TCIterator<>;
+					CIter1 it1 = MalterlibTree;
 					auto it2 = BoostTree.begin();
 					auto end2 = BoostTree.end();
 					bool bTreesSameValues = MalterlibTree.f_GetLen() == BoostTree.size();
@@ -335,8 +335,8 @@ namespace NMib
 			{
 				CMalterlibTree MalterlibTree;
 				CBoostTree BoostTree;
-				using Iter2 = CBoostTree::const_iterator;
-				using Iter1 = CMalterlibTree::TCIterator<>;
+				using CIter2 = CBoostTree::const_iterator;
+				using CIter1 = CMalterlibTree::TCIterator<>;
 				for (umint i = 0; i < m_nItems; ++i)
 					MalterlibTree.f_Insert(&m_DataMalterlib[i]);
 				for (umint i = 0; i < m_nItems; ++i)
@@ -349,7 +349,7 @@ namespace NMib
 
 				for (umint i = 0; i < m_nTests; ++i)
 				{
-					Iter1 it1 = MalterlibTree;
+					CIter1 it1 = MalterlibTree;
 					{
 						DMibTestScopeMeasure(MalterlibTime, m_nItems);
 						for (; it1; ++it1)
@@ -358,8 +358,8 @@ namespace NMib
 				}
 				for (umint i = 0; i < m_nTests; ++i)
 				{
-					Iter2 it2 = BoostTree.begin();
-					Iter2 end2 = BoostTree.end();
+					CIter2 it2 = BoostTree.begin();
+					CIter2 end2 = BoostTree.end();
 					{
 						DMibTestScopeMeasure(BoostTime, m_nItems);
 						for (; it2 != end2; ++it2)

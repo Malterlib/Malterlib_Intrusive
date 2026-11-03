@@ -1136,7 +1136,7 @@ namespace NMib::NIntrusive
 		}
 
 		template <typename t_CDataInternal1, typename t_CAllocator1, bool _bAutoDelete1>
-		struct CAutoDeleteHelper
+		struct TCAutoDeleteHelper
 		{
 			static inline_small void fs_Delete(t_CData *_pDeleter)
 			{
@@ -1145,7 +1145,7 @@ namespace NMib::NIntrusive
 		};
 
 		template <typename t_CDataInternal1, typename t_CAllocator1>
-		struct CAutoDeleteHelper<t_CDataInternal1, t_CAllocator1, 0>
+		struct TCAutoDeleteHelper<t_CDataInternal1, t_CAllocator1, 0>
 		{
 			static inline_small void fs_Delete(t_CData *_pDeleter)
 			{
@@ -1159,7 +1159,7 @@ namespace NMib::NIntrusive
 				while (t_CData *pCurrent = f_GetLast())
 				{
 					// We must use this special template or objects that cannot be deleted will get a compile error here even if t_bAutoDelete is false
-					CAutoDeleteHelper<t_CData, t_CAllocator, t_bAutoDelete>::fs_Delete(pCurrent);
+					TCAutoDeleteHelper<t_CData, t_CAllocator, t_bAutoDelete>::fs_Delete(pCurrent);
 				}
 			}
 			else
