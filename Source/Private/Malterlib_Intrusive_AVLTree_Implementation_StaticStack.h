@@ -371,60 +371,60 @@ namespace NMib::NIntrusive
 	template <int tf_Direction>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RemoveRotate3(CLinkPointer *_pObject)
 	{
-		CLink *pD;
-		CLink *pB;
-		CLink *pC;
-		CLink *pE;
-		CLink *pF;
+		CLink *pNodeD;
+		CLink *pNodeB;
+		CLink *pNodeC;
+		CLink *pNodeE;
+		CLink *pNodeF;
 
-		pF = CLink::fs_GetPtr(*_pObject);
-		pB = pF->f_GetNextP(1 - tf_Direction);
-		pD = pB->f_GetNextP(tf_Direction);
-		pC = pD->f_GetNextP(1 - tf_Direction);
-		pE = pD->f_GetNextP(tf_Direction);
+		pNodeF = CLink::fs_GetPtr(*_pObject);
+		pNodeB = pNodeF->f_GetNextP(1 - tf_Direction);
+		pNodeD = pNodeB->f_GetNextP(tf_Direction);
+		pNodeC = pNodeD->f_GetNextP(1 - tf_Direction);
+		pNodeE = pNodeD->f_GetNextP(tf_Direction);
 
-		CLink::fs_Assign(_pObject, pD);
+		CLink::fs_Assign(_pObject, pNodeD);
 
-		pD->f_SetNext(1 - tf_Direction, pB);
-		pD->f_SetNext(tf_Direction, pF);
-		pB->f_SetNext(tf_Direction, pC);
-		pF->f_SetNext(1 - tf_Direction, pE);
+		pNodeD->f_SetNext(1 - tf_Direction, pNodeB);
+		pNodeD->f_SetNext(tf_Direction, pNodeF);
+		pNodeB->f_SetNext(tf_Direction, pNodeC);
+		pNodeF->f_SetNext(1 - tf_Direction, pNodeE);
 
-		pB->f_SetSkew(CLink::EAVLTreeSkew_None);
-		pF->f_SetSkew(CLink::EAVLTreeSkew_None);
-		int Skew = pD->f_GetSkew();
+		pNodeB->f_SetSkew(CLink::EAVLTreeSkew_None);
+		pNodeF->f_SetSkew(CLink::EAVLTreeSkew_None);
+		int Skew = pNodeD->f_GetSkew();
 		if (Skew == tf_Direction)
-			pB->f_SetSkew(1 - tf_Direction);
+			pNodeB->f_SetSkew(1 - tf_Direction);
 		else if (Skew == 1 - tf_Direction)
-			pF->f_SetSkew(tf_Direction);
-		pD->f_SetSkew(CLink::EAVLTreeSkew_None);
+			pNodeF->f_SetSkew(tf_Direction);
+		pNodeD->f_SetSkew(CLink::EAVLTreeSkew_None);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <int tf_Direction>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RemoveRotate2(CLinkPointer *_pObject)
 	{
-		CLink *pD;
-		CLink *pB;
-		CLink *pC;
+		CLink *pNodeD;
+		CLink *pNodeB;
+		CLink *pNodeC;
 
-		pD = CLink::fs_GetPtr(*_pObject);
-		pB = pD->f_GetNextP(1 - tf_Direction);
-		pC = pB->f_GetNextP(tf_Direction);
+		pNodeD = CLink::fs_GetPtr(*_pObject);
+		pNodeB = pNodeD->f_GetNextP(1 - tf_Direction);
+		pNodeC = pNodeB->f_GetNextP(tf_Direction);
 
-		CLink::fs_Assign(_pObject, pB);
-		pB->f_SetNext(tf_Direction, pD);
-		pD->f_SetNext(1 - tf_Direction, pC);
+		CLink::fs_Assign(_pObject, pNodeB);
+		pNodeB->f_SetNext(tf_Direction, pNodeD);
+		pNodeD->f_SetNext(1 - tf_Direction, pNodeC);
 
-		if (pB->f_IsBalanced())
+		if (pNodeB->f_IsBalanced())
 		{
-			pB->f_SetSkew(tf_Direction);
-			pD->f_SetSkew(1 - tf_Direction);
+			pNodeB->f_SetSkew(tf_Direction);
+			pNodeD->f_SetSkew(1 - tf_Direction);
 		}
 		else
 		{
-			pB->f_SetSkew(CLink::EAVLTreeSkew_None);
-			pD->f_SetSkew(CLink::EAVLTreeSkew_None);
+			pNodeB->f_SetSkew(CLink::EAVLTreeSkew_None);
+			pNodeD->f_SetSkew(CLink::EAVLTreeSkew_None);
 		}
 	}
 

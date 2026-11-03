@@ -930,159 +930,159 @@ namespace NMib::NIntrusive
 	{
 		inline_small TCDLink()
 		{
-			m_Link.f_Construct();
+			mp_Link.f_Construct();
 		}
 
 		TCDLink(TCDLink &&_Other)
 		{
-			if (_Other.m_Link.f_IsInList())
+			if (_Other.mp_Link.f_IsInList())
 			{
-				auto pOtherPrev = _Other.m_Link.f_GetPrevNotList();
-				_Other.m_Link.f_UnlinkLinked();
-				m_Link.f_LinkNoUnlink(pOtherPrev);
+				auto pOtherPrev = _Other.mp_Link.f_GetPrevNotList();
+				_Other.mp_Link.f_UnlinkLinked();
+				mp_Link.f_LinkNoUnlink(pOtherPrev);
 			}
 			else
-				m_Link.f_Construct();
+				mp_Link.f_Construct();
 		}
 
 		TCDLink &operator = (TCDLink &&_Other)
 		{
-			m_Link.f_Destruct();
-			if (_Other.m_Link.f_IsInList())
+			mp_Link.f_Destruct();
+			if (_Other.mp_Link.f_IsInList())
 			{
-				auto pOtherPrev = _Other.m_Link.f_GetPrevNotList();
-				_Other.m_Link.f_UnlinkLinked();
-				m_Link.f_LinkNoUnlink(pOtherPrev);
+				auto pOtherPrev = _Other.mp_Link.f_GetPrevNotList();
+				_Other.mp_Link.f_UnlinkLinked();
+				mp_Link.f_LinkNoUnlink(pOtherPrev);
 			}
 			else
-				m_Link.f_Construct();
+				mp_Link.f_Construct();
 			return *this;
 		}
 
 		inline_small ~TCDLink()
 		{
-			m_Link.f_Destruct();
+			mp_Link.f_Destruct();
 		}
 
 		inline_small t_CLink const *f_GetNext() const
 		{
-			return (t_CLink const *)m_Link.f_GetNextNotList();
+			return (t_CLink const *)mp_Link.f_GetNextNotList();
 		}
 
 		inline_small t_CLink const *f_GetPrev() const
 		{
-			return (t_CLink const *)m_Link.f_GetPrevNotList();
+			return (t_CLink const *)mp_Link.f_GetPrevNotList();
 		}
 
 		/*
 		inline_small void fp_Link(t_CLink *_pLinkAfter)
 		{
-			m_Link.fp_Link(_pLinkAfter);
+			mp_Link.fp_Link(_pLinkAfter);
 		}
 
 		inline_small void fp_LinkNoUnlink(t_CLink *_pLinkAfter)
 		{
-			m_Link.fp_LinkNoUnlink(_pLinkAfter);
+			mp_Link.fp_LinkNoUnlink(_pLinkAfter);
 		}
 
 		inline_small void fp_SetNext(t_CLink *_pNext)
 		{
-			m_Link.fp_SetNextNotList(_pNext);
+			mp_Link.fp_SetNextNotList(_pNext);
 		}
 		inline_small void fp_SetNextInit(t_CLink *_pNext)
 		{
-			m_Link.fp_SetNextInit(_pNext);
+			mp_Link.fp_SetNextInit(_pNext);
 		}
 		inline_small void fp_SetNextInitListLink(t_CLink *_pNext)
 		{
-			m_Link.fp_SetNextInitListLink(_pNext);
+			mp_Link.fp_SetNextInitListLink(_pNext);
 		}
 		inline_small void fp_SetPrev(t_CLink *_pPrev)
 		{
-			m_Link.fp_SetPrevNotList(_pPrev);
+			mp_Link.fp_SetPrevNotList(_pPrev);
 		}
 		inline_small void fp_SetPrevInit(t_CLink *_pPrev)
 		{
-			m_Link.fp_SetPrevInit(_pPrev);
+			mp_Link.fp_SetPrevInit(_pPrev);
 		}
 		inline_small void fp_SetPrevInitListLink(t_CLink *_pPrev)
 		{
-			m_Link.fp_SetPrevInitListLink(_pPrev);
+			mp_Link.fp_SetPrevInitListLink(_pPrev);
 		}
 
 		inline_small bool fp_IsListLink() const
 		{
-			return m_Link.fp_IsListLink();
+			return mp_Link.fp_IsListLink();
 		}
 
 		inline_small const t_CLink *fp_GetNext() const
 		{
-			return m_Link.fp_GetNextNotList();
+			return mp_Link.fp_GetNextNotList();
 		}
 
 		inline_small t_CLink *fp_GetNext()
 		{
-			return m_Link.fp_GetNextNotList();
+			return mp_Link.fp_GetNextNotList();
 		}
 
 		inline_small const t_CLink *fp_GetPrev() const
 		{
-			return m_Link.fp_GetPrevNotList();
+			return mp_Link.fp_GetPrevNotList();
 		}
 		inline_small t_CLink *fp_GetPrev()
 		{
-			return m_Link.fp_GetPrevNotList();
+			return mp_Link.fp_GetPrevNotList();
 		}
 		*/
 
 		// Public functions
 		inline_small void f_Unlink()
 		{
-			m_Link.f_Unlink();
+			mp_Link.f_Unlink();
 		}
 
 		inline_small void f_UnsafeUnlink()
 		{
-			m_Link.f_UnsafeUnlink();
+			mp_Link.f_UnsafeUnlink();
 		}
 
 		inline_small void f_UnlinkLinked()
 		{
-			m_Link.f_UnlinkLinked();
+			mp_Link.f_UnlinkLinked();
 		}
 
 		// First
 
 		inline_small void f_UnlinkFirst()
 		{
-			m_Link.f_UnlinkFirst();
+			mp_Link.f_UnlinkFirst();
 		}
 
 		inline_small void f_UnsafeUnlinkFirst()
 		{
-			m_Link.f_UnsafeUnlinkFirst();
+			mp_Link.f_UnsafeUnlinkFirst();
 		}
 
 		inline_small void f_UnlinkFirstLinked()
 		{
-			m_Link.f_UnlinkFirstLinked();
+			mp_Link.f_UnlinkFirstLinked();
 		}
 
 		inline_small bool f_IsAloneInList() const
 		{
-			return m_Link.f_IsAloneInList();
+			return mp_Link.f_IsAloneInList();
 		}
 
 		inline_small bool f_IsInList() const
 		{
-			return m_Link.f_IsInList();
+			return mp_Link.f_IsInList();
 		}
 
 	private:
 		TCDLink(TCDLink const &_Other) = delete;
 		TCDLink &operator = (TCDLink const &_Other) = delete;
 
-		t_CLink m_Link;
+		t_CLink mp_Link;
 	};
 
 	template <typename t_CData, typename t_CTranslator, typename t_CLink, typename t_CLinkInList, bool t_bAutoDelete, typename t_CAllocator>
@@ -1984,9 +1984,9 @@ namespace NMib::NIntrusive
 					if (pCurrent == &List)
 						break;
 
-					for (aint i = 1; i < SortSize; ++i)
+					for (aint iItem = 1; iItem < SortSize; ++iItem)
 					{
-						aint NumChecked = i;
+						aint NumChecked = iItem;
 						++NumSorted;
 
 						t_CLink *pTemp = pLastLink->f_GetPrevNoList();
@@ -2231,8 +2231,8 @@ namespace NMib::NIntrusive
 			t_CLink *Bucket[tf_BucketSize];
 
 			// Reset buckets
-			for (aint i = 0; i < tf_BucketSize; ++i)
-				Bucket[i] = nullptr;
+			for (aint iBucket = 0; iBucket < tf_BucketSize; ++iBucket)
+				Bucket[iBucket] = nullptr;
 
 			t_CLink List;
 			{
@@ -2279,12 +2279,12 @@ namespace NMib::NIntrusive
 				pLink->f_SetNextNotList(pLink);
 				pLink->f_SetPrevNotList(pLink);
 
-				for (aint i = 0; i < tf_BucketSize; ++i)
+				for (aint iBucket = 0; iBucket < tf_BucketSize; ++iBucket)
 				{
-					if (Bucket[i])
+					if (Bucket[iBucket])
 					{
-						t_CLink *pTemp = Bucket[i];
-						Bucket[i] = nullptr;
+						t_CLink *pTemp = Bucket[iBucket];
+						Bucket[iBucket] = nullptr;
 						auto *pLinkAfter = pLink->f_GetPrevNoList();
 
 						while (pTemp)
@@ -2950,8 +2950,8 @@ namespace NMib::NIntrusive
 			{ \
 				constexpr static umint mc_Offset = []\
 					{\
-						static constexpr t_CClass const *pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
-						return DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pMember) - (uint8 const *)pNode);\
+						static constexpr t_CClass const *c_pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
+						return DMibRelaxConstexpr((uint8 const *)&(c_pNode->*t_pMember) - (uint8 const *)c_pNode);\
 					}()\
 				;\
 			}; \

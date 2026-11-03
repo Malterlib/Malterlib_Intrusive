@@ -453,8 +453,8 @@ namespace NMib::NIntrusive
 			using CNode = typename TCAVLTreeAggregate::CNode;
 
 		protected:
-			aint m_iStack;
-			CLink const *m_pStack[t_RecursionDepth];
+			aint mp_iStack;
+			CLink const *mp_pStack[t_RecursionDepth];
 
 		public:
 			inline_small TCIterator();

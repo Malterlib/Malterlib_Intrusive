@@ -113,38 +113,38 @@ namespace NMib
 		{
 			TCAVLTreeTester(umint _nItems, bool _bRandom)
 			{
-				m_nItems = _nItems;
-				m_nTests = fg_Max((100000u / m_nItems), 1u) * 5;
+				mp_nItems = _nItems;
+				mp_nTests = fg_Max((100000u / mp_nItems), 1u) * 5;
 #ifdef DMibDebug
-				m_nTests = 2;
+				mp_nTests = 2;
 #endif
 				if (t_bMemoryTests)
-					m_AllowedDelta = 1.0;
+					mp_AllowedDelta = 1.0;
 				else
-					m_AllowedDelta = 0.9;
+					mp_AllowedDelta = 0.9;
 
-				m_DataMalterlib.f_SetLen(_nItems);
-				m_DataBoost.f_SetLen(_nItems);
+				mp_DataMalterlib.f_SetLen(_nItems);
+				mp_DataBoost.f_SetLen(_nItems);
 				if (!_bRandom)
 				{
-					for (umint i = 0; i < _nItems; ++i)
+					for (umint iItem = 0; iItem < _nItems; ++iItem)
 					{
-						m_DataMalterlib[i].m_Data = i;
-						m_DataBoost[i].m_Data = i;
+						mp_DataMalterlib[iItem].m_Data = iItem;
+						mp_DataBoost[iItem].m_Data = iItem;
 					}
 				}
 				else
 				{
 					NMisc::CRandomShiftRNG RandomRng;
 					CMalterlibTree MalterlibTree;
-					for (umint i = 0; i < _nItems; ++i)
+					for (umint iItem = 0; iItem < _nItems; ++iItem)
 					{
-						int x = 1 + (RandomRng.f_GetValue<int>() % (10000000 - 1));
-						while (MalterlibTree.f_FindEqual(x))
-							x = 1 + (RandomRng.f_GetValue<int>() % (10000000 - 1));
-						m_DataMalterlib[i].m_Data = x;
-						MalterlibTree.f_Insert(m_DataMalterlib[i]);
-						m_DataBoost[i].m_Data = x;
+						int Value = 1 + (RandomRng.f_GetValue<int>() % (10000000 - 1));
+						while (MalterlibTree.f_FindEqual(Value))
+							Value = 1 + (RandomRng.f_GetValue<int>() % (10000000 - 1));
+						mp_DataMalterlib[iItem].m_Data = Value;
+						MalterlibTree.f_Insert(mp_DataMalterlib[iItem]);
+						mp_DataBoost[iItem].m_Data = Value;
 					}
 				}
 			}
@@ -154,24 +154,24 @@ namespace NMib
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
 				CMalterlibTree MalterlibTree;
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					MalterlibTree.f_Clear();
-					auto Iter = m_DataMalterlib.f_GetIterator();
+					auto Iter = mp_DataMalterlib.f_GetIterator();
 					{
-						DMibTestScopeMeasure(MalterlibTime, m_nItems);
+						DMibTestScopeMeasure(MalterlibTime, mp_nItems);
 						for (; Iter; ++Iter)
 							MalterlibTree.f_Insert(*Iter);
 					}
 				}
 				CBoostTree BoostTree;
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					BoostTree.clear();
-					auto Iter = m_DataBoost.f_GetIterator();
+					auto Iter = mp_DataBoost.f_GetIterator();
 
 					{
-						DMibTestScopeMeasure(BoostTime, m_nItems);
+						DMibTestScopeMeasure(BoostTime, mp_nItems);
 						for (; Iter; ++Iter)
 							BoostTree.insert(*Iter);
 					}
@@ -192,15 +192,15 @@ namespace NMib
 				DMibTest(DMibExpr(bTreesSame));
 				{
 					using CIter1 = CMalterlibTree::TCIterator<>;
-					CIter1 it1 = MalterlibTree;
-					auto it2 = BoostTree.begin();
-					auto end2 = BoostTree.end();
+					CIter1 iMalterlib = MalterlibTree;
+					auto iBoost = BoostTree.begin();
+					auto BoostEnd = BoostTree.end();
 					bool bTreesSameValues = MalterlibTree.f_GetLen() == BoostTree.size();
-					for (; it1 && it2 != end2; ++it1, ++it2)
+					for (; iMalterlib && iBoost != BoostEnd; ++iMalterlib, ++iBoost)
 					{
-						auto dummy1 = it1->m_Data;
-						auto dummy2 = it2->m_Data;
-						bTreesSameValues = bTreesSame && dummy1 == dummy2;
+						auto MalterlibValue = iMalterlib->m_Data;
+						auto BoostValue = iBoost->m_Data;
+						bTreesSameValues = bTreesSame && MalterlibValue == BoostValue;
 					}
 					DMibTest(DMibExpr(bTreesSameValues));
 				}
@@ -208,7 +208,7 @@ namespace NMib
 				bool bMalterlibTreeValid = MalterlibTree.f_CheckTree(false);
 				if (!bMalterlibTreeValid)
 					DMibTest(DMibExpr(bMalterlibTreeValid));
-				CTestType Performing(m_AllowedDelta);
+				CTestType Performing(mp_AllowedDelta);
 				Performing.f_AddReference(BoostTime);
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
@@ -220,31 +220,31 @@ namespace NMib
 				CMeasureType BoostTime("Boost");
 				umint bFoundMalterlib = 0;
 				umint bFoundBoost = 0;
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					CMalterlibTree MalterlibTree;
-					auto Iter = m_DataMalterlib.f_GetIterator();
+					auto Iter = mp_DataMalterlib.f_GetIterator();
 					for (; Iter; ++Iter)
 						MalterlibTree.f_Insert(*Iter);
-					Iter = m_DataMalterlib.f_GetIterator();
+					Iter = mp_DataMalterlib.f_GetIterator();
 					CMalterlibNode::CCompare Compare;
 					{
-						DMibTestScopeMeasure(MalterlibTime, m_nItems);
+						DMibTestScopeMeasure(MalterlibTime, mp_nItems);
 						for (; Iter; ++Iter)
 							bFoundMalterlib += MalterlibTree.f_FindEqual(Iter->m_Data, Compare) != nullptr;
 					}
 				}
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					CBoostTree BoostTree;
-					auto Iter = m_DataBoost.f_GetIterator();
+					auto Iter = mp_DataBoost.f_GetIterator();
 					for (; Iter; ++Iter)
 						BoostTree.insert(*Iter);
-					Iter = m_DataBoost.f_GetIterator();
+					Iter = mp_DataBoost.f_GetIterator();
 					auto TreeEnd = BoostTree.end();
 					CBoostNode::CCompareLessThan Compare;
 					{
-						DMibTestScopeMeasure(BoostTime, m_nItems);
+						DMibTestScopeMeasure(BoostTime, mp_nItems);
 						for (; Iter; ++Iter)
 							bFoundBoost += BoostTree.find(Iter->m_Data, Compare) != TreeEnd;
 					}
@@ -252,7 +252,7 @@ namespace NMib
 
 				if (bFoundMalterlib != bFoundBoost)
 					DMibTest(DMibExpr(bFoundMalterlib) == DMibExpr(bFoundBoost));
-				CTestType Performing(m_AllowedDelta);
+				CTestType Performing(mp_AllowedDelta);
 				Performing.f_AddReference(BoostTime);
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
@@ -262,33 +262,33 @@ namespace NMib
 			{
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					CMalterlibTree MalterlibTree;
-					for (umint i = 0; i < m_nItems; ++i)
-						MalterlibTree.f_Insert(m_DataMalterlib[i]);
-					auto Iter = m_DataMalterlib.f_GetIterator();
+					for (umint iItem = 0; iItem < mp_nItems; ++iItem)
+						MalterlibTree.f_Insert(mp_DataMalterlib[iItem]);
+					auto Iter = mp_DataMalterlib.f_GetIterator();
 					{
-						DMibTestScopeMeasure(MalterlibTime, m_nItems);
+						DMibTestScopeMeasure(MalterlibTime, mp_nItems);
 						for (; Iter; ++Iter)
 							MalterlibTree.f_Remove(*Iter);
 					}
 				}
 
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
 					CBoostTree BoostTree;
-					for (umint i = 0; i < m_nItems; ++i)
-						BoostTree.insert(m_DataBoost[i]);
-					auto Iter = m_DataBoost.f_GetIterator();
+					for (umint iItem = 0; iItem < mp_nItems; ++iItem)
+						BoostTree.insert(mp_DataBoost[iItem]);
+					auto Iter = mp_DataBoost.f_GetIterator();
 					{
-						DMibTestScopeMeasure(BoostTime, m_nItems);
+						DMibTestScopeMeasure(BoostTime, mp_nItems);
 						for (; Iter; ++Iter)
 							BoostTree.erase(*Iter);
 					}
 				}
 
-				CTestType Performing(m_AllowedDelta);
+				CTestType Performing(mp_AllowedDelta);
 				Performing.f_AddReference(BoostTime);
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
@@ -300,39 +300,39 @@ namespace NMib
 				CBoostTree BoostTree;
 				using CIter2 = CBoostTree::const_iterator;
 				using CIter1 = CMalterlibTree::TCIterator<>;
-				for (umint i = 0; i < m_nItems; ++i)
-					MalterlibTree.f_Insert(&m_DataMalterlib[i]);
-				for (umint i = 0; i < m_nItems; ++i)
-					BoostTree.insert(m_DataBoost[i]);
+				for (umint iItem = 0; iItem < mp_nItems; ++iItem)
+					MalterlibTree.f_Insert(&mp_DataMalterlib[iItem]);
+				for (umint iItem = 0; iItem < mp_nItems; ++iItem)
+					BoostTree.insert(mp_DataBoost[iItem]);
 
-				int dummy1 = 0;
-				int dummy2 = 0;
+				int MalterlibSum = 0;
+				int BoostSum = 0;
 				CMeasureType MalterlibTime("Malterlib");
 				CMeasureType BoostTime("Boost");
 
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
-					CIter1 it1 = MalterlibTree;
+					CIter1 iMalterlib = MalterlibTree;
 					{
-						DMibTestScopeMeasure(MalterlibTime, m_nItems);
-						for (; it1; ++it1)
-							dummy1 += it1->m_Data;
+						DMibTestScopeMeasure(MalterlibTime, mp_nItems);
+						for (; iMalterlib; ++iMalterlib)
+							MalterlibSum += iMalterlib->m_Data;
 					}
 				}
-				for (umint i = 0; i < m_nTests; ++i)
+				for (umint iTest = 0; iTest < mp_nTests; ++iTest)
 				{
-					CIter2 it2 = BoostTree.begin();
-					CIter2 end2 = BoostTree.end();
+					CIter2 iBoost = BoostTree.begin();
+					CIter2 BoostEnd = BoostTree.end();
 					{
-						DMibTestScopeMeasure(BoostTime, m_nItems);
-						for (; it2 != end2; ++it2)
-							dummy2 += it2->m_Data;
+						DMibTestScopeMeasure(BoostTime, mp_nItems);
+						for (; iBoost != BoostEnd; ++iBoost)
+							BoostSum += iBoost->m_Data;
 					}
 				}
 
-				if (dummy1 != dummy2)
-					DMibTest(DMibExpr(dummy1) == DMibExpr(dummy2));
-				CTestType Performing(m_AllowedDelta);
+				if (MalterlibSum != BoostSum)
+					DMibTest(DMibExpr(MalterlibSum) == DMibExpr(BoostSum));
+				CTestType Performing(mp_AllowedDelta);
 				Performing.f_AddReference(BoostTime);
 				Performing.f_Add(MalterlibTime);
 				DMibTest(DMibExpr(Performing));
@@ -376,11 +376,11 @@ namespace NMib
 				fp_TraceTree((CBoostNode *)_pBoostNode->right_, _Depth + 1);
 			}
 
-			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> m_DataMalterlib;
-			TCVector<CBoostNode, NMemory::CAllocator_Virtual> m_DataBoost;
-			umint m_nItems;
-			umint m_nTests;
-			fp64 m_AllowedDelta;
+			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> mp_DataMalterlib;
+			TCVector<CBoostNode, NMemory::CAllocator_Virtual> mp_DataBoost;
+			umint mp_nItems;
+			umint mp_nTests;
+			fp64 mp_AllowedDelta;
 
 			using CMeasureType = TCConditional<t_bMemoryTests, CTestMemoryMeasure, CTestPerformanceMeasure>;
 			using CTestType = TCConditional<t_bMemoryTests, CTestMemoryMaxAllocatedBytes, CTestPerformance>;
@@ -397,53 +397,53 @@ namespace NMib
 #endif
 				DMibTestCategory("Insert")
 				{
-					for (umint i = 1; i <= End; i <<= 1)
+					for (umint nItems = 1; nItems <= End; nItems <<= 1)
 					{
-						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
+						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << nItems)
 						{
 							if (_bMemoryTests)
-								TCAVLTreeTester<true>(i, _bRandom).f_InsertTests();
+								TCAVLTreeTester<true>(nItems, _bRandom).f_InsertTests();
 							else
-								TCAVLTreeTester<false>(i, _bRandom).f_InsertTests();
+								TCAVLTreeTester<false>(nItems, _bRandom).f_InsertTests();
 						};
 					}
 				};
 				DMibTestCategory("Search")
 				{
-					for (umint i = 4; i <= End; i <<= 1)
+					for (umint nItems = 4; nItems <= End; nItems <<= 1)
 					{
-						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
+						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << nItems)
 						{
 							if (_bMemoryTests)
-								TCAVLTreeTester<true>(i, _bRandom).f_SearchTests();
+								TCAVLTreeTester<true>(nItems, _bRandom).f_SearchTests();
 							else
-								TCAVLTreeTester<false>(i, _bRandom).f_SearchTests();
+								TCAVLTreeTester<false>(nItems, _bRandom).f_SearchTests();
 						};
 					}
 				};
 				DMibTestCategory("Remove")
 				{
-					for (umint i = 4; i <= End; i <<= 1)
+					for (umint nItems = 4; nItems <= End; nItems <<= 1)
 					{
-						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
+						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << nItems)
 						{
 							if (_bMemoryTests)
-								TCAVLTreeTester<true>(i, _bRandom).f_RemoveTests();
+								TCAVLTreeTester<true>(nItems, _bRandom).f_RemoveTests();
 							else
-								TCAVLTreeTester<false>(i, _bRandom).f_RemoveTests();
+								TCAVLTreeTester<false>(nItems, _bRandom).f_RemoveTests();
 						};
 					}
 				};
 				DMibTestCategory("Traverse")
 				{
-					for (umint i = 4; i <= (_bRandom ? End << 1 : End << 4); i <<= 1)
+					for (umint nItems = 4; nItems <= (_bRandom ? End << 1 : End << 4); nItems <<= 1)
 					{
-						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << i)
+						DMibTestSuite(NStr::CStr::CFormat("Iterations {}") << nItems)
 						{
 							if (_bMemoryTests)
-								TCAVLTreeTester<true>(i, _bRandom).f_TraverseTests();
+								TCAVLTreeTester<true>(nItems, _bRandom).f_TraverseTests();
 							else
-								TCAVLTreeTester<false>(i, _bRandom).f_TraverseTests();
+								TCAVLTreeTester<false>(nItems, _bRandom).f_TraverseTests();
 						};
 					}
 				};

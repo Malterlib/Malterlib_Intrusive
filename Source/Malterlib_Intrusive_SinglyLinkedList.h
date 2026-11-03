@@ -756,9 +756,9 @@ namespace NMib::NIntrusive
 					if (!pCurrent)
 						break;
 
-					for (aint i = 1; i < SortSize; ++i)
+					for (aint iItem = 1; iItem < SortSize; ++iItem)
 					{
-						aint NumChecked = i;
+						aint NumChecked = iItem;
 						++NumSorted;
 
 						CSLinkAggr *pTemp = pLinkAfter->f_GetNext();
@@ -980,8 +980,8 @@ namespace NMib::NIntrusive
 			CSLinkAggr *Bucket[tf_BucketSize];
 
 			// Reset buckets
-			for (aint i = 0; i < tf_BucketSize; ++i)
-				Bucket[i] = nullptr;
+			for (aint iBucket = 0; iBucket < tf_BucketSize; ++iBucket)
+				Bucket[iBucket] = nullptr;
 
 			// Put list in first bucket
 
@@ -1008,12 +1008,12 @@ namespace NMib::NIntrusive
 				m_Data.f_GetFirst().f_SetNext(nullptr);
 				CSLinkAggr *pLast = &m_Data.f_GetFirst();
 
-				for (aint i = 0; i < tf_BucketSize; ++i)
+				for (aint iBucket = 0; iBucket < tf_BucketSize; ++iBucket)
 				{
-					if (Bucket[i])
+					if (Bucket[iBucket])
 					{
-						CSLinkAggr *pTemp = Bucket[i];
-						Bucket[i] = nullptr;
+						CSLinkAggr *pTemp = Bucket[iBucket];
+						Bucket[iBucket] = nullptr;
 						CSLinkAggr *pLinkAfter = pLast;
 						pLast = pTemp;
 
@@ -1230,8 +1230,8 @@ namespace NMib::NIntrusive
 			{ \
 				constexpr static umint mc_Offset = []\
 					{\
-						static constexpr t_CClass const *pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
-						return DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pMember) - (uint8 const *)pNode);\
+						static constexpr t_CClass const *c_pNode = DMibRelaxConstexpr((t_CClass const *)(void *)(NMib::TCLimitsInt<smint>::mc_Max / 2 + 1));\
+						return DMibRelaxConstexpr((uint8 const *)&(c_pNode->*t_pMember) - (uint8 const *)c_pNode);\
 					}()\
 				;\
 			}; \

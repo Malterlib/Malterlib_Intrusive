@@ -87,25 +87,25 @@ namespace
 			struct CCompare
 			{
 				CCompare()
-					: m_Valid(true)
+					: mp_bValid(true)
 				{
 				}
 
 				CCompare(CCompare &&_Other)
-					: m_Valid(true)
+					: mp_bValid(true)
 				{
-					_Other.m_Valid = false;
+					_Other.mp_bValid = false;
 				}
 
 				~CCompare()
 				{
-					m_Valid = false;
+					mp_bValid = false;
 				}
 
 				CCompare &operator = (CCompare &&_Other)
 				{
-					m_Valid = _Other.m_Valid;
-					_Other.m_Valid = false;
+					mp_bValid = _Other.mp_bValid;
+					_Other.mp_bValid = false;
 					return *this;
 				}
 
@@ -123,7 +123,7 @@ namespace
 				}
 
 			private:
-				bool m_Valid;
+				bool mp_bValid;
 			};
 
 			TCAVLLinkAutoRemove<> m_Link;
@@ -189,7 +189,7 @@ namespace
 				for (auto It = Test.m_Tree.f_GetIterator(); It; ++It)
 				{
 					DMibTest(DMibExpr(It->m_Data.m_Valid))(ETestFlag_Aggregated);
-					CStr data = It->m_Data.m_Data;
+					CStr Data = It->m_Data.m_Data;
 				}
 
 				/*

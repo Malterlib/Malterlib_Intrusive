@@ -89,7 +89,7 @@ namespace NMib::NIntrusive
 
 		while (Iter)
 		{
-			if (Iter.m_pStack[Iter.m_iStack]->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree)
+			if (Iter.mp_pStack[Iter.mp_iStack]->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree)
 			{
 				if (_bBreak)
 					DMibPDebugBreak;

@@ -32,11 +32,12 @@ namespace NMib::NIntrusive
 #if defined(DCompiler_MSVC)
 		CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
 		smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
-#else
-		static constexpr CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
-		static constexpr smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
-#endif
 		return ((CNode *)(((uint8 *)_pLink) - Offset));
+#else
+		static constexpr CNode const *c_pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
+		static constexpr smint c_Offset = DMibRelaxConstexpr((uint8 const *)&(c_pNode->*t_pLinkMember).m_Link - (uint8 const *)c_pNode);
+		return ((CNode *)(((uint8 *)_pLink) - c_Offset));
+#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -46,11 +47,12 @@ namespace NMib::NIntrusive
 #if defined(DCompiler_MSVC)
 		CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
 		smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
-#else
-		static constexpr CNode const *pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
-		static constexpr smint Offset = DMibRelaxConstexpr((uint8 const *)&(pNode->*t_pLinkMember).m_Link - (uint8 const *)pNode);
-#endif
 		return ((CNode *)(((uint8 *)_pLink) - Offset));
+#else
+		static constexpr CNode const *c_pNode = DMibRelaxConstexpr((CNode const *)(void *)(TCLimitsInt<smint>::mc_Max / 2 + 1));
+		static constexpr smint c_Offset = DMibRelaxConstexpr((uint8 const *)&(c_pNode->*t_pLinkMember).m_Link - (uint8 const *)c_pNode);
+		return ((CNode *)(((uint8 *)_pLink) - c_Offset));
+#endif
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
