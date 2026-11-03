@@ -99,8 +99,8 @@ namespace NMib::NIntrusive
 		}
 
 	private:
-		CSLink(CSLink const &) = delete;
-		CSLink &operator = (CSLink const &) = delete;
+		CSLink(CSLink const &_Other) = delete;
+		CSLink &operator = (CSLink const &_Other) = delete;
 	};
 
 	struct CSLinkListData_Last
@@ -444,10 +444,10 @@ namespace NMib::NIntrusive
 			f_Insert(&_ToInsert);
 		}
 
-		template <class t_CSortClass>
+		template <class tf_CSortClass>
 		void f_InsertSorted(t_CData &_ToInsert)
 		{
-			f_InsertSorted<t_CSortClass>(&_ToInsert);
+			f_InsertSorted<tf_CSortClass>(&_ToInsert);
 		}
 
 		template <typename tf_CCompare>
@@ -928,20 +928,20 @@ namespace NMib::NIntrusive
 			}
 		};
 
-		template <aint t_BucketSize>
+		template <aint tf_BucketSize>
 		void f_BucketSortCallback(FBucketGetIndex *_pSortfunction, void *_pContext = nullptr)
 		{
 			CBucketCallbackSort SortContext;
 			SortContext.m_pContext = _pContext;
 			SortContext.m_pSortFunction = _pSortfunction;
-			f_BucketSort<CBucketCallbackSort, t_BucketSize>(&SortContext);
+			f_BucketSort<CBucketCallbackSort, tf_BucketSize>(&SortContext);
 		}
 
 		/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
 		|	Function:			Sorts the linked list								|
 		|																			|
 		|	Template params:														|
-		|		t_CSortClass:	The class that implements the index funtion.		|
+		|		tf_CSortClass:	The class that implements the index funtion.		|
 		|						The funtion must be static and be called fs_GetInde |
 		|						It takes parameters									|
 		|						(void *_pContext, aint _Place, void *_pItem)		|
@@ -971,16 +971,16 @@ namespace NMib::NIntrusive
 		|						able to be inlined, at cost of code size.			|
 		|																			|
 		\*_________________________________________________________________________*/
-		template <class t_CSortClass, aint t_BucketSize>
+		template <class tf_CSortClass, aint tf_BucketSize>
 		void f_BucketSort(aint _NumPlaces, void *_pContext = nullptr)
 		{
 			if (f_IsEmpty())
 				return;
 
-			CSLinkAggr *Bucket[t_BucketSize];
+			CSLinkAggr *Bucket[tf_BucketSize];
 
 			// Reset buckets
-			for (aint i = 0; i < t_BucketSize; ++i)
+			for (aint i = 0; i < tf_BucketSize; ++i)
 				Bucket[i] = nullptr;
 
 			// Put list in first bucket
@@ -992,7 +992,7 @@ namespace NMib::NIntrusive
 
 				while (pCurrent)
 				{
-					aint Index = t_CSortClass::fs_GetIndex(_pContext, Place, fsp_MemberFromLink(pCurrent));
+					aint Index = tf_CSortClass::fs_GetIndex(_pContext, Place, fsp_MemberFromLink(pCurrent));
 					CSLinkAggr **pBucket = &Bucket[Index];
 
 					CSLinkAggr *pNext = pCurrent->f_GetNext();
@@ -1008,7 +1008,7 @@ namespace NMib::NIntrusive
 				m_Data.f_GetFirst().f_SetNext(nullptr);
 				CSLinkAggr *pLast = &m_Data.f_GetFirst();
 
-				for (aint i = 0; i < t_BucketSize; ++i)
+				for (aint i = 0; i < tf_BucketSize; ++i)
 				{
 					if (Bucket[i])
 					{
@@ -1216,8 +1216,8 @@ namespace NMib::NIntrusive
 		}
 
 	private:
-		TCSLinkList(TCSLinkList const &) = delete;
-		TCSLinkList &operator = (TCSLinkList const &) = delete;
+		TCSLinkList(TCSLinkList const &_Other) = delete;
+		TCSLinkList &operator = (TCSLinkList const &_Other) = delete;
 	};
 
 #if defined(DCompiler_clang)

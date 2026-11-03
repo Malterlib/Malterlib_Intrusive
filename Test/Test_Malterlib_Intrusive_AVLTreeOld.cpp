@@ -36,15 +36,15 @@ namespace NMib
 			{
 			}
 
-			CMalterlibNode(CMalterlibNode const &rhs)
-				: m_Data(rhs.m_Data)
+			CMalterlibNode(CMalterlibNode const &_Other)
+				: m_Data(_Other.m_Data)
 				, m_Link()
 			{
 			}
 
-			CMalterlibNode &operator = (CMalterlibNode const &rhs)
+			CMalterlibNode &operator = (CMalterlibNode const &_Other)
 			{
-				m_Data = rhs.m_Data;
+				m_Data = _Other.m_Data;
 				return *this;
 			}
 		};
@@ -83,14 +83,14 @@ namespace NMib
 			{
 			}
 
-			CBoostNode(CMalterlibNode const &rhs)
-				: m_Data(rhs.m_Data)
+			CBoostNode(CMalterlibNode const &_Other)
+				: m_Data(_Other.m_Data)
 			{
 			}
 
-			CBoostNode &operator = (CBoostNode const &rhs)
+			CBoostNode &operator = (CBoostNode const &_Other)
 			{
-				m_Data = rhs.m_Data;
+				m_Data = _Other.m_Data;
 				return *this;
 			}
 

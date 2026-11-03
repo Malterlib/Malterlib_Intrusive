@@ -27,7 +27,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Destruct()
 	{
-		fp_RemoveAll([&](CNode *) inline_always_lambda {});
+		fp_RemoveAll([&](CNode *_pToRemove) inline_always_lambda {});
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -357,13 +357,13 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_RemoveAll()
 	{
-		fp_RemoveAll([&](CNode *) inline_always_lambda {});
+		fp_RemoveAll([&](CNode *_pToRemove) inline_always_lambda {});
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Clear()
 	{
-		fp_RemoveAll([&](CNode *) inline_always_lambda {});
+		fp_RemoveAll([&](CNode *_pToRemove) inline_always_lambda {});
 	}
 
 	/***************************************************************************************************\

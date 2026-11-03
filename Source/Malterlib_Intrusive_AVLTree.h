@@ -132,29 +132,29 @@ namespace NMib::NIntrusive
 
 		template <typename tf_CCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node)
-			-> NTraits::TCCallableReturnTypeFor<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>
-			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>)
+			-> NTraits::TCCallableReturnTypeFor<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>
+			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
 		{
 			return _fCompare(fg_Forward<tf_CNode>(NPrivate::TCImplicitConvert<tf_CNode>(_Node)));
 		}
 
 		template <typename tf_CCompare, typename tf_CNode>
 		inline_small static auto fsp_GetKey(tf_CCompare &&_fCompare, tf_CNode &&_Node) -> NTraits::TCRemoveRValueReference<tf_CNode>
-			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&>)>)
+			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
 		{
 			return _Node;
 		}
 
 		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
 		inline_small static auto fsp_DoCompare(tf_CCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (tf_CLeft &&, tf_CRight &&)>)
+			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
 		{
 			return _fCompare(_Left, _Right);
 		}
 
 		template <typename tf_CCompare, typename tf_CLeft, typename tf_CRight>
 		inline_small static auto fsp_DoCompare(tf_CCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (tf_CLeft &&, tf_CRight &&)>)
+			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_CCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
 		{
 			return _Left <=> _Right;
 		}
@@ -262,7 +262,7 @@ namespace NMib::NIntrusive
 		template <typename tf_CCompare>
 		static inline_small void fsp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static inline_small void fsp_RebalanceCase3LowStack(int _Direction, CLink *pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
+		static inline_small void fsp_RebalanceCase3LowStack(int _Direction, CLink *_pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
 		static inline_small void fsp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
@@ -365,10 +365,10 @@ namespace NMib::NIntrusive
 		template <typename tf_CKey, typename tf_FOnInsert>
 		inline_small CNode *f_FindEqualOrInsert(tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert);
 
-		template <typename tf_ToMap, typename tf_CCompare>
-		inline_small CNode *f_FindEqualOrNew(tf_ToMap &_ToMap, tf_CCompare &&_fCompare);
-		template <typename tf_ToMap>
-		inline_small CNode *f_FindEqualOrNew(tf_ToMap &_ToMap);
+		template <typename tf_CToMap, typename tf_CCompare>
+		inline_small CNode *f_FindEqualOrNew(tf_CToMap &_ToMap, tf_CCompare &&_fCompare);
+		template <typename tf_CToMap>
+		inline_small CNode *f_FindEqualOrNew(tf_CToMap &_ToMap);
 
 		template <typename tf_CCompare>
 		inline_small void f_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare);
@@ -577,8 +577,8 @@ namespace NMib::NIntrusive
 		auto operator <=> (TCAVLTree const &_Other) const noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() <=> fg_GetType<typename CSuper::CNode const &>()));
 
 	private:
-		TCAVLTree(TCAVLTree const &) = delete;
-		TCAVLTree &operator = (TCAVLTree const &) = delete;
+		TCAVLTree(TCAVLTree const &_Other) = delete;
+		TCAVLTree &operator = (TCAVLTree const &_Other) = delete;
 
 		using CSuper = TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>;
 	};
@@ -639,8 +639,8 @@ namespace NMib::NIntrusive
 		~TCAVLLink();
 
 	private:
-		TCAVLLink(TCAVLLink const &) = delete;
-		TCAVLLink &operator = (TCAVLLink const &) = delete;
+		TCAVLLink(TCAVLLink const &_Other) = delete;
+		TCAVLLink &operator = (TCAVLLink const &_Other) = delete;
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -675,8 +675,8 @@ namespace NMib::NIntrusive
 		~TCAVLLinkAutoRemove();
 
 	private:
-		TCAVLLinkAutoRemove(TCAVLLinkAutoRemove const &) = delete;
-		TCAVLLinkAutoRemove &operator = (TCAVLLinkAutoRemove const &) = delete;
+		TCAVLLinkAutoRemove(TCAVLLinkAutoRemove const &_Other) = delete;
+		TCAVLLinkAutoRemove &operator = (TCAVLLinkAutoRemove const &_Other) = delete;
 	};
 }
 

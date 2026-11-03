@@ -78,7 +78,7 @@ namespace NMib::NIntrusive
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
-	template <int t_Direction>
+	template <int tf_Direction>
 	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_Rotate2(CLinkPointer *_pTop)
 		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CLink *
 	{
@@ -87,14 +87,14 @@ namespace NMib::NIntrusive
 		CLink *pDP;
 
 		pBP = CLink::fs_GetPtr(*_pTop);
-		pDP = pBP->f_GetNextP(t_Direction);
-		pCP = pDP->f_GetNextP(1 - t_Direction);
+		pDP = pBP->f_GetNextP(tf_Direction);
+		pCP = pDP->f_GetNextP(1 - tf_Direction);
 		CLink::fs_Assign(_pTop, pDP);
-		pDP->f_SetNext(1 - t_Direction, pBP);
-		pBP->f_SetNext(t_Direction, pCP);
+		pDP->f_SetNext(1 - tf_Direction, pBP);
+		pBP->f_SetNext(tf_Direction, pCP);
 		pBP->f_SetSkew(CLink::EAVLTreeSkew_None);
 		pDP->f_SetSkew(CLink::EAVLTreeSkew_None);
-		return pDP->f_GetNextP(t_Direction);
+		return pDP->f_GetNextP(tf_Direction);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -258,13 +258,13 @@ namespace NMib::NIntrusive
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fsp_RebalanceCase3LowStack
 		(
 			int _Direction
-			, CLink *pPath
+			, CLink *_pPath
 			, CLinkPointer *_pTop
 			, CLink *_pObjectToInsert
 			, tf_CCompare &&_fCompare
 		)
 	{
-		CLink *pObj = pPath;
+		CLink *pObj = _pPath;
 		if (pObj == _pObjectToInsert)
 			fsp_Rotate3Short(_pTop, _Direction);
 		else

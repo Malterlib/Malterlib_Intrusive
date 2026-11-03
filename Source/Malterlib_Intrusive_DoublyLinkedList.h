@@ -1079,8 +1079,8 @@ namespace NMib::NIntrusive
 		}
 
 	private:
-		TCDLink(TCDLink const &) = delete;
-		TCDLink &operator = (TCDLink const &) = delete;
+		TCDLink(TCDLink const &_Other) = delete;
+		TCDLink &operator = (TCDLink const &_Other) = delete;
 
 		t_CLink m_Link;
 	};
@@ -1117,7 +1117,7 @@ namespace NMib::NIntrusive
 			m_Link.f_SetPrevInitListLink(&m_Link);
 		}
 
-		template <typename t_CDataInternal1, typename t_CAllocator1, bool _bAutoDelete1>
+		template <typename t_CDataInternal1, typename t_CAllocator1, bool t_bAutoDelete1>
 		struct TCAutoDeleteHelper
 		{
 			static inline_small void fs_Delete(t_CData *_pDeleter)
@@ -1308,15 +1308,15 @@ namespace NMib::NIntrusive
 				fg_DeleteObject(t_CAllocator(), pCurrent);
 		}
 
-		template <typename t_CAllocator2>
+		template <typename tf_CAllocator2>
 		void f_DeleteAllAllocator()
 		{
 			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObject(t_CAllocator2(), pCurrent);
+				fg_DeleteObject(tf_CAllocator2(), pCurrent);
 		}
 
-		template <typename t_CAllocator2>
-		void f_DeleteAllAllocator(t_CAllocator2 &_Allocator)
+		template <typename tf_CAllocator2>
+		void f_DeleteAllAllocator(tf_CAllocator2 &_Allocator)
 		{
 			while (t_CData *pCurrent = f_GetLast())
 				fg_DeleteObject(_Allocator, pCurrent);
@@ -1328,25 +1328,25 @@ namespace NMib::NIntrusive
 				fg_DeleteObjectDefiniteType(t_CAllocator(), pCurrent);
 		}
 
-		template <typename t_CAllocator2>
+		template <typename tf_CAllocator2>
 		void f_DeleteAllAllocatorDefiniteType()
 		{
 			while (t_CData *pCurrent = f_GetLast())
-				fg_DeleteObjectDefiniteType(t_CAllocator2(), pCurrent);
+				fg_DeleteObjectDefiniteType(tf_CAllocator2(), pCurrent);
 		}
 
-		template <typename t_CAllocator2>
-		void f_DeleteAllAllocatorDefiniteType(t_CAllocator2 &_Allocator)
+		template <typename tf_CAllocator2>
+		void f_DeleteAllAllocatorDefiniteType(tf_CAllocator2 &_Allocator)
 		{
 			while (t_CData *pCurrent = f_GetLast())
 				fg_DeleteObjectDefiniteType(_Allocator, pCurrent);
 		}
 
-		template <typename t_CDeleter>
+		template <typename tf_CDeleter>
 		void f_DeleteAllDeleter()
 		{
 			while (t_CData *pCurrent = f_GetLast())
-				t_CDeleter::fs_Delete(pCurrent);
+				tf_CDeleter::fs_Delete(pCurrent);
 		}
 
 		void f_DeleteAllDeleter()
@@ -1372,8 +1372,8 @@ namespace NMib::NIntrusive
 			return Num;
 		}
 
-		template <typename t_CData2>
-		bool f_Contains(t_CData2 const &_CheckFor) const
+		template <typename tf_CData2>
+		bool f_Contains(tf_CData2 const &_CheckFor) const
 		{
 			CIteratorConst Iter(*this);
 			while (Iter)
@@ -1385,8 +1385,8 @@ namespace NMib::NIntrusive
 			return false;
 		}
 
-		template <typename t_CData2>
-		t_CData const *f_Find(t_CData2 const &_CheckFor) const
+		template <typename tf_CData2>
+		t_CData const *f_Find(tf_CData2 const &_CheckFor) const
 		{
 			CIteratorConst Iter(*this);
 			while (Iter)
@@ -1398,8 +1398,8 @@ namespace NMib::NIntrusive
 			return nullptr;
 		}
 
-		template <typename t_CData2>
-		t_CData *f_Find(t_CData2 const &_CheckFor)
+		template <typename tf_CData2>
+		t_CData *f_Find(tf_CData2 const &_CheckFor)
 		{
 			CIterator Iter(*this);
 			while (Iter)
@@ -1411,8 +1411,8 @@ namespace NMib::NIntrusive
 			return nullptr;
 		}
 
-		template <typename t_CCompare, typename t_CData2>
-		t_CData const *f_Find(t_CCompare &&_fCompare, t_CData2 const &_CheckFor) const
+		template <typename tf_CCompare, typename tf_CData2>
+		t_CData const *f_Find(tf_CCompare &&_fCompare, tf_CData2 const &_CheckFor) const
 		{
 			CIteratorConst Iter(*this);
 			while (Iter)
@@ -1424,8 +1424,8 @@ namespace NMib::NIntrusive
 			return nullptr;
 		}
 
-		template <typename t_CCompare, typename t_CData2>
-		t_CData *f_Find(t_CCompare &&_fCompare, t_CData2 const &_CheckFor)
+		template <typename tf_CCompare, typename tf_CData2>
+		t_CData *f_Find(tf_CCompare &&_fCompare, tf_CData2 const &_CheckFor)
 		{
 			CIterator Iter(*this);
 			while (Iter)
@@ -2155,10 +2155,10 @@ namespace NMib::NIntrusive
 			}
 		}
 
-		template <typename t_CSortClass>
+		template <typename tf_CSortClass>
 		void f_MergeSort()
 		{
-			f_MergeSort<t_CSortClass>(t_CSortClass());
+			f_MergeSort<tf_CSortClass>(tf_CSortClass());
 		}
 
 		template <typename tf_CCompare>
@@ -2178,20 +2178,20 @@ namespace NMib::NIntrusive
 			}
 		};
 
-		template <aint t_BucketSize>
+		template <aint tf_BucketSize>
 		void f_BucketSortCallback(FBucketGetIndex *_pSortfunction, void *_pContext = nullptr)
 		{
 			CBucketCallbackSort SortContext;
 			SortContext.m_pContext = _pContext;
 			SortContext.m_pSortFunction = _pSortfunction;
-			f_BucketSort<CBucketCallbackSort, t_BucketSize>(&SortContext);
+			f_BucketSort<CBucketCallbackSort, tf_BucketSize>(&SortContext);
 		}
 
 		/*ﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯﾯ*\
 		|	Function:			Sorts the linked list								|
 		|																			|
 		|	Template params:														|
-		|		t_CSortClass:	The class that implements the index funtion.		|
+		|		tf_CSortClass:	The class that implements the index funtion.		|
 		|						The funtion must be static and be called fs_GetIndex|
 		|						It takes parameters									|
 		|						(void *_pContext, aint _Place, void *_pItem)		|
@@ -2222,16 +2222,16 @@ namespace NMib::NIntrusive
 		|																			|
 		\*_________________________________________________________________________*/
 
-		template <typename t_CSortClass, aint t_BucketSize>
+		template <typename tf_CSortClass, aint tf_BucketSize>
 		void f_BucketSort(aint _NumPlaces, void *_pContext = nullptr)
 		{
 			if (f_IsEmpty())
 				return;
 
-			t_CLink *Bucket[t_BucketSize];
+			t_CLink *Bucket[tf_BucketSize];
 
 			// Reset buckets
-			for (aint i = 0; i < t_BucketSize; ++i)
+			for (aint i = 0; i < tf_BucketSize; ++i)
 				Bucket[i] = nullptr;
 
 			t_CLink List;
@@ -2261,7 +2261,7 @@ namespace NMib::NIntrusive
 
 				while (pCurrent)
 				{
-					aint Index = t_CSortClass::fs_GetIndex(_pContext, Place, fsp_MemberFromLink(pCurrent->f_Upcast()));
+					aint Index = tf_CSortClass::fs_GetIndex(_pContext, Place, fsp_MemberFromLink(pCurrent->f_Upcast()));
 					t_CLink **pBucket = &Bucket[Index];
 
 					t_CLink *pNext = pCurrent->f_GetNextNotList();
@@ -2279,7 +2279,7 @@ namespace NMib::NIntrusive
 				pLink->f_SetNextNotList(pLink);
 				pLink->f_SetPrevNotList(pLink);
 
-				for (aint i = 0; i < t_BucketSize; ++i)
+				for (aint i = 0; i < tf_BucketSize; ++i)
 				{
 					if (Bucket[i])
 					{
@@ -2613,12 +2613,12 @@ namespace NMib::NIntrusive
 				fg_DeleteObject(t_CAllocator(), pCurrent);
 			}
 
-			template <typename t_CDeleter>
+			template <typename tf_CDeleter>
 			void f_DeleteDeleter()
 			{
 				t_CData *pCurrent = f_GetCurrent();
 				++(*this);
-				t_CDeleter::fs_Delete(pCurrent);
+				tf_CDeleter::fs_Delete(pCurrent);
 			}
 
 			void f_DeleteDeleter()
@@ -2937,8 +2937,8 @@ namespace NMib::NIntrusive
 		}
 
 	private:
-		TCDLinkList(TCDLinkList const &) = delete;
-		TCDLinkList &operator = (TCDLinkList const &) = delete;
+		TCDLinkList(TCDLinkList const &_Other) = delete;
+		TCDLinkList &operator = (TCDLinkList const &_Other) = delete;
 	};
 
 #if defined(DCompiler_clang)
