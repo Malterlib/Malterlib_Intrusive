@@ -39,27 +39,27 @@ namespace NMib::NIntrusive
 			DMibSafeCheck(!m_pNext, "You have to take care of it. No auto delete");
 		}
 
-		inline_small void fp_Link(CSLinkAggr *_pLinkAfter)
+		inline_small void f_Link(CSLinkAggr *_pLinkAfter)
 		{
 			DMibSafeCheck(!m_pNext, "Singly linked list cannot be automatically unlinked, you have to remove it from the list manually");
 			m_pNext = _pLinkAfter->m_pNext;
 			_pLinkAfter->m_pNext = this;
 		}
 
-		inline_small void fp_Unlink(CSLinkAggr *_pPrev)
+		inline_small void f_Unlink(CSLinkAggr *_pPrev)
 		{
 			DMibSafeCheck(_pPrev, "You better know what you are doing");
 			_pPrev->m_pNext = m_pNext;
 			m_pNext = nullptr;
 		}
 
-		inline_small void fp_UnsafeLink(CSLinkAggr *_pLinkAfter)
+		inline_small void f_UnsafeLink(CSLinkAggr *_pLinkAfter)
 		{
 			m_pNext = _pLinkAfter->m_pNext;
 			_pLinkAfter->m_pNext = this;
 		}
 
-		inline_small void fp_UnsafeUnlink(CSLinkAggr *_pPrev)
+		inline_small void f_UnsafeUnlink(CSLinkAggr *_pPrev)
 		{
 			_pPrev->m_pNext = m_pNext;
 #ifdef DMibEnableSafeCheck
@@ -67,12 +67,12 @@ namespace NMib::NIntrusive
 #endif
 		}
 
-		inline_small CSLinkAggr *fp_GetNext() const
+		inline_small CSLinkAggr *f_GetNext() const
 		{
 			return m_pNext;
 		}
 
-		inline_small void fp_SetNext(CSLinkAggr *_pNext)
+		inline_small void f_SetNext(CSLinkAggr *_pNext)
 		{
 			m_pNext = _pNext;
 		}
@@ -117,32 +117,32 @@ namespace NMib::NIntrusive
 
 		CSLinkAggr m_First;
 		CSLinkAggr *m_pLast;
-		inline_small CSLinkAggr &fp_GetFirst()
+		inline_small CSLinkAggr &f_GetFirst()
 		{
 			return m_First;
 		}
 
-		inline_small CSLinkAggr const &fp_GetFirst() const
+		inline_small CSLinkAggr const &f_GetFirst() const
 		{
 			return m_First;
 		}
 
-		inline_small CSLinkAggr *fp_GetLast()
+		inline_small CSLinkAggr *f_GetLast()
 		{
 			return m_pLast;
 		}
 
-		inline_small CSLinkAggr const *fp_GetLast() const
+		inline_small CSLinkAggr const *f_GetLast() const
 		{
 			return m_pLast;
 		}
 
-		inline_small void fp_SetLast(CSLinkAggr *_pLast)
+		inline_small void f_SetLast(CSLinkAggr *_pLast)
 		{
 			m_pLast = _pLast;
 		}
 
-		static inline_small bool fp_HasLast()
+		static inline_small bool fs_HasLast()
 		{
 			return true;
 		}
@@ -160,31 +160,31 @@ namespace NMib::NIntrusive
 		}
 
 		CSLinkAggr m_First;
-		inline_small CSLinkAggr &fp_GetFirst()
+		inline_small CSLinkAggr &f_GetFirst()
 		{
 			return m_First;
 		}
 
-		inline_small CSLinkAggr *fp_GetLast()
+		inline_small CSLinkAggr *f_GetLast()
 		{
 			return nullptr;
 		}
 
-		inline_small CSLinkAggr const &fp_GetFirst() const
+		inline_small CSLinkAggr const &f_GetFirst() const
 		{
 			return m_First;
 		}
 
-		inline_small CSLinkAggr const *fp_GetLast() const
+		inline_small CSLinkAggr const *f_GetLast() const
 		{
 			return nullptr;
 		}
 
-		inline_small void fp_SetLast(CSLinkAggr *_pLast)
+		inline_small void f_SetLast(CSLinkAggr *_pLast)
 		{
 		}
 
-		static inline_small bool fp_HasLast()
+		static inline_small bool fs_HasLast()
 		{
 			return false;
 		}
@@ -206,42 +206,11 @@ namespace NMib::NIntrusive
 
 		t_CListData m_Data;
 
-		static inline_small CSLinkAggr *fp_LinkFromMember(t_CData *_pMember)
-		{
-			return ((CSLinkAggr *)(((uint8 *)_pMember) + COffset::mc_Offset));
-		}
-
-		static inline_small t_CData *fp_MemberFromLink(CSLinkAggr *_pLink)
-		{
-			return ((t_CData *)(((uint8 *)_pLink) - COffset::mc_Offset));
-		}
-
-		static inline_small CSLinkAggr const *fp_LinkFromMember(t_CData const *_pMember)
-		{
-			return ((CSLinkAggr const *)(((uint8 *)_pMember) + COffset::mc_Offset));
-		}
-
-		static inline_small t_CData const *fp_MemberFromLink(CSLinkAggr const *_pLink)
-		{
-			return ((t_CData const *)(((uint8 *)_pLink) - COffset::mc_Offset));
-		}
-
 		void f_Construct()
 		{
-			m_Data.fp_GetFirst().fp_SetNext(nullptr);
-			if (m_Data.fp_HasLast())
-				m_Data.fp_SetLast(&m_Data.fp_GetFirst());
-		}
-
-		template <bool tf_bDoDelete>
-		TCEnableIf<tf_bDoDelete> fp_AutoDelete()
-		{
-			f_DeleteAll();
-		}
-
-		template <bool tf_bDoDelete>
-		TCEnableIf<!tf_bDoDelete> fp_AutoDelete()
-		{
+			m_Data.f_GetFirst().f_SetNext(nullptr);
+			if (m_Data.fs_HasLast())
+				m_Data.f_SetLast(&m_Data.f_GetFirst());
 		}
 
 		void f_Destruct()
@@ -254,60 +223,60 @@ namespace NMib::NIntrusive
 
 		void f_ClearFast() // Fast clear that does not set the linked members to the unlinked state.
 		{
-			m_Data.fp_GetFirst().fp_SetNext(nullptr);
-			if (m_Data.fp_HasLast())
-				m_Data.fp_SetLast(nullptr);
+			m_Data.f_GetFirst().f_SetNext(nullptr);
+			if (m_Data.fs_HasLast())
+				m_Data.f_SetLast(nullptr);
 		}
 
 		void f_Clear()
 		{
-			while (m_Data.fp_GetFirst().fp_GetNext())
-				m_Data.fp_GetFirst().fp_GetNext()->fp_Unlink(&m_Data.fp_GetFirst());
-			if (m_Data.fp_HasLast())
-				m_Data.fp_SetLast(&m_Data.fp_GetFirst());
+			while (m_Data.f_GetFirst().f_GetNext())
+				m_Data.f_GetFirst().f_GetNext()->f_Unlink(&m_Data.f_GetFirst());
+			if (m_Data.fs_HasLast())
+				m_Data.f_SetLast(&m_Data.f_GetFirst());
 		}
 
 		void f_DeleteAll()
 		{
-			while (m_Data.fp_GetFirst().fp_GetNext())
+			while (m_Data.f_GetFirst().f_GetNext())
 			{
-				t_CData *pToDelete = fp_MemberFromLink(m_Data.fp_GetFirst().fp_GetNext());
-				m_Data.fp_GetFirst().fp_GetNext()->fp_Unlink(&m_Data.fp_GetFirst());
+				t_CData *pToDelete = fsp_MemberFromLink(m_Data.f_GetFirst().f_GetNext());
+				m_Data.f_GetFirst().f_GetNext()->f_Unlink(&m_Data.f_GetFirst());
 				fg_DeleteObject(t_CAllocator(), pToDelete);
 			}
 
-			if (m_Data.fp_HasLast())
-				m_Data.fp_SetLast(&m_Data.fp_GetFirst());
+			if (m_Data.fs_HasLast())
+				m_Data.f_SetLast(&m_Data.f_GetFirst());
 		}
 
 		void f_DeleteAllDefiniteType()
 		{
-			while (m_Data.fp_GetFirst().fp_GetNext())
+			while (m_Data.f_GetFirst().f_GetNext())
 			{
-				t_CData *pToDelete = fp_MemberFromLink(m_Data.fp_GetFirst().fp_GetNext());
-				m_Data.fp_GetFirst().fp_GetNext()->fp_Unlink(&m_Data.fp_GetFirst());
+				t_CData *pToDelete = fsp_MemberFromLink(m_Data.f_GetFirst().f_GetNext());
+				m_Data.f_GetFirst().f_GetNext()->f_Unlink(&m_Data.f_GetFirst());
 				fg_DeleteObjectDefiniteType(t_CAllocator(), pToDelete);
 			}
 
-			if (m_Data.fp_HasLast())
-				m_Data.fp_SetLast(&m_Data.fp_GetFirst());
+			if (m_Data.fs_HasLast())
+				m_Data.f_SetLast(&m_Data.f_GetFirst());
 		}
 
 		void f_Remove(t_CData *_pToRemove)
 		{
-			CSLinkAggr *pToRemove = fp_LinkFromMember(_pToRemove);
-			CSLinkAggr *pCurrent = &m_Data.fp_GetFirst();
+			CSLinkAggr *pToRemove = fsp_LinkFromMember(_pToRemove);
+			CSLinkAggr *pCurrent = &m_Data.f_GetFirst();
 			while (pCurrent)
 			{
-				CSLinkAggr *pNext = pCurrent->fp_GetNext();
+				CSLinkAggr *pNext = pCurrent->f_GetNext();
 				if (pNext == pToRemove)
 				{
-					if (m_Data.fp_HasLast())
+					if (m_Data.fs_HasLast())
 					{
-						if (!pToRemove->fp_GetNext())
-							m_Data.fp_SetLast(pCurrent);
+						if (!pToRemove->f_GetNext())
+							m_Data.f_SetLast(pCurrent);
 					}
-					pNext->fp_Unlink(pCurrent);
+					pNext->f_Unlink(pCurrent);
 					break;
 				}
 				pCurrent = pNext;
@@ -316,41 +285,41 @@ namespace NMib::NIntrusive
 
 		static void fs_UnsafeUnlink(t_CData *_pToRemove, t_CData *_pPrev)
 		{
-			CSLinkAggr *pToRemove = fp_LinkFromMember(_pToRemove);
-			CSLinkAggr *pPrev = fp_LinkFromMember(_pPrev);
+			CSLinkAggr *pToRemove = fsp_LinkFromMember(_pToRemove);
+			CSLinkAggr *pPrev = fsp_LinkFromMember(_pPrev);
 
-			pToRemove->fp_UnsafeUnlink(pPrev);
+			pToRemove->f_UnsafeUnlink(pPrev);
 		}
 
 		static t_CData *fs_GetNext(t_CData *_pData)
 		{
-			CSLinkAggr *pData = fp_LinkFromMember(_pData);
-			auto pNext = pData->fp_GetNext();
+			CSLinkAggr *pData = fsp_LinkFromMember(_pData);
+			auto pNext = pData->f_GetNext();
 			if (pNext)
-				return fp_MemberFromLink(pNext);
+				return fsp_MemberFromLink(pNext);
 			return nullptr;
 		}
 
 		static void fs_Unlink(t_CData *_pToRemove, t_CData *_pPrev)
 		{
-			CSLinkAggr *pToRemove = fp_LinkFromMember(_pToRemove);
-			CSLinkAggr *pPrev = fp_LinkFromMember(pPrev);
+			CSLinkAggr *pToRemove = fsp_LinkFromMember(_pToRemove);
+			CSLinkAggr *pPrev = fsp_LinkFromMember(pPrev);
 
-			pToRemove->fp_Unlink(pPrev);
+			pToRemove->f_Unlink(pPrev);
 		}
 
 		inline_medium t_CData *f_Pop()
 		{
-			auto pNext = m_Data.fp_GetFirst().fp_GetNext();
+			auto pNext = m_Data.f_GetFirst().f_GetNext();
 			if (pNext)
 			{
-				if (m_Data.fp_HasLast())
+				if (m_Data.fs_HasLast())
 				{
-					if (pNext == m_Data.fp_GetLast())
-						m_Data.fp_SetLast(&m_Data.fp_GetFirst());
+					if (pNext == m_Data.f_GetLast())
+						m_Data.f_SetLast(&m_Data.f_GetFirst());
 				}
-				pNext->fp_Unlink(&m_Data.fp_GetFirst());
-				return fp_MemberFromLink(pNext);
+				pNext->f_Unlink(&m_Data.f_GetFirst());
+				return fsp_MemberFromLink(pNext);
 			}
 			else
 				return nullptr;
@@ -358,16 +327,16 @@ namespace NMib::NIntrusive
 
 		inline_medium t_CData *f_UnsafePop()
 		{
-			auto pNext = m_Data.fp_GetFirst().fp_GetNext();
+			auto pNext = m_Data.f_GetFirst().f_GetNext();
 			if (pNext)
 			{
-				if (m_Data.fp_HasLast())
+				if (m_Data.fs_HasLast())
 				{
-					if (pNext == m_Data.fp_GetLast())
-						m_Data.fp_SetLast(&m_Data.fp_GetFirst());
+					if (pNext == m_Data.f_GetLast())
+						m_Data.f_SetLast(&m_Data.f_GetFirst());
 				}
-				pNext->fp_UnsafeUnlink(&m_Data.fp_GetFirst());
-				return fp_MemberFromLink(pNext);
+				pNext->f_UnsafeUnlink(&m_Data.f_GetFirst());
+				return fsp_MemberFromLink(pNext);
 			}
 			else
 				return nullptr;
@@ -386,31 +355,31 @@ namespace NMib::NIntrusive
 
 		inline_small t_CData *f_GetFirst()
 		{
-			auto pNext = m_Data.fp_GetFirst().fp_GetNext();
+			auto pNext = m_Data.f_GetFirst().f_GetNext();
 			if (pNext)
-				return fp_MemberFromLink(pNext);
+				return fsp_MemberFromLink(pNext);
 			else
 				return nullptr;
 		}
 
 		inline_small t_CData *f_GetLast()
 		{
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				if (m_Data.fp_GetLast() != &m_Data.fp_GetFirst())
-					return fp_MemberFromLink(m_Data.fp_GetLast());
+				if (m_Data.f_GetLast() != &m_Data.f_GetFirst())
+					return fsp_MemberFromLink(m_Data.f_GetLast());
 				else
 					return nullptr;
 			}
 			else
 			{
-				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
 				if (pCurrent)
 				{
-					while (pCurrent->fp_GetNext())
-						pCurrent = pCurrent->fp_GetNext();
+					while (pCurrent->f_GetNext())
+						pCurrent = pCurrent->f_GetNext();
 
-					return fp_MemberFromLink(pCurrent);
+					return fsp_MemberFromLink(pCurrent);
 				}
 				else
 					return nullptr;
@@ -419,30 +388,30 @@ namespace NMib::NIntrusive
 
 		inline_small t_CData const *f_GetFirst() const
 		{
-			if (m_Data.fp_GetFirst().fp_GetNext())
-				return fp_MemberFromLink(m_Data.fp_GetFirst().fp_GetNext());
+			if (m_Data.f_GetFirst().f_GetNext())
+				return fsp_MemberFromLink(m_Data.f_GetFirst().f_GetNext());
 			else
 				return nullptr;
 		}
 
 		inline_small t_CData const *f_GetLast() const
 		{
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				if (m_Data.fp_GetLast() != &m_Data.fp_GetFirst())
-					return fp_MemberFromLink(m_Data.fp_GetLast());
+				if (m_Data.f_GetLast() != &m_Data.f_GetFirst())
+					return fsp_MemberFromLink(m_Data.f_GetLast());
 				else
 					return nullptr;
 			}
 			else
 			{
-				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
 				if (pCurrent)
 				{
-					while (pCurrent->fp_GetNext())
-						pCurrent = pCurrent->fp_GetNext();
+					while (pCurrent->f_GetNext())
+						pCurrent = pCurrent->f_GetNext();
 
-					return fp_MemberFromLink(pCurrent);
+					return fsp_MemberFromLink(pCurrent);
 				}
 				else
 					return nullptr;
@@ -451,7 +420,7 @@ namespace NMib::NIntrusive
 
 		inline_small bool f_IsEmpty() const
 		{
-			return (m_Data.fp_GetFirst().fp_GetNext() == nullptr);
+			return (m_Data.f_GetFirst().f_GetNext() == nullptr);
 		}
 
 		//===================================
@@ -460,11 +429,11 @@ namespace NMib::NIntrusive
 
 		inline_small void f_Insert(t_CData *_pToInsert)
 		{
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-				pToLink->fp_Link(m_Data.fp_GetLast());
-				m_Data.fp_SetLast(pToLink);
+				CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+				pToLink->f_Link(m_Data.f_GetLast());
+				m_Data.f_SetLast(pToLink);
 			}
 			else
 				f_InsertFirst(_pToInsert);
@@ -484,52 +453,52 @@ namespace NMib::NIntrusive
 		template <typename tf_CCompare>
 		void f_InsertSorted(t_CData *_pToInsert, tf_CCompare &&_fCompare)
 		{
-			CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+			CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
 			if (pCurrent)
 			{
-				while (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent), *_pToInsert)) > 0)
-					pCurrent = pCurrent->fp_GetNext();
+				while (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pCurrent), *_pToInsert)) > 0)
+					pCurrent = pCurrent->f_GetNext();
 
-				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-				pToLink->fp_Link(pCurrent);
+				CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+				pToLink->f_Link(pCurrent);
 			}
 
 			if (pCurrent)
 			{
-				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-				pToLink->fp_Link(pCurrent);
+				CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+				pToLink->f_Link(pCurrent);
 			}
 			else
 			{
-				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-				pToLink->fp_Link(&m_Data.fp_GetFirst());
+				CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+				pToLink->f_Link(&m_Data.f_GetFirst());
 			}
 		}
 
 		// InsertTail
 		inline_small void f_InsertLast(t_CData *_pToInsert)
 		{
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-				pToLink->fp_Link(m_Data.fp_GetLast());
-				m_Data.fp_SetLast(pToLink);
+				CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+				pToLink->f_Link(m_Data.f_GetLast());
+				m_Data.f_SetLast(pToLink);
 			}
 			else
 			{
-				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
 				if (pCurrent)
 				{
-					while (pCurrent->fp_GetNext())
-						pCurrent = pCurrent->fp_GetNext();
+					while (pCurrent->f_GetNext())
+						pCurrent = pCurrent->f_GetNext();
 
-					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-					pToLink->fp_Link(pCurrent);
+					CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+					pToLink->f_Link(pCurrent);
 				}
 				else
 				{
-					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-					pToLink->fp_Link(&m_Data.fp_GetFirst());
+					CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+					pToLink->f_Link(&m_Data.f_GetFirst());
 				}
 			}
 		}
@@ -542,14 +511,14 @@ namespace NMib::NIntrusive
 		// InsertHead
 		inline_small void f_InsertFirst(t_CData *_pToInsert)
 		{
-			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
 
-			pToLink->fp_Link(&m_Data.fp_GetFirst());
+			pToLink->f_Link(&m_Data.f_GetFirst());
 
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				if (!pToLink->fp_GetNext())
-					m_Data.fp_SetLast(pToLink);
+				if (!pToLink->f_GetNext())
+					m_Data.f_SetLast(pToLink);
 			}
 		}
 
@@ -561,15 +530,15 @@ namespace NMib::NIntrusive
 		// f_InsertAfter
 		inline_small void f_InsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter)
 		{
-			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-			CSLinkAggr *pToLinkAfter = fp_LinkFromMember(_pToInsertAfter);
+			CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLinkAfter = fsp_LinkFromMember(_pToInsertAfter);
 
-			pToLink->fp_Link(pToLinkAfter);
+			pToLink->f_Link(pToLinkAfter);
 
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				if (!pToLink->fp_GetNext())
-					m_Data.fp_SetLast(pToLink);
+				if (!pToLink->f_GetNext())
+					m_Data.f_SetLast(pToLink);
 			}
 		}
 
@@ -594,11 +563,11 @@ namespace NMib::NIntrusive
 
 		inline_small void f_UnsafeInsert(t_CData *_pToInsert)
 		{
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-				pToLink->fp_UnsafeLink(m_Data.fp_GetLast());
-				m_Data.fp_SetLast(pToLink);
+				CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+				pToLink->f_UnsafeLink(m_Data.f_GetLast());
+				m_Data.f_SetLast(pToLink);
 			}
 			else
 				f_UnsafeInsertFirst(_pToInsert);
@@ -612,27 +581,27 @@ namespace NMib::NIntrusive
 		// InsertTail
 		inline_small void f_UnsafeInsertLast(t_CData *_pToInsert)
 		{
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-				pToLink->fp_UnsafeLink(m_Data.fp_GetLast());
-				m_Data.fp_SetLast(pToLink);
+				CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+				pToLink->f_UnsafeLink(m_Data.f_GetLast());
+				m_Data.f_SetLast(pToLink);
 			}
 			else
 			{
-				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
 				if (pCurrent)
 				{
-					while (pCurrent->fp_GetNext())
-						pCurrent = pCurrent->fp_GetNext();
+					while (pCurrent->f_GetNext())
+						pCurrent = pCurrent->f_GetNext();
 
-					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-					pToLink->fp_UnsafeLink(pCurrent);
+					CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+					pToLink->f_UnsafeLink(pCurrent);
 				}
 				else
 				{
-					CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-					pToLink->fp_UnsafeLink(&m_Data.fp_GetFirst());
+					CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+					pToLink->f_UnsafeLink(&m_Data.f_GetFirst());
 				}
 			}
 		}
@@ -645,14 +614,14 @@ namespace NMib::NIntrusive
 		// InsertHead
 		inline_small void f_UnsafeInsertFirst(t_CData *_pToInsert)
 		{
-			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
 
-			pToLink->fp_UnsafeLink(&m_Data.fp_GetFirst());
+			pToLink->f_UnsafeLink(&m_Data.f_GetFirst());
 
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				if (!pToLink->fp_GetNext())
-					m_Data.fp_SetLast(pToLink);
+				if (!pToLink->f_GetNext())
+					m_Data.f_SetLast(pToLink);
 			}
 		}
 
@@ -664,15 +633,15 @@ namespace NMib::NIntrusive
 		// InsertHead
 		inline_small void f_UnsafeInsertAfter(t_CData *_pToInsert, t_CData *_pToInsertAfter)
 		{
-			CSLinkAggr *pToLink = fp_LinkFromMember(_pToInsert);
-			CSLinkAggr *pToLinkAfter = fp_LinkFromMember(_pToInsertAfter);
+			CSLinkAggr *pToLink = fsp_LinkFromMember(_pToInsert);
+			CSLinkAggr *pToLinkAfter = fsp_LinkFromMember(_pToInsertAfter);
 
-			pToLink->fp_UnsafeLink(pToLinkAfter);
+			pToLink->f_UnsafeLink(pToLinkAfter);
 
-			if (m_Data.fp_HasLast())
+			if (m_Data.fs_HasLast())
 			{
-				if (!pToLink->fp_GetNext())
-					m_Data.fp_SetLast(pToLink);
+				if (!pToLink->f_GetNext())
+					m_Data.f_SetLast(pToLink);
 			}
 		}
 
@@ -698,18 +667,18 @@ namespace NMib::NIntrusive
 
 		void f_Reverse()
 		{
-			CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
-			m_Data.fp_GetFirst().fp_SetNext(nullptr);
+			CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
+			m_Data.f_GetFirst().f_SetNext(nullptr);
 			if (pCurrent)
 			{
-				if (m_Data.fp_HasLast())
-					m_Data.fp_SetLast(pCurrent);
+				if (m_Data.fs_HasLast())
+					m_Data.f_SetLast(pCurrent);
 
 				while (pCurrent)
 				{
 					CSLinkAggr *pTemp = pCurrent;
-					pCurrent = pCurrent->fp_GetNext();
-					pTemp->fp_UnsafeLink(&m_Data.fp_GetFirst());
+					pCurrent = pCurrent->f_GetNext();
+					pTemp->f_UnsafeLink(&m_Data.f_GetFirst());
 				}
 			}
 		}
@@ -768,10 +737,10 @@ namespace NMib::NIntrusive
 			{
 				aint const SortSize = 1 << _InsertionBits;
 
-				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
-				CSLinkAggr *pLinkAfter = &m_Data.fp_GetFirst();
-				CSLinkAggr *pLast = &m_Data.fp_GetFirst();
-				m_Data.fp_GetFirst().fp_SetNext(nullptr);
+				CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
+				CSLinkAggr *pLinkAfter = &m_Data.f_GetFirst();
+				CSLinkAggr *pLast = &m_Data.f_GetFirst();
+				m_Data.f_GetFirst().f_SetNext(nullptr);
 				aint NumSorted = 0;
 
 				while (pCurrent)
@@ -779,8 +748,8 @@ namespace NMib::NIntrusive
 					// Add first member
 
 					++NumSorted;
-					CSLinkAggr *pTemp = pCurrent->fp_GetNext();
-					pCurrent->fp_UnsafeLink(pLinkAfter);
+					CSLinkAggr *pTemp = pCurrent->f_GetNext();
+					pCurrent->f_UnsafeLink(pLinkAfter);
 					pLast = pCurrent;
 					pCurrent = pTemp;
 
@@ -792,21 +761,21 @@ namespace NMib::NIntrusive
 						aint NumChecked = i;
 						++NumSorted;
 
-						CSLinkAggr *pTemp = pLinkAfter->fp_GetNext();
+						CSLinkAggr *pTemp = pLinkAfter->f_GetNext();
 						CSLinkAggr *pTempAfter = pLinkAfter;
 
 						while (NumChecked)
 						{
-							if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pCurrent), *fp_MemberFromLink(pTemp))) <= 0)
+							if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pCurrent), *fsp_MemberFromLink(pTemp))) <= 0)
 								break;
 							--NumChecked;
 							pTempAfter = pTemp;
-							pTemp = pTemp->fp_GetNext();
+							pTemp = pTemp->f_GetNext();
 						}
 
-						CSLinkAggr *pTempNext = pCurrent->fp_GetNext();
-						pCurrent->fp_UnsafeLink(pTempAfter);
-						if (!pCurrent->fp_GetNext())
+						CSLinkAggr *pTempNext = pCurrent->f_GetNext();
+						pCurrent->f_UnsafeLink(pTempAfter);
+						if (!pCurrent->f_GetNext())
 							pLast = pCurrent;
 						pCurrent = pTempNext;
 						if (!pCurrent)
@@ -816,8 +785,8 @@ namespace NMib::NIntrusive
 					pLinkAfter = pLast;
 				}
 
-				if (m_Data.fp_HasLast())
-					m_Data.fp_SetLast(pLast);
+				if (m_Data.fs_HasLast())
+					m_Data.f_SetLast(pLast);
 
 				if (NumSorted <= MergeSize)
 				{
@@ -830,8 +799,8 @@ namespace NMib::NIntrusive
 
 			while (1)
 			{
-				CSLinkAggr *pFirst = m_Data.fp_GetFirst().fp_GetNext();
-				CSLinkAggr *pLast = &m_Data.fp_GetFirst();
+				CSLinkAggr *pFirst = m_Data.f_GetFirst().f_GetNext();
+				CSLinkAggr *pLast = &m_Data.f_GetFirst();
 
 				aint MergesDone = 0; // count number of merges we do in this pass
 
@@ -847,7 +816,7 @@ namespace NMib::NIntrusive
 					{
 						MergeSizeFirst++;
 						pLastFirst = pSecond;
-						pSecond = pSecond->fp_GetNext();
+						pSecond = pSecond->f_GetNext();
 						if (!pSecond)
 							break;
 					}
@@ -857,7 +826,7 @@ namespace NMib::NIntrusive
 					if (!pSecond)
 					{
 						// End of list
-						pLast->fp_SetNext(pFirst);
+						pLast->f_SetNext(pFirst);
 						pLast = nullptr;
 						// pLast = pFirst;
 						// pFirst = pFirst->m_pNext;
@@ -865,15 +834,15 @@ namespace NMib::NIntrusive
 					}
 					else
 					{
-						if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pLastFirst), *fp_MemberFromLink(pSecond))) <= 0)
+						if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pLastFirst), *fsp_MemberFromLink(pSecond))) <= 0)
 						{
 							// Lists already sorted
-							pLast->fp_SetNext(pFirst);
+							pLast->f_SetNext(pFirst);
 							while (MergeSizeSecond * (umint)pSecond)
 							{
 								--MergeSizeSecond;
 								pLast = pSecond;
-								pSecond = pSecond->fp_GetNext();
+								pSecond = pSecond->f_GetNext();
 							}
 						}
 						else
@@ -883,22 +852,22 @@ namespace NMib::NIntrusive
 							while (1)
 							{
 								// decide whether m_pNext element of merge comes from pFirst or pSecond
-								if (fg_CheckOrdering(_fCompare(*fp_MemberFromLink(pFirst), *fp_MemberFromLink(pSecond))) <= 0)
+								if (fg_CheckOrdering(_fCompare(*fsp_MemberFromLink(pFirst), *fsp_MemberFromLink(pSecond))) <= 0)
 								{
 									// First element of pFirst is lower (or same); pTemp must come from pFirst.
-									pLast->fp_SetNext(pFirst);
+									pLast->f_SetNext(pFirst);
 									pLast = pFirst;
-									pFirst = pFirst->fp_GetNext();
+									pFirst = pFirst->f_GetNext();
 									MergeSizeFirst--;
 									if (!MergeSizeFirst)
 									{
-										pLast->fp_SetNext(pSecond);
+										pLast->f_SetNext(pSecond);
 
 										while (MergeSizeSecond * (umint)pSecond)
 										{
 											--MergeSizeSecond;
 											pLast = pSecond;
-											pSecond = pSecond->fp_GetNext();
+											pSecond = pSecond->f_GetNext();
 										}
 										break;
 									}
@@ -906,19 +875,19 @@ namespace NMib::NIntrusive
 								else
 								{
 									// First element of pSecond is lower; pTemp must come from pSecond.
-									pLast->fp_SetNext(pSecond);
+									pLast->f_SetNext(pSecond);
 									pLast = pSecond;
-									pSecond = pSecond->fp_GetNext();
+									pSecond = pSecond->f_GetNext();
 									MergeSizeSecond--;
 									if (!pSecond || !MergeSizeSecond)
 									{
-										pLast->fp_SetNext(pFirst);
+										pLast->f_SetNext(pFirst);
 
 										while (MergeSizeFirst)
 										{
 											MergeSizeFirst--;
 											pLast = pFirst;
-											pFirst = pFirst->fp_GetNext();
+											pFirst = pFirst->f_GetNext();
 										}
 										break;
 									}
@@ -932,13 +901,13 @@ namespace NMib::NIntrusive
 				}
 
 				if (pLast)
-					pLast->fp_SetNext(nullptr);
+					pLast->f_SetNext(nullptr);
 
 				// If we have done only one merge, we're finished.
 				if (MergesDone <= 1) // allow for MergesDone==0, the empty list case
 				{
-					if (m_Data.fp_HasLast())
-						m_Data.fp_SetLast(pLast);
+					if (m_Data.fs_HasLast())
+						m_Data.f_SetLast(pLast);
 					return;
 				}
 
@@ -1019,16 +988,16 @@ namespace NMib::NIntrusive
 			for (aint Place = 0; Place < _NumPlaces; ++Place)
 			{
 				// Remove last link
-				CSLinkAggr *pCurrent = m_Data.fp_GetFirst().fp_GetNext();
+				CSLinkAggr *pCurrent = m_Data.f_GetFirst().f_GetNext();
 
 				while (pCurrent)
 				{
-					aint Index = t_CSortClass::fs_GetIndex(_pContext, Place, fp_MemberFromLink(pCurrent));
+					aint Index = t_CSortClass::fs_GetIndex(_pContext, Place, fsp_MemberFromLink(pCurrent));
 					CSLinkAggr **pBucket = &Bucket[Index];
 
-					CSLinkAggr *pNext = pCurrent->fp_GetNext();
+					CSLinkAggr *pNext = pCurrent->f_GetNext();
 
-					pCurrent->fp_SetNext((*pBucket));
+					pCurrent->f_SetNext((*pBucket));
 					(*pBucket) = pCurrent;
 
 					pCurrent = pNext;
@@ -1036,8 +1005,8 @@ namespace NMib::NIntrusive
 
 				// Rebuild list
 
-				m_Data.fp_GetFirst().fp_SetNext(nullptr);
-				CSLinkAggr *pLast = &m_Data.fp_GetFirst();
+				m_Data.f_GetFirst().f_SetNext(nullptr);
+				CSLinkAggr *pLast = &m_Data.f_GetFirst();
 
 				for (aint i = 0; i < t_BucketSize; ++i)
 				{
@@ -1050,14 +1019,14 @@ namespace NMib::NIntrusive
 
 						while (pTemp)
 						{
-							CSLinkAggr *pTempNext = pTemp->fp_GetNext();
-							pTemp->fp_UnsafeLink(pLinkAfter);
+							CSLinkAggr *pTempNext = pTemp->f_GetNext();
+							pTemp->f_UnsafeLink(pLinkAfter);
 							pTemp = pTempNext;
 						}
 					}
 				}
-				if (m_Data.fp_HasLast())
-					m_Data.fp_SetLast(pLast);
+				if (m_Data.fs_HasLast())
+					m_Data.f_SetLast(pLast);
 			}
 		}
 
@@ -1078,7 +1047,7 @@ namespace NMib::NIntrusive
 
 			CIterator(TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List)
 			{
-				m_pCurrent = _List.m_Data.fp_GetFirst().fp_GetNext();
+				m_pCurrent = _List.m_Data.f_GetFirst().f_GetNext();
 			}
 
 			CIterator f_GetIterator() const
@@ -1090,14 +1059,14 @@ namespace NMib::NIntrusive
 
 			CIterator &operator = (TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List)
 			{
-				m_pCurrent = _List.m_Data.fp_GetFirst().fp_GetNext();
+				m_pCurrent = _List.m_Data.f_GetFirst().f_GetNext();
 				return *this;
 			}
 
 			inline_small t_CData *f_GetCurrent()
 			{
 				if (m_pCurrent)
-					return TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::fp_MemberFromLink(m_pCurrent);
+					return TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::fsp_MemberFromLink(m_pCurrent);
 				else
 					return nullptr;
 			}
@@ -1115,7 +1084,7 @@ namespace NMib::NIntrusive
 			inline_small void operator ++ ()
 			{
 				if (m_pCurrent)
-					m_pCurrent = m_pCurrent->fp_GetNext();
+					m_pCurrent = m_pCurrent->f_GetNext();
 			}
 
 		private:
@@ -1138,7 +1107,7 @@ namespace NMib::NIntrusive
 
 			CIteratorConst(TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List)
 			{
-				m_pCurrent = _List.m_Data.fp_GetFirst().fp_GetNext();
+				m_pCurrent = _List.m_Data.f_GetFirst().f_GetNext();
 			}
 
 			CIteratorConst f_GetIterator() const
@@ -1150,14 +1119,14 @@ namespace NMib::NIntrusive
 
 			CIteratorConst &operator = (TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List)
 			{
-				m_pCurrent = _List.m_Data.fp_GetFirst().fp_GetNext();
+				m_pCurrent = _List.m_Data.f_GetFirst().f_GetNext();
 				return *this;
 			}
 
 			inline_small t_CData const *f_GetCurrent()
 			{
 				if (m_pCurrent)
-					return TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::fp_MemberFromLink(m_pCurrent);
+					return TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator>::fsp_MemberFromLink(m_pCurrent);
 				else
 					return nullptr;
 			}
@@ -1175,7 +1144,7 @@ namespace NMib::NIntrusive
 			inline_small void operator ++ ()
 			{
 				if (m_pCurrent)
-					m_pCurrent = m_pCurrent->fp_GetNext();
+					m_pCurrent = m_pCurrent->f_GetNext();
 			}
 
 		private:
@@ -1198,6 +1167,38 @@ namespace NMib::NIntrusive
 				++Iter;
 			}
 			return Len;
+		}
+
+	private:
+		static inline_small CSLinkAggr *fsp_LinkFromMember(t_CData *_pMember)
+		{
+			return ((CSLinkAggr *)(((uint8 *)_pMember) + COffset::mc_Offset));
+		}
+
+		static inline_small t_CData *fsp_MemberFromLink(CSLinkAggr *_pLink)
+		{
+			return ((t_CData *)(((uint8 *)_pLink) - COffset::mc_Offset));
+		}
+
+		static inline_small CSLinkAggr const *fsp_LinkFromMember(t_CData const *_pMember)
+		{
+			return ((CSLinkAggr const *)(((uint8 *)_pMember) + COffset::mc_Offset));
+		}
+
+		static inline_small t_CData const *fsp_MemberFromLink(CSLinkAggr const *_pLink)
+		{
+			return ((t_CData const *)(((uint8 *)_pLink) - COffset::mc_Offset));
+		}
+
+		template <bool tf_bDoDelete>
+		TCEnableIf<tf_bDoDelete> fp_AutoDelete()
+		{
+			f_DeleteAll();
+		}
+
+		template <bool tf_bDoDelete>
+		TCEnableIf<!tf_bDoDelete> fp_AutoDelete()
+		{
 		}
 	};
 

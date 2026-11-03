@@ -21,7 +21,7 @@ namespace
 		{
 			static t_CClass &fs_Get();
 			using CLinkContainer = decltype(fs_Get().m_Link);
-			static CLinkContainer &f_GetOffset(t_CClass &_Class)
+			static CLinkContainer &fs_GetOffset(t_CClass &_Class)
 			{
 				return _Class.m_Link;
 			}
@@ -211,7 +211,7 @@ struct CTest0
 	umint m_Data;
 
 private:
-	void f_Test()
+	void fp_Test()
 	{
 	}
 };

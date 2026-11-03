@@ -116,7 +116,7 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		bool fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, umint &_Depth);
+		bool fp_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, umint &_Depth);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -210,9 +210,9 @@ namespace NMib::NIntrusive
 		static bool fsp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject);
 		static bool fsp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject);
 		template <typename tf_CCompare>
-		static bool fspr_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
+		static bool fsp_RemoveRecursive(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static bool fspr_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare, bool &_bRet);
+		static bool fsp_InsertRecursive(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare, bool &_bRet);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -220,29 +220,29 @@ namespace NMib::NIntrusive
 		|___________________________________________________________________________________________________|
 		\***************************************************************************************************/
 
-		static inline_medium bool fp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
-		static inline_medium bool fp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
+		static inline_medium bool fsp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
+		static inline_medium bool fsp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
 		template <typename tf_CCompare>
-		static void fp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
-		static void fp_Removed(CLinkPointer *_pObject, CLink *_pObj, CTemporaryStack &_Stack);
+		static void fsp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
+		static void fsp_Removed(CLinkPointer *_pObject, CLink *_pObj, CTemporaryStack &_Stack);
 
 		// No-rebalance removal helpers - used during destructive iteration
 		static inline_medium CLink *fsp_DetachHighest(CLinkPointer &_pObject);
 		static inline_medium CLink *fsp_DetachLowest(CLinkPointer &_pObject);
 		// Returns the replacement node (or nullptr if removed node was a leaf)
-		static CLink *fp_RemovedNoRebalance(CLinkPointer *_pObject, CLink *_pObj);
+		static CLink *fsp_RemovedNoRebalance(CLinkPointer *_pObject, CLink *_pObj);
 
 		template <int tf_Direction>
-		static void fp_RemoveRotate3(CLinkPointer *_pObject);
+		static void fsp_RemoveRotate3(CLinkPointer *_pObject);
 		template <int tf_Direction>
-		static void fp_RemoveRotate2(CLinkPointer *_pObject);
+		static void fsp_RemoveRotate2(CLinkPointer *_pObject);
 		template <typename tf_CCompare>
-		static bool fp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
+		static bool fsp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CKey, typename tf_FOnInsert, typename tf_CCompare>
 		CNode *fp_FindEqualOrInsert(CLinkPointer &_pObject, tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert, tf_CCompare &&_fCompare);
 
 		template <typename tf_CKey, typename tf_CCompare>
-		static CNode *fp_FindEqualAndRemove(CLinkPointer &_pObject, tf_CKey const &_Key, tf_CCompare &&_fCompare);
+		static CNode *fsp_FindEqualAndRemove(CLinkPointer &_pObject, tf_CKey const &_Key, tf_CCompare &&_fCompare);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
@@ -251,22 +251,22 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		static inline_medium CLinkPointer *fp_RemoveRebalance(CLinkPointer *_pTop, CLinkPointer *_pTarget, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
+		static inline_medium CLinkPointer *fsp_RemoveRebalance(CLinkPointer *_pTop, CLinkPointer *_pTarget, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static void fp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
+		static void fsp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_CCompare &&_fCompare);
 
 		template <int tf_Direction>
-		static inline_small CLink *fp_Rotate2(CLinkPointer *_pTop);
-		static void fp_Rotate3Short(CLinkPointer *_pTop, int _Direction);
-		static CLink *fp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third);
+		static inline_small CLink *fsp_Rotate2(CLinkPointer *_pTop);
+		static void fsp_Rotate3Short(CLinkPointer *_pTop, int _Direction);
+		static CLink *fsp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third);
 		template <typename tf_CCompare>
-		static inline_small void fp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
+		static inline_small void fsp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static inline_small void fp_RebalanceCase3LowStack(int _Direction, CLink *pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
+		static inline_small void fsp_RebalanceCase3LowStack(int _Direction, CLink *pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static inline_small void fp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
+		static inline_small void fsp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		static bool fp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
+		static bool fsp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_CCompare &&_fCompare);
 
 	public:
 		/***************************************************************************************************\
@@ -334,18 +334,18 @@ namespace NMib::NIntrusive
 		\***************************************************************************************************/
 
 		template <typename tf_CCompare>
-		inline_small bool fr_Insert(CNode *_pToInsert, tf_CCompare &&_fCompare);
+		inline_small bool f_InsertRecursive(CNode *_pToInsert, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		inline_small bool fr_Insert(CNode &_ToInsert, tf_CCompare &&_fCompare);
-		inline_small bool fr_Insert(CNode &_ToInsert);
-		inline_small bool fr_Insert(CNode *_pToInsert);
+		inline_small bool f_InsertRecursive(CNode &_ToInsert, tf_CCompare &&_fCompare);
+		inline_small bool f_InsertRecursive(CNode &_ToInsert);
+		inline_small bool f_InsertRecursive(CNode *_pToInsert);
 
 		template <typename tf_CCompare>
-		inline_small void fr_Remove(CNode *_pToRemove, tf_CCompare &&_fCompare);
+		inline_small void f_RemoveRecursive(CNode *_pToRemove, tf_CCompare &&_fCompare);
 		template <typename tf_CCompare>
-		inline_small void fr_Remove(CNode &_ToRemove, tf_CCompare &&_fCompare);
-		inline_small void fr_Remove(CNode &_ToRemove);
-		inline_small void fr_Remove(CNode *_pToRemove);
+		inline_small void f_RemoveRecursive(CNode &_ToRemove, tf_CCompare &&_fCompare);
+		inline_small void f_RemoveRecursive(CNode &_ToRemove);
+		inline_small void f_RemoveRecursive(CNode *_pToRemove);
 
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|

@@ -90,22 +90,22 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = *_pLeft;
 		}
 
-		inline_small void fp_SetNext(int _iIndex, CAVLLinkData *_pPtr)
+		inline_small void f_SetNext(int _iIndex, CAVLLinkData *_pPtr)
 		{
 			m_pNext[_iIndex] = _pPtr;
 		}
 
-		static inline_small void f_Assign(CAVLLinkData **_pDest, CAVLLinkData *_pSrc)
+		static inline_small void fs_Assign(CAVLLinkData **_pDest, CAVLLinkData *_pSrc)
 		{
 			*_pDest = _pSrc;
 		}
 
-		static inline_small void f_AssignInit(CAVLLinkData **_pDest, CAVLLinkData *_pSrc)
+		static inline_small void fs_AssignInit(CAVLLinkData **_pDest, CAVLLinkData *_pSrc)
 		{
 			*_pDest = _pSrc;
 		}
 
-		static inline_small void f_Assign(CAVLLinkData **_pDest, CAVLLinkData **_pSrc)
+		static inline_small void fs_Assign(CAVLLinkData **_pDest, CAVLLinkData **_pSrc)
 		{
 			*_pDest = *_pSrc;
 		}
@@ -233,7 +233,7 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = (CAVLLinkAlignedData *)(((umint)m_pNext[0] & 1) | (umint)_pLeft);
 		}
 
-		inline_small void fp_SetNext(int _iIndex, CAVLLinkAlignedData *_pPtr)
+		inline_small void f_SetNext(int _iIndex, CAVLLinkAlignedData *_pPtr)
 		{
 			DMibFastCheck(!((umint)_pPtr & 1)); // We can only save ptrs that are aligned on 2 bytes
 			m_pNext[_iIndex] = (CAVLLinkAlignedData *)(((umint)m_pNext[_iIndex] & 1) | (umint)_pPtr);
@@ -249,19 +249,19 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = (CAVLLinkAlignedData *)(((umint)m_pNext[0] & umint(1)) | ((umint)*_pLeft & (~umint(0x1))));
 		}
 
-		static inline_small void f_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
+		static inline_small void fs_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
 		{
 			DMibFastCheck(!((umint)_pSrc & umint(1))); // We can only save ptrs that are aligned on 2 bytes
 			*_Dest = (CAVLLinkAlignedData *)((((umint)*_Dest) & umint(1)) | (umint)_pSrc);
 		}
 
-		static inline_small void f_AssignInit(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
+		static inline_small void fs_AssignInit(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData *_pSrc)
 		{
 			DMibFastCheck(!((umint)_pSrc & umint(1))); // We can only save ptrs that are aligned on 2 bytes
 			*_Dest = _pSrc;
 		}
 
-		static inline_small void f_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData **_pSrc)
+		static inline_small void fs_Assign(CAVLLinkAlignedData **_Dest, CAVLLinkAlignedData **_pSrc)
 		{
 			*_Dest = (CAVLLinkAlignedData *)((((umint)*_Dest) & umint(1)) | (((umint)*_pSrc) & (~umint(0x1))));
 		}
@@ -289,18 +289,6 @@ namespace NMib::NIntrusive::NPrivate
 
 	struct CAVLLinkAlignedRightData
 	{
-#ifdef DMibDebug
-		inline_never CAVLLinkAlignedRightData *fp_Debug_GetLeft() const
-		{
-			return f_GetLeftP();
-		}
-
-		inline_never CAVLLinkAlignedRightData *fp_Debug_GetRight() const
-		{
-			return f_GetRightP();
-		}
-#endif
-	public:
 		enum EAVLTreeSkew
 		{
 			EAVLTreeSkew_None        = 2
@@ -377,7 +365,7 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = _pLeft;
 		}
 
-		inline_small void fp_SetNext(int _iIndex, CAVLLinkAlignedRightData *_pPtr)
+		inline_small void f_SetNext(int _iIndex, CAVLLinkAlignedRightData *_pPtr)
 		{
 			DMibFastCheck(!((umint)_pPtr & 3)); // We can only save ptrs that are aligned on 2 bytes
 			m_pNext[_iIndex] = (CAVLLinkAlignedRightData *)(((umint)m_pNext[_iIndex] & umint(3)) | (umint)_pPtr);
@@ -393,19 +381,19 @@ namespace NMib::NIntrusive::NPrivate
 			m_pNext[0] = (CAVLLinkAlignedRightData *)((umint)*_pLeft & (~umint(0x3)));
 		}
 
-		static inline_small void f_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
+		static inline_small void fs_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
 		{
 			DMibFastCheck(!((umint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
 			*_Dest = (CAVLLinkAlignedRightData *)(((umint)*_Dest & umint(3)) | (umint)_pSrc);
 		}
 
-		static inline_small void f_AssignInit(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
+		static inline_small void fs_AssignInit(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData *_pSrc)
 		{
 			DMibFastCheck(!((umint)_pSrc & 3)); // We can only save ptrs that are aligned on 2 bytes
 			*_Dest = _pSrc;
 		}
 
-		static inline_small void f_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData **_pSrc)
+		static inline_small void fs_Assign(CAVLLinkAlignedRightData **_Dest, CAVLLinkAlignedRightData **_pSrc)
 		{
 			*_Dest = (CAVLLinkAlignedRightData *)(((umint)*_Dest & umint(3)) | ((umint)*_pSrc & (~umint(0x3))));
 		}
@@ -431,6 +419,18 @@ namespace NMib::NIntrusive::NPrivate
 
 	private:
 		using CThis = CAVLLinkAlignedRightData;
+
+#ifdef DMibDebug
+		inline_never CAVLLinkAlignedRightData *fp_Debug_GetLeft() const
+		{
+			return f_GetLeftP();
+		}
+
+		inline_never CAVLLinkAlignedRightData *fp_Debug_GetRight() const
+		{
+			return f_GetRightP();
+		}
+#endif
 	};
 
 	template <EAVLLinkType t_LinkType>

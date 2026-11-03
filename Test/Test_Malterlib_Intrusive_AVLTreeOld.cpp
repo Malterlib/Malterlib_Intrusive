@@ -149,43 +149,6 @@ namespace NMib
 				}
 			}
 
-			bool fp_CheckTree(CMalterlibNode *_pMalterlibNode, CBoostNode *_pBoostNode)
-			{
-				if (_pMalterlibNode && !_pBoostNode)
-					return false;
-				if (!_pMalterlibNode && _pBoostNode)
-					return false;
-				if (!_pMalterlibNode && !_pBoostNode)
-					return true;
-				if (_pMalterlibNode->m_Data != _pBoostNode->m_Data)
-					return false;
-
-				if (!fp_CheckTree(CMalterlibTree::fs_GetLeft(_pMalterlibNode), (CBoostNode *)_pBoostNode->left_))
-					return false;
-
-				if (!fp_CheckTree(CMalterlibTree::fs_GetRight(_pMalterlibNode), (CBoostNode *)_pBoostNode->right_))
-					return false;
-				return true;
-			}
-
-			void fp_TraceTree(CMalterlibNode *_pMalterlibNode, umint _Depth)
-			{
-				if (!_pMalterlibNode)
-					return;
-				fp_TraceTree(CMalterlibTree::fs_GetLeft(_pMalterlibNode), _Depth + 1);
-				DMibTrace("{sj*}{}\r\n", "", _Depth * 3, _pMalterlibNode->m_Data);
-				fp_TraceTree(CMalterlibTree::fs_GetRight(_pMalterlibNode), _Depth + 1);
-			}
-
-			void fp_TraceTree(CBoostNode *_pBoostNode, umint _Depth)
-			{
-				if (!_pBoostNode)
-					return;
-				fp_TraceTree((CBoostNode *)_pBoostNode->left_, _Depth + 1);
-				DMibTrace("{sj*}{}\r\n", "", _Depth * 3, _pBoostNode->m_Data);
-				fp_TraceTree((CBoostNode *)_pBoostNode->right_, _Depth + 1);
-			}
-
 			void f_InsertTests()
 			{
 				CMeasureType MalterlibTime("Malterlib");
@@ -376,6 +339,43 @@ namespace NMib
 			}
 
 		private:
+			bool fp_CheckTree(CMalterlibNode *_pMalterlibNode, CBoostNode *_pBoostNode)
+			{
+				if (_pMalterlibNode && !_pBoostNode)
+					return false;
+				if (!_pMalterlibNode && _pBoostNode)
+					return false;
+				if (!_pMalterlibNode && !_pBoostNode)
+					return true;
+				if (_pMalterlibNode->m_Data != _pBoostNode->m_Data)
+					return false;
+
+				if (!fp_CheckTree(CMalterlibTree::fs_GetLeft(_pMalterlibNode), (CBoostNode *)_pBoostNode->left_))
+					return false;
+
+				if (!fp_CheckTree(CMalterlibTree::fs_GetRight(_pMalterlibNode), (CBoostNode *)_pBoostNode->right_))
+					return false;
+				return true;
+			}
+
+			void fp_TraceTree(CMalterlibNode *_pMalterlibNode, umint _Depth)
+			{
+				if (!_pMalterlibNode)
+					return;
+				fp_TraceTree(CMalterlibTree::fs_GetLeft(_pMalterlibNode), _Depth + 1);
+				DMibTrace("{sj*}{}\r\n", "", _Depth * 3, _pMalterlibNode->m_Data);
+				fp_TraceTree(CMalterlibTree::fs_GetRight(_pMalterlibNode), _Depth + 1);
+			}
+
+			void fp_TraceTree(CBoostNode *_pBoostNode, umint _Depth)
+			{
+				if (!_pBoostNode)
+					return;
+				fp_TraceTree((CBoostNode *)_pBoostNode->left_, _Depth + 1);
+				DMibTrace("{sj*}{}\r\n", "", _Depth * 3, _pBoostNode->m_Data);
+				fp_TraceTree((CBoostNode *)_pBoostNode->right_, _Depth + 1);
+			}
+
 			TCVector<CMalterlibNode, NMemory::CAllocator_Virtual> m_DataMalterlib;
 			TCVector<CBoostNode, NMemory::CAllocator_Virtual> m_DataBoost;
 			umint m_nItems;

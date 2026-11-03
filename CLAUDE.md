@@ -195,7 +195,7 @@ MalterlibBuildShowProgress=false ./mib build Tests
 - **Automatic cleanup**: Doubly linked list nodes automatically unlink on destruction
 - **Iterator invalidation**: Iterators become invalid if they point to removed objects
 - **Move support**: Nodes can be relocated with `fg_Move()` - automatically relinks
-- Use `fp_IsValid()` methods for debug validation
+- Use `f_IsValid()` methods for debug validation
 - Links must be properly initialized before use
 
 ### Thread Safety

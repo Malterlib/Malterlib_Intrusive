@@ -578,7 +578,7 @@ namespace NMib::NIntrusive
 			f_NextBidirectional();
 
 		// Do the removal, get the replacement
-		CLink *pReplacement = fp_RemovedNoRebalance(pParentLink, pToExtract);
+		CLink *pReplacement = fsp_RemovedNoRebalance(pParentLink, pToExtract);
 
 		// Patch stack if extracted node is still in it (we went down into its subtree)
 		if (iExtractedPos <= m_iStack)

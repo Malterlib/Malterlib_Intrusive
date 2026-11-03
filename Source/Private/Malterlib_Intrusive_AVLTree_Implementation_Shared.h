@@ -16,7 +16,7 @@ namespace NMib::NIntrusive
 	{
 		CLink *pTemp = CLink::fs_GetPtr(_pObject);
 		CLink *pObj = pTemp->f_GetLeftP();
-		CLink::f_Assign(&_pObject, pObj);
+		CLink::fs_Assign(&_pObject, pObj);
 		pTemp->f_SetLeft(pObj->f_GetRight());
 		pObj->f_SetRight(pTemp);
 	}
@@ -26,7 +26,7 @@ namespace NMib::NIntrusive
 	{
 		CLink *pTemp = CLink::fs_GetPtr(_pObject);
 		CLink *pObj = pTemp->f_GetRightP();
-		CLink::f_Assign(&_pObject, pObj);
+		CLink::fs_Assign(&_pObject, pObj);
 		pTemp->f_SetRight(pObj->f_GetLeft());
 		pObj->f_SetLeft(pTemp);
 	}

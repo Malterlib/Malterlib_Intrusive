@@ -13,7 +13,7 @@ namespace NMib::NIntrusive
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CCompare>
-	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fpr_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, umint &_Depth)
+	bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_CheckTree(CLink *_pCurrent, bool _bBreak, tf_CCompare &&_fCompare, umint &_Depth)
 	{
 		CLink *pLeft = _pCurrent->f_GetLeftP();
 		CLink *pRight = _pCurrent->f_GetRightP();
@@ -32,7 +32,7 @@ namespace NMib::NIntrusive
 					DMibPDebugBreak;
 				return false;
 			}
-			if (!fpr_CheckTree(pLeft, _bBreak, _fCompare, LeftDepth))
+			if (!fp_CheckTree(pLeft, _bBreak, _fCompare, LeftDepth))
 				return false;
 		}
 		if (pRight)
@@ -47,7 +47,7 @@ namespace NMib::NIntrusive
 					DMibPDebugBreak;
 				return false;
 			}
-			if (!fpr_CheckTree(pRight, _bBreak, _fCompare, RightDepth))
+			if (!fp_CheckTree(pRight, _bBreak, _fCompare, RightDepth))
 				return false;
 		}
 		if (fg_Max(LeftDepth, RightDepth) - fg_Min(LeftDepth, RightDepth) > 1)
@@ -80,7 +80,7 @@ namespace NMib::NIntrusive
 		if (CLink::fs_GetPtr(m_Root))
 		{
 			umint Depth = 0;
-			bool bFail = !fpr_CheckTree(CLink::fs_GetPtr(m_Root), _bBreak, _fCompare, Depth);
+			bool bFail = !fp_CheckTree(CLink::fs_GetPtr(m_Root), _bBreak, _fCompare, Depth);
 			if (bFail)
 				return false;
 		}
