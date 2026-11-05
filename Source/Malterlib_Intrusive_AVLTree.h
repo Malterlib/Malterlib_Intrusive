@@ -81,173 +81,110 @@ namespace NMib::NIntrusive
 #endif
 
 	protected:
+		template <auto t_pLinkMember2, typename t_CCompare2, typename t_CAllocator2, typename t_COverrideNodeType2>
+		friend struct TCAVLTreeAggregate;
+
 		using CLinkPointer = CLink *; // The pointer type of the inner link type for each left/right link
 
-		struct CTemporaryStack
-		{
-			CLinkPointer *m_Stack[mc_SafeTreeDepth];
-			bool m_Larger[mc_SafeTreeDepth];
+	public: // NOLINT(malterlib-member-order): m_Root uses the protected CLinkPointer
+		/************************************************************************************************\
+		||¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯||
+		|| Iterator
+		||______________________________________________________________________________________________||
+		\************************************************************************************************/
 
-			CLinkPointer **m_pStack;
-			bool *m_pLarger;
+		template <aint t_RecursionDepth = mc_SafeTreeDepth>
+		struct TCIterator
+		{
+			using CNode = typename TCAVLTreeAggregate::CNode;
+
+			inline_small TCIterator();
+			inline_medium TCIterator(TCIterator const &_iOther);
+			inline_small TCIterator(TCAVLTreeAggregate const &_Tree);
+			inline_small TCIterator(TCAVLTreeAggregate const *_pTree);
+
+			TCIterator f_GetIterator() const;
+
+			inline_medium void f_Debug_CheckStack();
+
+			inline_medium umint f_GetLen() const;
+
+			void f_Clear();
+
+			inline_small CNode *f_GetCurrent() const;
+
+			inline_medium void f_Next();
+			inline_medium void f_Prev();
+
+			inline_medium void f_NextBidirectional();
+			inline_medium void f_PrevBidirectional();
+
+			inline_small void f_StartForward(TCAVLTreeAggregate const &_Tree);
+			inline_medium void f_StartForward(TCAVLTreeAggregate const *_pTree);
+
+			inline_small void f_StartBackward(TCAVLTreeAggregate const &_Tree);
+			inline_medium void f_StartBackward(TCAVLTreeAggregate const *_pTree);
+
+			void f_InitForSearch(TCAVLTreeAggregate const &_Tree);
+			void f_InitForSearch(TCAVLTreeAggregate const *_pTree);
+
+			template <typename tf_CKey, typename tf_FCompare>
+			bool f_FindEqualForward(tf_CKey const &_Key, tf_FCompare &&_fCompare);
+			template <typename tf_CKey>
+			bool f_FindEqualForward(tf_CKey const &_Key);
+
+			template <typename tf_CKey, typename tf_FCompare>
+			bool f_FindSmallestGreaterThanEqualForward(tf_CKey const &_Key, tf_FCompare &&_fCompare);
+			template <typename tf_CKey>
+			bool f_FindSmallestGreaterThanEqualForward(tf_CKey const &_Key);
+
+			template <typename tf_CKey, typename tf_FCompare>
+			bool f_FindLargestLessThanEqualForward(tf_CKey const &_Key, tf_FCompare &&_fCompare);
+			template <typename tf_CKey>
+			bool f_FindLargestLessThanEqualForward(tf_CKey const &_Key);
+
+			template <typename tf_FCompare>
+			void f_Delete(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare);
+			void f_Delete(TCAVLTreeAggregate &_Tree);
+
+			template <typename tf_FCompare, typename tf_CAllocator>
+			void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare, tf_CAllocator &_Allocator);
+			template <typename tf_CAllocator>
+			void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
+
+			template <typename tf_FCompare, typename tf_CAllocator>
+			void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare, tf_CAllocator &_Allocator);
+			template <typename tf_CAllocator>
+			void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
+
+			template <typename tf_FCompare>
+			void f_Remove(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare);
+			void f_Remove(TCAVLTreeAggregate &_Tree);
+
+			// Extract current node without rebalancing, advance to next, and patch the stack
+			// Returns the extracted node. Used during destructive iteration.
+			// This must use the bidirectional algorithm to maintain the full ancestor path.
+			template <bool tf_bReverse>
+			CNode *f_ExtractCurrentNoRebalance(TCAVLTreeAggregate &_Tree);
+
+			inline_small operator CNode * () const;
+			inline_small CNode *operator -> () const;
+			inline_small void operator ++ ();
+			inline_small void operator -- ();
+
+		protected:
+			friend struct TCAVLTreeAggregate;
+
+			aint mp_iStack;
+			CLink const *mp_Stack[t_RecursionDepth];
 		};
 
-	public:
-		CLinkPointer m_Root;
+		using CIterator = TCIterator<>;
+		using CIteratorConst = TCIterator<>;
 
 		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init);
 		TCAVLTreeAggregate() = default;
 
-	protected:
-		/***************************************************************************************************\
-		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
-		| Debug																								|
-		|___________________________________________________________________________________________________|
-		\***************************************************************************************************/
-
-		template <typename tf_FCompare>
-		bool fp_CheckTree(CLink *_pCurrent, bool _bBreak, tf_FCompare &&_fCompare, umint &_Depth);
-
-		/***************************************************************************************************\
-		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
-		| Misc																								|
-		|___________________________________________________________________________________________________|
-		\***************************************************************************************************/
-
-		static inline_small return_not_aliased CLink *fsp_LinkFromMember(CNode *_pMember);
-		static inline_small return_not_aliased CNode *fsp_MemberFromLink(CLink *_pLink);
-		static inline_small return_not_aliased CLink *fsp_LinkFromMemberConst(CNode const *_pMember);
-		static inline_small return_not_aliased CNode *fsp_MemberFromLinkConst(CLink const *_pLink);
-		static inline_small void fsp_Remove(void *_pTree, CLink &_Link);
-
-		template <typename tf_FCompare, typename tf_CNode>
-		inline_small static auto fsp_GetKey(tf_FCompare &&_fCompare, tf_CNode &&_Node)
-			-> NTraits::TCCallableReturnTypeFor<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>
-			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
-		;
-
-		template <typename tf_FCompare, typename tf_CNode>
-		inline_small static auto fsp_GetKey(tf_FCompare &&_fCompare, tf_CNode &&_Node) -> NTraits::TCRemoveRValueReference<tf_CNode>
-			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
-		;
-
-		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_DoCompare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
-		;
-
-		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_DoCompare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
-			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
-		;
-
-		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
-		inline_small static auto fsp_Compare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right);
-
-		//static void fp_RemoveAll(CLink *_pObject);
-		template <typename tf_FOnRemove>
-		void fp_RemoveAll(tf_FOnRemove &&_fOnRemove);
-
-		template <typename tf_FOnRemove>
-		void fp_RemoveAllRecursive(CLink *_pNode, tf_FOnRemove &&_fOnRemove);
-
-		template <typename tf_FCreateNode>
-		CLink *fp_CopyTreeRecursive(CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode);
-
-		template <typename tf_CTree, typename tf_FCreateNode>
-		CLink *fp_CopyTreeRecursive(typename tf_CTree::CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode);
-
-		template <typename tf_FCreateNode>
-		CLink *fp_MoveTreeRecursive(CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
-
-		template <typename tf_CTree, typename tf_FCreateNode>
-		CLink *fp_MoveTreeRecursive(typename tf_CTree::CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
-
-		umint fp_GetDepthRecursive(CLink *_pNode) const;
-
-		/***************************************************************************************************\
-		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
-		| Shared																							|
-		|___________________________________________________________________________________________________|
-		\***************************************************************************************************/
-
-		static inline_medium void fsp_RotateRight(CLinkPointer &_pObject);
-		static inline_medium void fsp_RotateLeft(CLinkPointer &_pObject);
-		static inline_medium bool fsp_RightShrunk(CLinkPointer &_pObject);
-		static inline_medium bool fsp_LeftShrunk(CLinkPointer &_pObject);
-		static bool fsp_RightGrown(CLinkPointer &_pObject);
-		static inline_medium bool fsp_RightGrown_Inl(CLinkPointer &_pObject);
-		static bool fsp_LeftGrown(CLinkPointer &_pObject);
-		static inline_medium bool fsp_LeftGrown_Inl(CLinkPointer &_pObject);
-
-		/***************************************************************************************************\
-		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
-		| Recursive																							|
-		|___________________________________________________________________________________________________|
-		\***************************************************************************************************/
-
-		static bool fsp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject);
-		static bool fsp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject);
-		template <typename tf_FCompare>
-		static bool fsp_RemoveRecursive(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
-		template <typename tf_FCompare>
-		static bool fsp_InsertRecursive(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_FCompare &&_fCompare, bool &_bRet);
-
-		/***************************************************************************************************\
-		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
-		| Static Stack																						|
-		|___________________________________________________________________________________________________|
-		\***************************************************************************************************/
-
-		static inline_medium bool fsp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
-		static inline_medium bool fsp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
-		template <typename tf_FCompare>
-		static void fsp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
-		static void fsp_Removed(CLinkPointer *_pObject, CLink *_pObj, CTemporaryStack &_Stack);
-
-		// No-rebalance removal helpers - used during destructive iteration
-		static inline_medium CLink *fsp_DetachHighest(CLinkPointer &_pObject);
-		static inline_medium CLink *fsp_DetachLowest(CLinkPointer &_pObject);
-		// Returns the replacement node (or nullptr if removed node was a leaf)
-		static CLink *fsp_RemovedNoRebalance(CLinkPointer *_pObject, CLink *_pObj);
-
-		template <int tf_Direction>
-		static void fsp_RemoveRotate3(CLinkPointer *_pObject);
-		template <int tf_Direction>
-		static void fsp_RemoveRotate2(CLinkPointer *_pObject);
-		template <typename tf_FCompare>
-		static bool fsp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
-		template <typename tf_CKey, typename tf_FOnInsert, typename tf_FCompare>
-		CNode *fp_FindEqualOrInsert(CLinkPointer &_pObject, tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert, tf_FCompare &&_fCompare);
-
-		template <typename tf_CKey, typename tf_FCompare>
-		static CNode *fsp_FindEqualAndRemove(CLinkPointer &_pObject, tf_CKey const &_Key, tf_FCompare &&_fCompare);
-
-		/***************************************************************************************************\
-		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
-		| Low stack																							|
-		|___________________________________________________________________________________________________|
-		\***************************************************************************************************/
-
-		template <typename tf_FCompare>
-		static inline_medium CLinkPointer *fsp_RemoveRebalance(CLinkPointer *_pTop, CLinkPointer *_pTarget, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
-		template <typename tf_FCompare>
-		static void fsp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
-
-		template <int tf_Direction>
-		static inline_small CLink *fsp_Rotate2(CLinkPointer *_pTop);
-		static void fsp_Rotate3Short(CLinkPointer *_pTop, int _Direction);
-		static CLink *fsp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third);
-		template <typename tf_FCompare>
-		static inline_small void fsp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
-		template <typename tf_FCompare>
-		static inline_small void fsp_RebalanceCase3LowStack(int _Direction, CLink *_pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
-		template <typename tf_FCompare>
-		static inline_small void fsp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
-		template <typename tf_FCompare>
-		static bool fsp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
-
-	public:
 		/***************************************************************************************************\
 		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
 		| Lifetime																							|
@@ -420,109 +357,168 @@ namespace NMib::NIntrusive
 		template <typename tf_FCompare>
 		bool f_CheckTree(bool _bBreak, tf_FCompare &&_fCompare);
 
-		/************************************************************************************************\
-		||¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯||
-		|| Iterator
-		||______________________________________________________________________________________________||
-		\************************************************************************************************/
-
-		template <aint t_RecursionDepth = mc_SafeTreeDepth>
-		struct TCIterator
-		{
-			using CNode = typename TCAVLTreeAggregate::CNode;
-
-		protected:
-			aint mp_iStack;
-			CLink const *mp_Stack[t_RecursionDepth];
-
-		public:
-			inline_small TCIterator();
-			inline_medium TCIterator(TCIterator const &_iOther);
-			inline_small TCIterator(TCAVLTreeAggregate const &_Tree);
-			inline_small TCIterator(TCAVLTreeAggregate const *_pTree);
-
-			TCIterator f_GetIterator() const;
-
-			inline_medium void f_Debug_CheckStack();
-
-			inline_medium umint f_GetLen() const;
-
-			void f_Clear();
-
-			inline_small CNode *f_GetCurrent() const;
-
-			inline_medium void f_Next();
-			inline_medium void f_Prev();
-
-			inline_medium void f_NextBidirectional();
-			inline_medium void f_PrevBidirectional();
-
-			inline_small void f_StartForward(TCAVLTreeAggregate const &_Tree);
-			inline_medium void f_StartForward(TCAVLTreeAggregate const *_pTree);
-
-			inline_small void f_StartBackward(TCAVLTreeAggregate const &_Tree);
-			inline_medium void f_StartBackward(TCAVLTreeAggregate const *_pTree);
-
-			void f_InitForSearch(TCAVLTreeAggregate const &_Tree);
-			void f_InitForSearch(TCAVLTreeAggregate const *_pTree);
-
-			template <typename tf_CKey, typename tf_FCompare>
-			bool f_FindEqualForward(tf_CKey const &_Key, tf_FCompare &&_fCompare);
-			template <typename tf_CKey>
-			bool f_FindEqualForward(tf_CKey const &_Key);
-
-			template <typename tf_CKey, typename tf_FCompare>
-			bool f_FindSmallestGreaterThanEqualForward(tf_CKey const &_Key, tf_FCompare &&_fCompare);
-			template <typename tf_CKey>
-			bool f_FindSmallestGreaterThanEqualForward(tf_CKey const &_Key);
-
-			template <typename tf_CKey, typename tf_FCompare>
-			bool f_FindLargestLessThanEqualForward(tf_CKey const &_Key, tf_FCompare &&_fCompare);
-			template <typename tf_CKey>
-			bool f_FindLargestLessThanEqualForward(tf_CKey const &_Key);
-
-			template <typename tf_FCompare>
-			void f_Delete(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare);
-			void f_Delete(TCAVLTreeAggregate &_Tree);
-
-			template <typename tf_FCompare, typename tf_CAllocator>
-			void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare, tf_CAllocator &_Allocator);
-			template <typename tf_CAllocator>
-			void f_DeleteAllocator(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
-
-			template <typename tf_FCompare, typename tf_CAllocator>
-			void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare, tf_CAllocator &_Allocator);
-			template <typename tf_CAllocator>
-			void f_DeleteAllocatorDefiniteType(TCAVLTreeAggregate &_Tree, tf_CAllocator &_Allocator);
-
-			template <typename tf_FCompare>
-			void f_Remove(TCAVLTreeAggregate &_Tree, tf_FCompare &&_fCompare);
-			void f_Remove(TCAVLTreeAggregate &_Tree);
-
-			// Extract current node without rebalancing, advance to next, and patch the stack
-			// Returns the extracted node. Used during destructive iteration.
-			// This must use the bidirectional algorithm to maintain the full ancestor path.
-			template <bool tf_bReverse>
-			CNode *f_ExtractCurrentNoRebalance(TCAVLTreeAggregate &_Tree);
-
-			inline_small operator CNode * () const;
-			inline_small CNode *operator -> () const;
-			inline_small void operator ++ ();
-			inline_small void operator -- ();
-
-		private:
-			friend struct TCAVLTreeAggregate;
-		};
-
-		using CIterator = TCIterator<>;
-		using CIteratorConst = TCIterator<>;
-
 		CIterator f_GetIterator();
 		CIteratorConst f_GetIterator() const;
 
-	private:
-		template <auto t_pLinkMember2, typename t_CCompare2, typename t_CAllocator2, typename t_COverrideNodeType2>
-		friend struct TCAVLTreeAggregate;
+		CLinkPointer m_Root;
+
+	protected:
+		struct CTemporaryStack
+		{
+			CLinkPointer *m_Stack[mc_SafeTreeDepth];
+			bool m_Larger[mc_SafeTreeDepth];
+
+			CLinkPointer **m_pStack;
+			bool *m_pLarger;
+		};
+
+		/***************************************************************************************************\
+		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+		| Debug																								|
+		|___________________________________________________________________________________________________|
+		\***************************************************************************************************/
+
+		template <typename tf_FCompare>
+		bool fp_CheckTree(CLink *_pCurrent, bool _bBreak, tf_FCompare &&_fCompare, umint &_Depth);
+
+		/***************************************************************************************************\
+		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+		| Misc																								|
+		|___________________________________________________________________________________________________|
+		\***************************************************************************************************/
+
+		static inline_small return_not_aliased CLink *fsp_LinkFromMember(CNode *_pMember);
+		static inline_small return_not_aliased CNode *fsp_MemberFromLink(CLink *_pLink);
+		static inline_small return_not_aliased CLink *fsp_LinkFromMemberConst(CNode const *_pMember);
+		static inline_small return_not_aliased CNode *fsp_MemberFromLinkConst(CLink const *_pLink);
+		static inline_small void fsp_Remove(void *_pTree, CLink &_Link);
+
+		template <typename tf_FCompare, typename tf_CNode>
+		inline_small static auto fsp_GetKey(tf_FCompare &&_fCompare, tf_CNode &&_Node)
+			-> NTraits::TCCallableReturnTypeFor<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>
+			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
+		;
+
+		template <typename tf_FCompare, typename tf_CNode>
+		inline_small static auto fsp_GetKey(tf_FCompare &&_fCompare, tf_CNode &&_Node) -> NTraits::TCRemoveRValueReference<tf_CNode>
+			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (NPrivate::TCImplicitConvert<tf_CNode &&> _Node)>)
+		;
+
+		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
+		inline_small static auto fsp_DoCompare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
+			requires (NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
+		;
+
+		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
+		inline_small static auto fsp_DoCompare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right)
+			requires (!NTraits::cIsCallableWith<NTraits::TCRemoveReference<tf_FCompare>, void (tf_CLeft &&_Left, tf_CRight &&_Right)>)
+		;
+
+		template <typename tf_FCompare, typename tf_CLeft, typename tf_CRight>
+		inline_small static auto fsp_Compare(tf_FCompare &&_fCompare, tf_CLeft &&_Left, tf_CRight &&_Right);
+
+		//static void fp_RemoveAll(CLink *_pObject);
+		template <typename tf_FOnRemove>
+		void fp_RemoveAll(tf_FOnRemove &&_fOnRemove);
+
+		template <typename tf_FOnRemove>
+		void fp_RemoveAllRecursive(CLink *_pNode, tf_FOnRemove &&_fOnRemove);
+
+		template <typename tf_FCreateNode>
+		CLink *fp_CopyTreeRecursive(CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
+		template <typename tf_CTree, typename tf_FCreateNode>
+		CLink *fp_CopyTreeRecursive(typename tf_CTree::CLink const *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
+		template <typename tf_FCreateNode>
+		CLink *fp_MoveTreeRecursive(CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
+		template <typename tf_CTree, typename tf_FCreateNode>
+		CLink *fp_MoveTreeRecursive(typename tf_CTree::CLink *_pSourceNode, tf_FCreateNode &&_fCreateNode);
+
+		umint fp_GetDepthRecursive(CLink *_pNode) const;
+
+		/***************************************************************************************************\
+		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+		| Shared																							|
+		|___________________________________________________________________________________________________|
+		\***************************************************************************************************/
+
+		static inline_medium void fsp_RotateRight(CLinkPointer &_pObject);
+		static inline_medium void fsp_RotateLeft(CLinkPointer &_pObject);
+		static inline_medium bool fsp_RightShrunk(CLinkPointer &_pObject);
+		static inline_medium bool fsp_LeftShrunk(CLinkPointer &_pObject);
+		static bool fsp_RightGrown(CLinkPointer &_pObject);
+		static inline_medium bool fsp_RightGrown_Inl(CLinkPointer &_pObject);
+		static bool fsp_LeftGrown(CLinkPointer &_pObject);
+		static inline_medium bool fsp_LeftGrown_Inl(CLinkPointer &_pObject);
+
+		/***************************************************************************************************\
+		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+		| Recursive																							|
+		|___________________________________________________________________________________________________|
+		\***************************************************************************************************/
+
+		static bool fsp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject);
+		static bool fsp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject);
+		template <typename tf_FCompare>
+		static bool fsp_RemoveRecursive(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
+		template <typename tf_FCompare>
+		static bool fsp_InsertRecursive(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_FCompare &&_fCompare, bool &_bRet);
+
+		/***************************************************************************************************\
+		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+		| Static Stack																						|
+		|___________________________________________________________________________________________________|
+		\***************************************************************************************************/
+
+		static inline_medium bool fsp_BalanceLowest(CLink * &_pLowestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
+		static inline_medium bool fsp_BalanceHighest(CLink * &_pHighestObject, CLinkPointer &_pObject, CLinkPointer **_pStack);
+		template <typename tf_FCompare>
+		static void fsp_Remove(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
+		static void fsp_Removed(CLinkPointer *_pObject, CLink *_pObj, CTemporaryStack &_Stack);
+
+		// No-rebalance removal helpers - used during destructive iteration
+		static inline_medium CLink *fsp_DetachHighest(CLinkPointer &_pObject);
+		static inline_medium CLink *fsp_DetachLowest(CLinkPointer &_pObject);
+		// Returns the replacement node (or nullptr if removed node was a leaf)
+		static CLink *fsp_RemovedNoRebalance(CLinkPointer *_pObject, CLink *_pObj);
+
+		template <int tf_Direction>
+		static void fsp_RemoveRotate3(CLinkPointer *_pObject);
+		template <int tf_Direction>
+		static void fsp_RemoveRotate2(CLinkPointer *_pObject);
+		template <typename tf_FCompare>
+		static bool fsp_Insert(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
+		template <typename tf_CKey, typename tf_FOnInsert, typename tf_FCompare>
+		CNode *fp_FindEqualOrInsert(CLinkPointer &_pObject, tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert, tf_FCompare &&_fCompare);
+
+		template <typename tf_CKey, typename tf_FCompare>
+		static CNode *fsp_FindEqualAndRemove(CLinkPointer &_pObject, tf_CKey const &_Key, tf_FCompare &&_fCompare);
+
+		/***************************************************************************************************\
+		|¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+		| Low stack																							|
+		|___________________________________________________________________________________________________|
+		\***************************************************************************************************/
+
+		template <typename tf_FCompare>
+		static inline_medium CLinkPointer *fsp_RemoveRebalance(CLinkPointer *_pTop, CLinkPointer *_pTarget, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
+		template <typename tf_FCompare>
+		static void fsp_RemoveLowStack(CLinkPointer &_pObject, CLink *_pObjectToRemove, tf_FCompare &&_fCompare);
+
+		template <int tf_Direction>
+		static inline_small CLink *fsp_Rotate2(CLinkPointer *_pTop);
+		static void fsp_Rotate3Short(CLinkPointer *_pTop, int _Direction);
+		static CLink *fsp_Rotate3(CLinkPointer *_pTop, int _Direction, int _Third);
+		template <typename tf_FCompare>
+		static inline_small void fsp_RebalancePathLowStack(CLink *_pPath, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
+		template <typename tf_FCompare>
+		static inline_small void fsp_RebalanceCase3LowStack(int _Direction, CLink *_pPath, CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
+		template <typename tf_FCompare>
+		static inline_small void fsp_RebalanceLowStack(CLinkPointer *_pTop, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
+		template <typename tf_FCompare>
+		static bool fsp_InsertLowStack(CLinkPointer &_pObject, CLink *_pObjectToInsert, tf_FCompare &&_fCompare);
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -556,10 +552,10 @@ namespace NMib::NIntrusive
 		auto operator <=> (TCAVLTree const &_Other) const noexcept(noexcept(fg_GetType<typename CSuper::CNode const &>() <=> fg_GetType<typename CSuper::CNode const &>()));
 
 	private:
+		using CSuper = TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>;
+
 		TCAVLTree(TCAVLTree const &_Other) = delete;
 		TCAVLTree &operator = (TCAVLTree const &_Other) = delete;
-
-		using CSuper = TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>;
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -581,10 +577,6 @@ namespace NMib::NIntrusive
 		using CLink = t_CLinkData;
 		using FRemove = void (void *_pTree, t_CLinkData &_Link);
 
-		static constexpr bool mc_bNeedSetTree = false;
-
-		t_CLinkData m_Link;
-
 #ifdef DCompiler_clang
 
 		constexpr TCAVLLinkAggregate();
@@ -593,6 +585,10 @@ namespace NMib::NIntrusive
 		inline_small void f_Construct();
 		inline_small void f_Destruct();
 		bool f_IsInTree() const;
+
+		static constexpr bool mc_bNeedSetTree = false;
+
+		t_CLinkData m_Link;
 	};
 
 	/*¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯*\
@@ -635,20 +631,20 @@ namespace NMib::NIntrusive
 	template <EAVLLinkType t_LinkType = EAVLLinkType_AlignedRight, typename t_CLinkData = typename NPrivate::TCLinkTypeToLink<t_LinkType>::CType>
 	struct TCAVLLinkAutoRemove : public TCAVLLink<t_LinkType, t_CLinkData>
 	{
-		static constexpr bool mc_bNeedSetTree = true;
-
 		using FRemove = void (void *_pTree, t_CLinkData &_Link);
 
-		void *m_pTree = nullptr;
-		FRemove *m_fRemove = nullptr;
+		TCAVLLinkAutoRemove();
+		~TCAVLLinkAutoRemove();
 
 		inline_small void f_Construct();
 		inline_small void f_Destruct();
 		bool f_IsInTree() const;
 		inline_small void f_SetTree(void *_pTree, FRemove *_fRemove);
 
-		TCAVLLinkAutoRemove();
-		~TCAVLLinkAutoRemove();
+		static constexpr bool mc_bNeedSetTree = true;
+
+		void *m_pTree = nullptr;
+		FRemove *m_fRemove = nullptr;
 
 	private:
 		TCAVLLinkAutoRemove(TCAVLLinkAutoRemove const &_Other) = delete;

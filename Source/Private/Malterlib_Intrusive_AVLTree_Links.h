@@ -17,9 +17,6 @@ namespace NMib::NIntrusive::NPrivate
 			, EAVLTreeSkew_NotInTree = 3
 		};
 
-		CAVLLinkData *m_Next[2];
-		aint m_Skew;
-
 		static inline_small bool fs_GetPtrIsFast();
 		inline_small void f_Construct();
 		inline_small CAVLLinkData **f_GetRight();
@@ -42,6 +39,9 @@ namespace NMib::NIntrusive::NPrivate
 		static constexpr inline_small CAVLLinkData *fs_GetPtr(CAVLLinkData *_pSrc);
 		inline_small void f_SetAll(CAVLLinkData *_pLeft, CAVLLinkData *_pRight, umint _Skew);
 		inline_small void f_Clear();
+
+		CAVLLinkData *m_Next[2];
+		aint m_Skew;
 
 	private:
 		using CThis = CAVLLinkData;
@@ -70,8 +70,6 @@ namespace NMib::NIntrusive::NPrivate
 		constexpr CAVLLinkAlignedData();
 #endif
 
-		CAVLLinkAlignedData *m_Next[2];
-
 		static inline_small bool fs_GetPtrIsFast();
 		inline_small void f_Construct();
 		inline_small CAVLLinkAlignedData **f_GetRight();
@@ -94,6 +92,8 @@ namespace NMib::NIntrusive::NPrivate
 		inline_small void f_SetSkew(umint _Skew);
 		inline_small void f_SetAll(CAVLLinkAlignedData *_pLeft, CAVLLinkAlignedData *_pRight, umint _Skew);
 		inline_small void f_Clear();
+
+		CAVLLinkAlignedData *m_Next[2];
 	};
 
 	struct CAVLLinkAlignedRightData
@@ -105,8 +105,6 @@ namespace NMib::NIntrusive::NPrivate
 			, EAVLTreeSkew_Right     = 1
 			, EAVLTreeSkew_NotInTree = 3
 		};
-
-		CAVLLinkAlignedRightData *m_Next[2];
 
 		static inline_small bool fs_GetPtrIsFast();
 		inline_small void f_Construct();
@@ -130,6 +128,8 @@ namespace NMib::NIntrusive::NPrivate
 		inline_small void f_SetSkew(umint _Skew);
 		inline_small void f_SetAll(CAVLLinkAlignedRightData *_pLeft, CAVLLinkAlignedRightData *_pRight, umint _Skew);
 		inline_small void f_Clear();
+
+		CAVLLinkAlignedRightData *m_Next[2];
 
 	private:
 		using CThis = CAVLLinkAlignedRightData;
