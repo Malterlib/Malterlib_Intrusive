@@ -22,7 +22,7 @@ namespace NMib::NIntrusive
 {
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	constexpr TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCAVLTreeAggregate(EAggregateInitialization _Init)
-		: m_Root{nullptr}
+		: m_pRoot{nullptr}
 	{
 	}
 

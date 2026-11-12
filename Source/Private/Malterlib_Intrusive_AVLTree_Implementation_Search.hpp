@@ -24,7 +24,7 @@ namespace NMib::NIntrusive
 	inline_medium auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqual(tf_CKey const &_Key, tf_FCompare &&_fCompare) const
 		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
-		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_pRoot);
 
 		while (pCurrentSearch)
 		{
@@ -68,7 +68,7 @@ namespace NMib::NIntrusive
 	{
 		CLink *pBestFit = nullptr;
 
-		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_pRoot);
 
 		while (pCurrentSearch)
 		{
@@ -129,7 +129,7 @@ namespace NMib::NIntrusive
 		CLink *pBestFit = nullptr;
 		CLink *pPrev = nullptr;
 
-		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_pRoot);
 
 		while (pCurrentSearch)
 		{
@@ -185,7 +185,7 @@ namespace NMib::NIntrusive
 	{
 		CLink *pBestFit = nullptr;
 
-		CLink *pCurrentSearch = CLink::fs_GetPtr(m_Root);
+		CLink *pCurrentSearch = CLink::fs_GetPtr(m_pRoot);
 
 		while (pCurrentSearch)
 		{
@@ -228,7 +228,7 @@ namespace NMib::NIntrusive
 	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindSmallest() const
 		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
-		CLink *pBestFit = CLink::fs_GetPtr(m_Root);
+		CLink *pBestFit = CLink::fs_GetPtr(m_pRoot);
 
 		if (pBestFit)
 		{
@@ -250,7 +250,7 @@ namespace NMib::NIntrusive
 	auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindLargest() const
 		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
-		CLink *pBestFit = CLink::fs_GetPtr(m_Root);
+		CLink *pBestFit = CLink::fs_GetPtr(m_pRoot);
 
 		if (pBestFit)
 		{

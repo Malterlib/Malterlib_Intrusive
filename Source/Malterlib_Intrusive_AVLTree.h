@@ -93,7 +93,7 @@ namespace NMib::NIntrusive
 		};
 
 	public:
-		CLinkPointer m_Root;
+		CLinkPointer m_pRoot;
 
 		constexpr TCAVLTreeAggregate(EAggregateInitialization _Init);
 		TCAVLTreeAggregate() = default;

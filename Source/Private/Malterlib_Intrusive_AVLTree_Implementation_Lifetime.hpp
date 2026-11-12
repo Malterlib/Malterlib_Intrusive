@@ -14,14 +14,14 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Construct(TCAVLTreeAggregate &&_Other)
 	{
-		CLink::fs_AssignInit(&m_Root, CLink::fs_GetPtr(_Other.m_Root));
-		CLink::fs_AssignInit(&_Other.m_Root, (CLink *)nullptr);
+		CLink::fs_AssignInit(&m_pRoot, CLink::fs_GetPtr(_Other.m_pRoot));
+		CLink::fs_AssignInit(&_Other.m_pRoot, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_small void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_Construct()
 	{
-		CLink::fs_AssignInit(&m_Root, (CLink *)nullptr);
+		CLink::fs_AssignInit(&m_pRoot, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -231,12 +231,12 @@ namespace NMib::NIntrusive
 	template <typename tf_FCreateNode>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_CopyTree(TCAVLTreeAggregate const &_Source, tf_FCreateNode &&_fCreateNode)
 	{
-		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_Root);
+		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_pRoot);
 		if (!pSourceRoot)
 			return;
 
 		auto pRoot = fp_CopyTreeRecursive(pSourceRoot, _fCreateNode);
-		CLink::fs_AssignInit(&m_Root, pRoot);
+		CLink::fs_AssignInit(&m_pRoot, pRoot);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -247,12 +247,12 @@ namespace NMib::NIntrusive
 			, tf_FCreateNode &&_fCreateNode
 		)
 	{
-		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_Root);
+		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_pRoot);
 		if (!pSourceRoot)
 			return;
 
 		auto pRoot = fp_CopyTreeRecursive<TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>>(pSourceRoot, _fCreateNode);
-		CLink::fs_AssignInit(&m_Root, pRoot);
+		CLink::fs_AssignInit(&m_pRoot, pRoot);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -318,13 +318,13 @@ namespace NMib::NIntrusive
 	template <typename tf_FCreateNode>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_MoveTree(TCAVLTreeAggregate &_Source, tf_FCreateNode &&_fCreateNode)
 	{
-		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_Root);
+		auto pSourceRoot = CLink::fs_GetPtr(_Source.m_pRoot);
 		if (!pSourceRoot)
 			return;
 
 		auto pRoot = fp_MoveTreeRecursive(pSourceRoot, _fCreateNode);
-		CLink::fs_AssignInit(&m_Root, pRoot);
-		CLink::fs_AssignInit(&_Source.m_Root, (CLink *)nullptr);
+		CLink::fs_AssignInit(&m_pRoot, pRoot);
+		CLink::fs_AssignInit(&_Source.m_pRoot, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -335,23 +335,23 @@ namespace NMib::NIntrusive
 			, tf_FCreateNode &&_fCreateNode
 		)
 	{
-		auto pSourceRoot = TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>::CLink::fs_GetPtr(_Source.m_Root);
+		auto pSourceRoot = TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>::CLink::fs_GetPtr(_Source.m_pRoot);
 		if (!pSourceRoot)
 			return;
 		auto pRoot = fp_MoveTreeRecursive<TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>>(pSourceRoot, _fCreateNode);
-		CLink::fs_AssignInit(&m_Root, pRoot);
-		TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>::CLink::fs_AssignInit(&_Source.m_Root, (CLink *)nullptr);
+		CLink::fs_AssignInit(&m_pRoot, pRoot);
+		TCAVLTreeAggregate<tf_pLinkMember, tf_CCompare, tf_CAllocator, tf_COverrideNodeType>::CLink::fs_AssignInit(&_Source.m_pRoot, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_FOnRemove>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::fp_RemoveAll(tf_FOnRemove &&_fOnRemove)
 	{
-		auto pRoot = CLink::fs_GetPtr(m_Root);
+		auto pRoot = CLink::fs_GetPtr(m_pRoot);
 		if (!pRoot)
 			return;
 		fp_RemoveAllRecursive(pRoot, _fOnRemove);
-		CLink::fs_AssignInit(&m_Root, (CLink *)nullptr);
+		CLink::fs_AssignInit(&m_pRoot, (CLink *)nullptr);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

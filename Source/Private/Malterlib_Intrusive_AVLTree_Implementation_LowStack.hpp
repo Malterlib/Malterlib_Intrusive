@@ -387,7 +387,7 @@ namespace NMib::NIntrusive
 			((CLinkContainer *)pToInsert)->f_SetTree(this, &TCAVLTreeAggregate::fsp_Remove);
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
 
-		return fsp_InsertLowStack(m_Root, pToInsert, _fCompare);
+		return fsp_InsertLowStack(m_pRoot, pToInsert, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -398,7 +398,7 @@ namespace NMib::NIntrusive
 
 		DMibFastCheck(pToRemove->f_GetSkew() != CLink::EAVLTreeSkew_NotInTree); // Must be in tree already
 
-		fsp_RemoveLowStack(m_Root, pToRemove, _fCompare);
+		fsp_RemoveLowStack(m_pRoot, pToRemove, _fCompare);
 #ifdef DMibEnableSafeCheck
 		// Remove tree ptr in debug
 		if constexpr (CLinkContainer::mc_bNeedSetTree)

@@ -78,13 +78,13 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	constexpr inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_IsEmpty() const
 	{
-		return !(CLink::fs_GetPtr(m_Root));
+		return !(CLink::fs_GetPtr(m_pRoot));
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	inline_small bool TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_HasOneElement() const
 	{
-		CLink *pObject = CLink::fs_GetPtr(m_Root);
+		CLink *pObject = CLink::fs_GetPtr(m_pRoot);
 		if (pObject)
 		{
 			if (!pObject->f_GetLeftP() && !pObject->f_GetRightP())
@@ -97,8 +97,8 @@ namespace NMib::NIntrusive
 	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetRoot() const
 		-> typename TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::CNode *
 	{
-		if (CLink::fs_GetPtr(m_Root))
-			return fsp_MemberFromLink(CLink::fs_GetPtr(m_Root));
+		if (CLink::fs_GetPtr(m_pRoot))
+			return fsp_MemberFromLink(CLink::fs_GetPtr(m_pRoot));
 		else
 			return nullptr;
 	}
@@ -143,7 +143,7 @@ namespace NMib::NIntrusive
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	umint TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_GetDepth() const
 	{
-		auto pRoot = CLink::fs_GetPtr(m_Root);
+		auto pRoot = CLink::fs_GetPtr(m_pRoot);
 		if (!pRoot)
 			return 0;
 

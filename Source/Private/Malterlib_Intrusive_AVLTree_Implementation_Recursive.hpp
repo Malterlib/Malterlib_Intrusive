@@ -223,7 +223,7 @@ namespace NMib::NIntrusive
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
 
 		bool bRet = true;
-		fsp_InsertRecursive(m_Root, pToInsert, _fCompare, bRet);
+		fsp_InsertRecursive(m_pRoot, pToInsert, _fCompare, bRet);
 		return bRet;
 	}
 
@@ -252,7 +252,7 @@ namespace NMib::NIntrusive
 	{
 		CLink *pToRemove = fsp_LinkFromMember(_pToRemove);
 
-		fsp_RemoveRecursive(m_Root, pToRemove, _fCompare);
+		fsp_RemoveRecursive(m_pRoot, pToRemove, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

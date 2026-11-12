@@ -616,7 +616,7 @@ namespace NMib::NIntrusive
 			((CLinkContainer *)pToInsert)->f_SetTree(this, &TCAVLTreeAggregate::fsp_Remove);
 		DMibFastCheck(pToInsert->f_GetSkew() == CLink::EAVLTreeSkew_NotInTree); // Must not be in tree already
 
-		return fsp_Insert(m_Root, pToInsert, _fCompare);
+		return fsp_Insert(m_pRoot, pToInsert, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -648,28 +648,28 @@ namespace NMib::NIntrusive
 		)
 		-> CNode *
 	{
-		return fp_FindEqualOrInsert(m_Root, _Key, _fOnInsert, _fCompare);
+		return fp_FindEqualOrInsert(m_pRoot, _Key, _fOnInsert, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey, typename tf_FOnInsert>
 	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualOrInsert(tf_CKey const &_Key, tf_FOnInsert &&_fOnInsert) -> CNode *
 	{
-		return fp_FindEqualOrInsert(m_Root, _Key, _fOnInsert, t_CCompare());
+		return fp_FindEqualOrInsert(m_pRoot, _Key, _fOnInsert, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey, typename tf_FCompare>
 	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualAndRemove(tf_CKey const &_Key, tf_FCompare &&_fCompare) -> CNode *
 	{
-		return fsp_FindEqualAndRemove(m_Root, _Key, _fCompare);
+		return fsp_FindEqualAndRemove(m_pRoot, _Key, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
 	template <typename tf_CKey>
 	inline_small auto TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::f_FindEqualAndRemove(tf_CKey const &_Key) -> CNode *
 	{
-		return fsp_FindEqualAndRemove(m_Root, _Key, t_CCompare());
+		return fsp_FindEqualAndRemove(m_pRoot, _Key, t_CCompare());
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>
@@ -706,7 +706,7 @@ namespace NMib::NIntrusive
 	{
 		CLink *pToRemove = fsp_LinkFromMember(_pToRemove);
 
-		fsp_Remove(m_Root, pToRemove, _fCompare);
+		fsp_Remove(m_pRoot, pToRemove, _fCompare);
 	}
 
 	template <auto t_pLinkMember, typename t_CCompare, typename t_CAllocator, typename t_COverrideNodeType>

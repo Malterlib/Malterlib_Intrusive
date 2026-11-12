@@ -83,7 +83,7 @@ namespace NMib::NIntrusive
 	inline_medium void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::f_StartForward(TCAVLTreeAggregate const *_pTree)
 	{
 		// Find the smallest item in tree, and build stack
-		CLink const *pCurrent = CLink::fs_GetPtr(_pTree->m_Root);
+		CLink const *pCurrent = CLink::fs_GetPtr(_pTree->m_pRoot);
 		aint iStack = -1;
 
 		while (pCurrent)
@@ -100,7 +100,7 @@ namespace NMib::NIntrusive
 	inline_medium void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::f_StartBackward(TCAVLTreeAggregate const *_pTree)
 	{
 		// Find the smallest item in tree, and build stack
-		CLink const *pCurrent = CLink::fs_GetPtr(_pTree->m_Root);
+		CLink const *pCurrent = CLink::fs_GetPtr(_pTree->m_pRoot);
 		aint iStack = -1;
 
 		while (pCurrent)
@@ -258,7 +258,7 @@ namespace NMib::NIntrusive
 	template <aint t_RecursionDepth>
 	void TCAVLTreeAggregate<t_pLinkMember, t_CCompare, t_CAllocator, t_COverrideNodeType>::TCIterator<t_RecursionDepth>::f_InitForSearch(TCAVLTreeAggregate const *_pTree)
 	{
-		mp_Stack[0] = CLink::fs_GetPtr(_pTree->m_Root);
+		mp_Stack[0] = CLink::fs_GetPtr(_pTree->m_pRoot);
 		mp_iStack = 0;
 	}
 
@@ -558,7 +558,7 @@ namespace NMib::NIntrusive
 
 		CLinkPointer *pParentLink;
 		if (mp_iStack == 0)
-			pParentLink = &_Tree.m_Root;
+			pParentLink = &_Tree.m_pRoot;
 		else
 		{
 			CLink *pParent = const_cast<CLink *>(mp_Stack[mp_iStack - 1]);
