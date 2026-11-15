@@ -19,8 +19,6 @@ namespace NMib::NIntrusive
 		constexpr CSLinkAggr(EAggregateInitialization _Init);
 		inline_always CSLinkAggr();
 
-		CSLinkAggr *m_pNext;
-
 		inline_small void f_Construct();
 		inline_small void f_Destruct();
 		inline_small void f_Link(CSLinkAggr *_pLinkAfter);
@@ -30,6 +28,8 @@ namespace NMib::NIntrusive
 		inline_small CSLinkAggr *f_GetNext() const;
 		inline_small void f_SetNext(CSLinkAggr *_pNext);
 		inline_small bool f_IsInList() const;
+
+		CSLinkAggr *m_pNext;
 
 	private:
 		using CThis = CSLinkAggr;
@@ -50,14 +50,15 @@ namespace NMib::NIntrusive
 		constexpr CSLinkListData_Last(EAggregateInitialization _Init);
 		inline_always CSLinkListData_Last();
 
-		CSLinkAggr m_First;
-		CSLinkAggr *m_pLast;
 		inline_small CSLinkAggr &f_GetFirst();
 		inline_small CSLinkAggr const &f_GetFirst() const;
 		inline_small CSLinkAggr *f_GetLast();
 		inline_small CSLinkAggr const *f_GetLast() const;
 		inline_small void f_SetLast(CSLinkAggr *_pLast);
 		static inline_small bool fs_HasLast();
+
+		CSLinkAggr m_First;
+		CSLinkAggr *m_pLast;
 	};
 
 	struct CSLinkListData
@@ -65,13 +66,14 @@ namespace NMib::NIntrusive
 		constexpr CSLinkListData(EAggregateInitialization _Init);
 		inline_always CSLinkListData();
 
-		CSLinkAggr m_First;
 		inline_small CSLinkAggr &f_GetFirst();
 		inline_small CSLinkAggr *f_GetLast();
 		inline_small CSLinkAggr const &f_GetFirst() const;
 		inline_small CSLinkAggr const *f_GetLast() const;
 		inline_small void f_SetLast(CSLinkAggr *_pLast);
 		static inline_small bool fs_HasLast();
+
+		CSLinkAggr m_First;
 	};
 
 	template <typename t_CData, typename t_CTranslator, typename t_CListData, bool t_bAutoDelete, typename t_CAllocator>
@@ -81,12 +83,54 @@ namespace NMib::NIntrusive
 		// Declared before the public section, which uses it.
 		using COffset = typename t_CTranslator::template TCOffset<t_CData>;
 
-	public:
+	public: // NOLINT(malterlib-member-order): the nested iterators alias COffset
+		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
+
+		struct CBucketCallbackSort
+		{
+			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem);
+
+			void *m_pContext;
+			FBucketGetIndex *m_fSortFunction;
+		};
+
+		struct CIterator
+		{
+			CIterator();
+			CIterator(TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
+			CIterator f_GetIterator() const;
+			CIterator &operator = (TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
+			inline_small t_CData *f_GetCurrent();
+			inline_small operator t_CData * ();
+			inline_small t_CData *operator -> ();
+			inline_small void operator ++ ();
+
+			CSLinkAggr *m_pCurrent;
+
+		private:
+			using COffset = COffset;
+		};
+
+		struct CIteratorConst
+		{
+			CIteratorConst();
+			CIteratorConst(TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
+			CIteratorConst f_GetIterator() const;
+			CIteratorConst &operator = (TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
+			inline_small t_CData const *f_GetCurrent();
+			inline_small operator t_CData const * ();
+			inline_small t_CData const *operator -> ();
+			inline_small void operator ++ ();
+
+			CSLinkAggr const *m_pCurrent;
+
+		private:
+			using COffset = COffset;
+		};
+
 		constexpr TCSLinkListAggregate(EAggregateInitialization _Init);
 
 		inline_always TCSLinkListAggregate() = default;
-
-		t_CListData m_Data;
 
 		void f_Construct();
 		void f_Destruct();
@@ -161,15 +205,6 @@ namespace NMib::NIntrusive
 		template <class tf_FCompare>
 		void f_MergeSort(tf_FCompare &&_fCompare, aint _InsertionBits = 3);
 
-		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
-
-		struct CBucketCallbackSort
-		{
-			void *m_pContext;
-			FBucketGetIndex *m_fSortFunction;
-			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem);
-		};
-
 		template <aint tf_BucketSize>
 		void f_BucketSortCallback(aint _NumPlaces, FBucketGetIndex *_fSortFunction, void *_pContext = nullptr);
 
@@ -179,44 +214,11 @@ namespace NMib::NIntrusive
 		template <typename tf_FCompare>
 		void f_Sort(tf_FCompare &&_fCompare);
 
-		struct CIterator
-		{
-			CSLinkAggr *m_pCurrent;
-
-			CIterator();
-			CIterator(TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
-			CIterator f_GetIterator() const;
-			CIterator &operator = (TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
-			inline_small t_CData *f_GetCurrent();
-			inline_small operator t_CData * ();
-			inline_small t_CData *operator -> ();
-			inline_small void operator ++ ();
-
-		private:
-			using COffset = COffset;
-		};
-
 		CIterator f_GetIterator();
-
-		struct CIteratorConst
-		{
-			CSLinkAggr const *m_pCurrent;
-
-			CIteratorConst();
-			CIteratorConst(TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
-			CIteratorConst f_GetIterator() const;
-			CIteratorConst &operator = (TCSLinkListAggregate<t_CData, t_CTranslator, t_CListData, t_bAutoDelete, t_CAllocator> const &_List);
-			inline_small t_CData const *f_GetCurrent();
-			inline_small operator t_CData const * ();
-			inline_small t_CData const *operator -> ();
-			inline_small void operator ++ ();
-
-		private:
-			using COffset = COffset;
-		};
-
 		CIteratorConst f_GetIterator() const;
 		umint f_GetLen() const;
+
+		t_CListData m_Data;
 
 	private:
 		static inline_small CSLinkAggr *fsp_LinkFromMember(t_CData *_pMember);

@@ -15,7 +15,6 @@ namespace NMib::NIntrusive
 	struct CDLinkAggregateListNoPrevPtrList
 	{
 		using CThis = CDLinkAggregateListNoPrevPtrList;
-		umint m_NextPtr;
 
 		constexpr CDLinkAggregateListNoPrevPtrList(EAggregateInitialization _Init);
 		CDLinkAggregateListNoPrevPtrList();
@@ -38,6 +37,8 @@ namespace NMib::NIntrusive
 		inline_small CDLinkAggregateListNoPrevPtrList const *f_GetPrevList() const;
 		inline_small void f_TransferList(CDLinkAggregateListNoPrevPtrList *_pFirst, CDLinkAggregateListNoPrevPtrList *_pLast);
 
+		umint m_NextPtr;
+
 	protected:
 		inline_small void fp_Internal_SetNextList(void *_pNext);
 		inline_small void fp_Internal_SetNextInitListLink(void *_pNext);
@@ -53,8 +54,6 @@ namespace NMib::NIntrusive
 		// List header has only next pointer pointing to first item (or itself)
 		// The first item has a prev pointer that points to the last item in the list
 		// The List header has a bit of the next pointer set to 1 to specify that it's the header
-
-		umint m_PrevPtr;
 
 		constexpr CDLinkAggregateListNoPrevPtr(EAggregateInitialization _Init);
 		CDLinkAggregateListNoPrevPtr();
@@ -90,6 +89,8 @@ namespace NMib::NIntrusive
 		inline_small bool f_IsAloneInList() const;
 		inline_small bool f_IsInList() const;
 
+		umint m_PrevPtr;
+
 	private:
 		inline_small void fp_Internal_SetPrev(void *_pPrev);
 		inline_small void fp_Internal_SetPrevInit(void *_pPrev);
@@ -102,9 +103,6 @@ namespace NMib::NIntrusive
 
 	struct CDLinkAggregate final
 	{
-		CDLinkAggregate *m_pNextPtr;
-		CDLinkAggregate *m_pPrevPtr;
-
 		constexpr CDLinkAggregate(EAggregateInitialization _Init);
 		CDLinkAggregate();
 		bool f_IsValid() const;
@@ -154,6 +152,9 @@ namespace NMib::NIntrusive
 		inline_small void f_Destruct();
 		inline_small bool f_IsInList() const;
 
+		CDLinkAggregate *m_pNextPtr;
+		CDLinkAggregate *m_pPrevPtr;
+
 	private:
 		using CThis = CDLinkAggregate;
 
@@ -171,8 +172,8 @@ namespace NMib::NIntrusive
 	{
 		inline_small TCDLink();
 		TCDLink(TCDLink &&_Other);
-		TCDLink &operator = (TCDLink &&_Other);
 		inline_small ~TCDLink();
+		TCDLink &operator = (TCDLink &&_Other);
 		inline_small t_CLink const *f_GetNext() const;
 		inline_small t_CLink const *f_GetPrev() const;
 
@@ -264,15 +265,6 @@ namespace NMib::NIntrusive
 		using CTranslator = t_CTranslator;
 		using COffset = typename CTranslator::template TCOffset<t_CData>;
 
-		// Have first and last as dummylinks so they don't have destructors and constructors
-		// 	t_CLink m_First;
-		// 	t_CLink m_Last;
-		t_CLinkInList m_Link;
-
-		constexpr TCDLinkListAggregate(EAggregateInitialization _Init);
-		TCDLinkListAggregate();
-		inline_small void f_Construct();
-
 		template <typename t_CDataInternal1, typename t_CAllocator1, bool t_bAutoDelete1>
 		struct TCAutoDeleteHelper
 		{
@@ -285,6 +277,91 @@ namespace NMib::NIntrusive
 			static inline_small void fs_Delete(t_CData *_pDeleter);
 		};
 
+		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
+		struct CBucketCallbackSort
+		{
+			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem);
+
+			void *m_pContext;
+			FBucketGetIndex *m_fSortFunction;
+		};
+
+		struct CIterator
+		{
+			using CData = t_CData;
+
+			CIterator();
+			CIterator(TCDLinkListAggregate &_List);
+			CIterator(CIterator const &_Copy);
+			CIterator(t_CData *_pStart);
+			CIterator(t_CData &_Start);
+			CIterator f_GetIterator() const;
+			CIterator &operator = (TCDLinkListAggregate &_List);
+			CIterator &operator = (CIterator const &_Copy);
+			CIterator &operator = (t_CData &_Start);
+			CIterator &operator = (t_CData *_pStart);
+			static inline_small t_CData *fs_GetNext(t_CData *_pCurrent);
+			static inline_small t_CData *fs_GetNextUnsafe(t_CData *_pCurrent);
+			static inline_small t_CData *fs_GetPrevUnsafe(t_CData *_pCurrent);
+			static inline_small t_CData *fs_GetPrev(t_CData *_pCurrent);
+			void f_Reverse(TCDLinkListAggregate &_List);
+			inline_small t_CData *f_GetCurrent() const;
+			inline_small operator t_CData * () const;
+			inline_small t_CData *operator -> () const;
+			inline_small t_CData *operator [] (aint _nPlaces) const;
+			umint f_GetLen() const;
+
+#ifdef DMibPUniqueType_int
+			inline_small t_CData *operator [] (int _nPlaces) const;
+#endif
+
+			inline_small void operator += (aint _nPlaces);
+			inline_small void operator ++ ();
+			inline_small void operator -- ();
+			inline_small void operator -= (aint _nPlaces);
+			void f_Delete();
+			template <typename tf_CDeleter>
+			void f_DeleteDeleter();
+			void f_DeleteDeleter();
+			void f_Remove();
+
+			t_CLink *m_pCurrent;
+		};
+
+		struct CIteratorConst
+		{
+			CIteratorConst();
+			CIteratorConst(CIteratorConst const &_Copy);
+			CIteratorConst(TCDLinkListAggregate const &_List);
+			CIteratorConst(t_CData const *_pStart);
+			CIteratorConst(t_CData const &_Start);
+			CIteratorConst f_GetIterator() const;
+			CIteratorConst &operator = (TCDLinkListAggregate const &_List);
+			CIteratorConst &operator = (CIteratorConst const &_Copy);
+			CIteratorConst &operator = (t_CData const &_Start);
+			CIteratorConst &operator = (t_CData const *_pStart);
+			void f_Reverse(TCDLinkListAggregate const &_List);
+			inline_small t_CData const *f_GetCurrent() const;
+			inline_small operator t_CData const * () const;
+			inline_small t_CData const *operator -> () const;
+			umint f_GetLen() const;
+			inline_small t_CData const *operator [] (aint _nPlaces) const;
+
+#ifdef DMibPUniqueType_int
+			inline_small t_CData const *operator [] (int _nPlaces) const;
+#endif
+			inline_small void operator += (aint _nPlaces);
+			inline_small void operator ++ ();
+			inline_small void operator -- ();
+			inline_small void operator -= (aint _nPlaces);
+
+			t_CLink const *m_pCurrent;
+		};
+
+		constexpr TCDLinkListAggregate(EAggregateInitialization _Init);
+		TCDLinkListAggregate();
+
+		inline_small void f_Construct();
 		inline_small void f_Destruct();
 		void f_Clear();
 		inline_medium void f_Transfer(TCDLinkListAggregate *_pFrom);
@@ -430,95 +507,20 @@ namespace NMib::NIntrusive
 		template <typename tf_FCompare>
 		void f_Sort(tf_FCompare &&_fCompare);
 
-		using FBucketGetIndex = aint (void *_pContext, aint _Place, void *_pItem);
-		struct CBucketCallbackSort
-		{
-			void *m_pContext;
-			FBucketGetIndex *m_fSortFunction;
-			static inline_small aint fs_GetIndex(void *_pContext, aint _Place, void *_pItem);
-		};
-
 		template <aint tf_BucketSize>
 		void f_BucketSortCallback(aint _NumPlaces, FBucketGetIndex *_fSortFunction, void *_pContext = nullptr);
 		template <typename tf_CSortClass, aint tf_BucketSize>
 		void f_BucketSort(aint _NumPlaces, void *_pContext = nullptr);
 		bool f_CheckList(bool _bBreak) const;
 
-		struct CIterator
-		{
-			using CData = t_CData;
-			t_CLink *m_pCurrent;
-
-			CIterator();
-			CIterator(TCDLinkListAggregate &_List);
-			CIterator(CIterator const &_Copy);
-			CIterator(t_CData *_pStart);
-			CIterator(t_CData &_Start);
-			CIterator f_GetIterator() const;
-			CIterator &operator = (TCDLinkListAggregate &_List);
-			CIterator &operator = (CIterator const &_Copy);
-			CIterator &operator = (t_CData &_Start);
-			CIterator &operator = (t_CData *_pStart);
-			static inline_small t_CData *fs_GetNext(t_CData *_pCurrent);
-			static inline_small t_CData *fs_GetNextUnsafe(t_CData *_pCurrent);
-			static inline_small t_CData *fs_GetPrevUnsafe(t_CData *_pCurrent);
-			static inline_small t_CData *fs_GetPrev(t_CData *_pCurrent);
-			void f_Reverse(TCDLinkListAggregate &_List);
-			inline_small t_CData *f_GetCurrent() const;
-			inline_small operator t_CData * () const;
-			inline_small t_CData *operator -> () const;
-			inline_small t_CData *operator [] (aint _nPlaces) const;
-			umint f_GetLen() const;
-
-#ifdef DMibPUniqueType_int
-			inline_small t_CData *operator [] (int _nPlaces) const;
-#endif
-
-			inline_small void operator += (aint _nPlaces);
-			inline_small void operator ++ ();
-			inline_small void operator -- ();
-			inline_small void operator -= (aint _nPlaces);
-			void f_Delete();
-			template <typename tf_CDeleter>
-			void f_DeleteDeleter();
-			void f_DeleteDeleter();
-			void f_Remove();
-		};
-
 		CIterator f_GetIterator();
-
-		struct CIteratorConst
-		{
-			t_CLink const *m_pCurrent;
-
-			CIteratorConst();
-			CIteratorConst(CIteratorConst const &_Copy);
-			CIteratorConst(TCDLinkListAggregate const &_List);
-			CIteratorConst(t_CData const *_pStart);
-			CIteratorConst(t_CData const &_Start);
-			CIteratorConst f_GetIterator() const;
-			CIteratorConst &operator = (TCDLinkListAggregate const &_List);
-			CIteratorConst &operator = (CIteratorConst const &_Copy);
-			CIteratorConst &operator = (t_CData const &_Start);
-			CIteratorConst &operator = (t_CData const *_pStart);
-			void f_Reverse(TCDLinkListAggregate const &_List);
-			inline_small t_CData const *f_GetCurrent() const;
-			inline_small operator t_CData const * () const;
-			inline_small t_CData const *operator -> () const;
-			umint f_GetLen() const;
-			inline_small t_CData const *operator [] (aint _nPlaces) const;
-
-#ifdef DMibPUniqueType_int
-			inline_small t_CData const *operator [] (int _nPlaces) const;
-#endif
-			inline_small void operator += (aint _nPlaces);
-			inline_small void operator ++ ();
-			inline_small void operator -- ();
-			inline_small void operator -= (aint _nPlaces);
-		};
-
 		CIteratorConst f_GetIterator() const;
 		bool operator == (TCDLinkListAggregate const &_Other) const noexcept(noexcept(fg_GetType<t_CData const &>() == fg_GetType<t_CData const &>()));
+
+		// Have first and last as dummylinks so they don't have destructors and constructors
+		// 	t_CLink m_First;
+		// 	t_CLink m_Last;
+		t_CLinkInList m_Link;
 
 	private:
 		static inline_small t_CLink *fsp_LinkFromMember(t_CData *_pMember);
@@ -532,11 +534,12 @@ namespace NMib::NIntrusive
 	{
 		using CSuper = TCDLinkListAggregate<t_CData, t_CTranslator, t_CLink, t_CLinkInList, t_bAutoDelete, t_CAllocator>;
 
-		bool operator == (TCDLinkList const &_Other) const noexcept(noexcept((CSuper const &)*this == (CSuper const &)_Other));
 		TCDLinkList(TCDLinkList &&_Other);
-		TCDLinkList &operator = (TCDLinkList &&_Other);
 		inline_small TCDLinkList();
 		inline_small ~TCDLinkList();
+
+		bool operator == (TCDLinkList const &_Other) const noexcept(noexcept((CSuper const &)*this == (CSuper const &)_Other));
+		TCDLinkList &operator = (TCDLinkList &&_Other);
 
 	private:
 		TCDLinkList(TCDLinkList const &_Other) = delete;
